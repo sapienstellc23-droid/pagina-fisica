@@ -6,7 +6,6 @@
     <title>Enciclopedia en Videos de Demostración de Física</title>
     <style>
         :root {
-            /* Tema claro tipo laboratorio */
             --bg-main: #f5f7fa;
             --bg-paper: #ffffff;
             --panel-bg: #ffffff;
@@ -22,6 +21,8 @@
             --border-strong: #cbd5e1;
             --success: #059669;
             --success-bg: #ecfdf5;
+            --error: #dc2626;
+            --error-bg: #fef2f2;
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
             --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
             --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.1);
@@ -41,12 +42,11 @@
             line-height: 1.6;
         }
 
-        /* ===== ENCABEZADO ===== */
+        /* ===== ENCABEZADO CON LOGO ===== */
         header {
             background: linear-gradient(135deg, #ffffff 0%, #eef2f7 100%);
             border-bottom: 4px solid var(--accent);
             padding: 1.8rem 2rem 1.5rem 2rem;
-            text-align: center;
             box-shadow: var(--shadow-md);
             position: relative;
         }
@@ -59,48 +59,65 @@
             background: linear-gradient(90deg, var(--accent) 0%, var(--highlight) 50%, var(--accent) 100%);
         }
 
-        .header-logos {
+        .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            max-width: 1000px;
-            margin: 0 auto 1rem auto;
+            justify-content: center;
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
             flex-wrap: wrap;
-            gap: 1rem;
         }
 
-        .header-logos .univ,
-        .header-logos .fac {
-            font-size: 0.85rem;
+        .header-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.1));
+        }
+
+        .header-logo-placeholder {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        .header-logo-placeholder svg { width: 50px; height: 50px; }
+
+        .header-text { text-align: left; flex: 1; min-width: 280px; }
+
+        .header-instituciones {
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 1.2px;
             color: var(--accent);
             text-transform: uppercase;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .header-logos svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
+            margin-bottom: 0.3rem;
         }
 
         header h1 {
-            margin: 0.5rem 0 0 0;
+            margin: 0.2rem 0 0 0;
             font-family: Georgia, 'Times New Roman', serif;
-            font-size: 1.9rem;
-            letter-spacing: 0.5px;
+            font-size: 1.75rem;
+            letter-spacing: 0.3px;
             color: var(--text-main);
             font-weight: 700;
+            line-height: 1.2;
         }
 
         header h2 {
             margin: 0.4rem 0 0 0;
-            font-size: 1rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            letter-spacing: 3px;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
             font-weight: 600;
         }
@@ -118,6 +135,95 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== FORMULARIO DE DATOS DEL ESTUDIANTE ===== */
+        .student-form {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-light);
+            border-radius: 14px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-form::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--highlight));
+        }
+
+        .student-form h3 {
+            margin: 0 0 0.4rem 0;
+            color: var(--accent);
+            font-family: Georgia, serif;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .student-form h3 svg { width: 22px; height: 22px; }
+
+        .student-form .hint {
+            margin: 0 0 1rem 0;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.9rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .form-field.full { grid-column: 1 / -1; }
+
+        .form-field label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-field label .required { color: var(--error); margin-left: 2px; }
+
+        .form-field input,
+        .form-field select {
+            padding: 0.6rem 0.8rem;
+            border: 1.5px solid var(--border-strong);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-main);
+            background-color: #ffffff;
+            transition: all 0.2s;
+        }
+
+        .form-field input:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-field input:invalid:not(:placeholder-shown) {
+            border-color: var(--error);
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
         }
 
         /* ===== CAJA SELECTORA DE CAPÍTULOS ===== */
@@ -145,10 +251,7 @@
             gap: 0.6rem;
         }
 
-        .selector-box-header svg {
-            width: 22px;
-            height: 22px;
-        }
+        .selector-box-header svg { width: 22px; height: 22px; }
 
         .chapters-scroll-list {
             max-height: 480px;
@@ -197,14 +300,8 @@
             background: linear-gradient(135deg, var(--highlight), var(--highlight-dark));
         }
 
-        .chapter-item .chapter-icon svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .chapter-item .chapter-text {
-            flex: 1;
-        }
+        .chapter-item .chapter-icon svg { width: 20px; height: 20px; }
+        .chapter-item .chapter-text { flex: 1; }
 
         .chapter-item .chapter-arrow {
             color: var(--text-muted);
@@ -215,8 +312,7 @@
             color: var(--accent);
             transform: translateX(4px);
         }
-
-        /* Scrollbar personalizado */
+        
         .chapters-scroll-list::-webkit-scrollbar { width: 10px; }
         .chapters-scroll-list::-webkit-scrollbar-track { background: var(--panel-alt); }
         .chapters-scroll-list::-webkit-scrollbar-thumb {
@@ -277,7 +373,7 @@
             font-size: 1rem;
         }
 
-        /* ===== TARJETAS DE VIDEO ===== */
+        /* ===== TARJETAS DE VIDEO CON POSTER ===== */
         .video-card {
             background-color: var(--panel-bg);
             border-radius: 14px;
@@ -288,9 +384,7 @@
             transition: box-shadow 0.2s ease;
         }
 
-        .video-card:hover {
-            box-shadow: var(--shadow-lg);
-        }
+        .video-card:hover { box-shadow: var(--shadow-lg); }
 
         .video-meta h4 {
             margin: 0.3rem 0 0.6rem 0;
@@ -306,9 +400,7 @@
             color: var(--text-muted);
         }
 
-        .video-meta p strong {
-            color: var(--text-main);
-        }
+        .video-meta p strong { color: var(--text-main); }
 
         .badge {
             display: inline-flex;
@@ -346,6 +438,52 @@
             max-height: 450px;
             outline: none;
             display: block;
+        }
+
+        /* ===== DATOS DIDÁCTICOS EXTRA DEL VIDEO ===== */
+        .video-extra-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc, #eff6ff);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-light);
+        }
+
+        .video-extra-info .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .video-extra-info .info-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .video-extra-info .info-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-extra-info .info-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.15rem;
+        }
+
+        .video-extra-info .info-value {
+            font-size: 0.88rem;
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         /* ===== CUESTIONARIO ===== */
@@ -464,7 +602,7 @@
             border-radius: 12px;
             text-align: center;
             margin-top: 1.5rem;
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
             display: none;
             box-shadow: var(--shadow-sm);
@@ -480,41 +618,115 @@
             margin-right: auto;
         }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.4rem; }
-            header h2 { font-size: 0.85rem; letter-spacing: 2px; }
-            .header-logos { justify-content: center; text-align: center; }
+        .score-display .score-number {
+            font-size: 2rem;
+            color: var(--success);
+            display: block;
+            margin: 0.5rem 0;
+            font-family: Georgia, serif;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, var(--highlight), var(--highlight-dark));
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-export svg { width: 18px; height: 18px; }
+
+        .btn-export:hover {
+            background: linear-gradient(135deg, var(--highlight-dark), #b45309);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        @media (max-width: 700px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .header-text { text-align: center; }
+            header h1 { font-size: 1.35rem; }
+            header h2 { font-size: 0.75rem; letter-spacing: 1.5px; }
+            .header-logo, .header-logo-placeholder { width: 70px; height: 70px; }
             .chapter-item { font-size: 0.9rem; padding: 0.8rem 1rem; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ========== ENCABEZADO CON LOGO ========== -->
     <header>
-        <div class="header-logos">
-            <span class="univ">
+        <div class="header-content">
+            <!-- Si tienes el logo real, descomenta esta línea y borra el placeholder: -->
+            <img src="logo-san-marcos.png" alt="Logo UNMSM" class="header-logo">
+
+            <!-- Placeholder (se usa si no hay imagen). Reemplázalo por <img> cuando tengas el logo -->
+            <div class="header-logo-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
                     <path d="M6 12v5c3 3 9 3 12 0v-5"/>
                 </svg>
-                Universidad Nacional Mayor de San Marcos
-            </span>
-            <span class="fac">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/>
-                </svg>
-                Facultad de Ciencias Físicas
-            </span>
+            </div>
+
+            <div class="header-text">
+                <div class="header-instituciones">Universidad Nacional Mayor de San Marcos · Facultad de Ciencias Físicas</div>
+                <h1>Enciclopedia en Videos de Demostración de Física</h1>
+                <h2>Portal Académico Interactivo</h2>
+            </div>
         </div>
-        <h1>Enciclopedia en Videos de Demostración de Física</h1>
-        <h2>Portal Académico Interactivo</h2>
     </header>
 
     <div class="container">
-        <!-- VISTA DE PORTADA -->
+        <!-- ========== VISTA DE PORTADA ========== -->
         <div id="home-view" class="view active">
+
+            <!-- FORMULARIO DE DATOS DEL ESTUDIANTE -->
+            <div class="student-form">
+                <h3>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Identificación del Estudiante
+                </h3>
+                <p class="hint">Complete sus datos antes de iniciar la evaluación. Serán usados para registrar sus resultados.</p>
+
+                <div class="form-grid">
+                    <div class="form-field full">
+                        <label for="student-name">Apellidos y Nombres <span class="required">*</span></label>
+                        <input type="text" id="student-name" placeholder="Ej: Quispe Mamani, Juan Carlos" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="student-code">Código de Matrícula <span class="required">*</span></label>
+                        <input type="text" id="student-code" placeholder="Ej: 20210045" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="student-email">Correo Institucional</label>
+                        <input type="email" id="student-email" placeholder="ejemplo@unmsm.edu.pe">
+                    </div>
+                    <div class="form-field">
+                        <label for="student-group">Grupo / Sección</label>
+                        <input type="text" id="student-group" placeholder="Ej: Grupo 3 - Lunes 10am">
+                    </div>
+                    <div class="form-field">
+                        <label for="student-professor">Docente del Curso</label>
+                        <input type="text" id="student-professor" placeholder="Ej: Dr. Juan Pérez">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELECTOR DE CAPÍTULOS -->
             <div class="selector-box-container">
                 <div class="selector-box-header">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -527,7 +739,7 @@
             </div>
         </div>
 
-        <!-- VISTA DE DETALLE -->
+        <!-- ========== VISTA DE DETALLE ========== -->
         <div id="chapter-view" class="view">
             <button class="btn-back" onclick="goToHome()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -549,150 +761,212 @@
     </div>
 
     <script>
+        // ============================================================
+        //  CONSTRUCTOR DE RUTAS DE VIDEO Y POSTER
+        // ============================================================
+        function videoPath(capitulo, archivo) {
+            const carpetas = {
+                1: "capitulo-01-unidades-vectores",
+                2: "capitulo-02-cinematica-lineal",
+                3: "capitulo-03-dinamica-lineal",
+                4: "capitulo-04-movimiento-plano",
+                5: "capitulo-05-inercia",
+                6: "capitulo-06-accion-reaccion",
+                7: "capitulo-07-friccion",
+                8: "capitulo-08-trabajo-energia",
+                9: "capitulo-09-centro-masa"
+            };
+            return `videos/${carpetas[capitulo]}/${archivo}`;
+        }
+
+        // Genera la ruta del poster (.jpg) a partir del archivo .mp4
+        function posterPath(capitulo, archivoMp4) {
+            const archivoJpg = archivoMp4.replace(/\.mp4$/i, ".jpg");
+            return videoPath(capitulo, archivoJpg);
+        }
+
+        // ============================================================
+        //  ESTRUCTURA DE CONTENIDO
+        // ============================================================
         const physicsChapters = {
             1: {
                 title: "Capítulo 1: Unidades y vectores",
                 description: "Demostraciones prácticas sobre sistemas de unidades, vectores en 2D y 3D, y operaciones vectoriales.",
                 videos: [
-                    { id: "01-01", file: "videos/01-01.mp4", title: "01-01 Unidades básicas", description: "Demostración de las unidades fundamentales del Sistema Internacional.", objectives: "Comprender la medición física y los patrones fundamentales.", questions: [{ text: "¿Cuál es la unidad base del Sistema Internacional para medir la masa?", options: ["Kilogramo (kg)", "Gramo (g)", "Libra (lb)", "Newton (N)"], correct: 0 }] },
-                    { id: "01-02", file: "videos/01-02.mp4", title: "01-02 Suma de vectores (paralelogramo)", description: "Método geométrico del paralelogramo para la adición de vectores concurrentes.", objectives: "Visualizar la resultante vectorial mediante construcción geométrica.", questions: [{ text: "En el método del paralelogramo, ¿dónde se origina el vector resultante?", options: ["En el extremo de uno de los vectores", "En el punto de aplicación común de ambos vectores", "En el punto medio", "Fuera del plano"], correct: 1 }] },
-                    { id: "01-03", file: "videos/01-03.mp4", title: "01-03 Suma de vectores (puntas con colas)", description: "Método del polígono o punta-cola para sumar múltiples vectores consecutivos.", objectives: "Aplicar la regla geométrica sucesiva para sumar sistemas de vectores.", questions: [{ text: "¿Cómo se conectan los vectores consecutivos en este método?", options: ["Cola con cola", "Punta con punta", "La punta del primero con la cola del segundo", "Cruzados perpendicularmente"], correct: 2 }] },
-                    { id: "01-04", file: "videos/01-04.mp4", title: "01-04 Componentes de un vector", description: "Descomposición ortogonal de un vector bidimensional en sus ejes X e Y.", objectives: "Hallar las proyecciones escalares y vectoriales empleando trigonometría.", questions: [{ text: "Si un vector forma un ángulo θ con el eje horizontal, ¿con qué función trigonométrica se calcula su componente en X?", options: ["Seno", "Coseno", "Tangente", "Secante"], correct: 1 }] },
-                    { id: "01-05", file: "videos/01-05.mp4", title: "01-05 Producto punto de vectores", description: "Análisis físico y geométrico del producto escalar.", objectives: "Calcular el trabajo mecánico y la proyección escalar entre dos vectores.", questions: [{ text: "¿Qué tipo de cantidad matemática resulta al efectuar el producto punto de dos vectores?", options: ["Un vector", "Un escalar", "Un tensor", "Una matriz"], correct: 1 }] },
-                    { id: "01-06", file: "videos/01-06.mp4", title: "01-06 Producto cruz de vectores", description: "Demostración del producto vectorial y la regla de la mano derecha.", objectives: "Determinar vectores perpendiculares y momentos de torsión.", questions: [{ text: "¿Cuál es el valor del producto cruz entre dos vectores que tienen la misma dirección (paralelos)?", options: ["Máximo", "Uno", "Cero", "Infinito"], correct: 2 }] },
-                    { id: "01-07", file: "videos/01-07.mp4", title: "01-07 Componentes de vectores en 3 dimensiones", description: "Extensión del sistema coordenado tridimensional cartesiano (X, Y, Z).", objectives: "Ubicar y descomponer vectores espaciales mediante cosenos directores.", questions: [{ text: "En un espacio tridimensional cartesiano, ¿cómo son entre sí los ejes X, Y y Z?", options: ["Paralelos", "Mutuamente perpendiculares", "Forman 45 grados", "Colineales"], correct: 1 }] }
+                    { id: "01-01", file: videoPath(1, "01-01.mp4"), title: "01-01 Unidades básicas", duration: "3:45", level: "Básico", description: "Demostración de las unidades fundamentales del Sistema Internacional.", objectives: "Comprender la medición física y los patrones fundamentales.", questions: [{ text: "¿Cuál es la unidad base del Sistema Internacional para medir la masa?", options: ["Kilogramo (kg)", "Gramo (g)", "Libra (lb)", "Newton (N)"], correct: 0 }] },
+                    { id: "01-02", file: videoPath(1, "01-02.mp4"), title: "01-02 Suma de vectores (paralelogramo)", duration: "5:12", level: "Básico", description: "Método geométrico del paralelogramo para la adición de vectores concurrentes.", objectives: "Visualizar la resultante vectorial mediante construcción geométrica.", questions: [{ text: "En el método del paralelogramo, ¿dónde se origina el vector resultante?", options: ["En el extremo de uno de los vectores", "En el punto de aplicación común de ambos vectores", "En el punto medio", "Fuera del plano"], correct: 1 }] },
+                    { id: "01-03", file: videoPath(1, "01-03.mp4"), title: "01-03 Suma de vectores (puntas con colas)", duration: "4:30", level: "Básico", description: "Método del polígono o punta-cola para sumar múltiples vectores consecutivos.", objectives: "Aplicar la regla geométrica sucesiva para sumar sistemas de vectores.", questions: [{ text: "¿Cómo se conectan los vectores consecutivos en este método?", options: ["Cola con cola", "Punta con punta", "La punta del primero con la cola del segundo", "Cruzados perpendicularmente"], correct: 2 }] },
+                    { id: "01-04", file: videoPath(1, "01-04.mp4"), title: "01-04 Componentes de un vector", duration: "6:20", level: "Intermedio", description: "Descomposición ortogonal de un vector bidimensional en sus ejes X e Y.", objectives: "Hallar las proyecciones escalares y vectoriales empleando trigonometría.", questions: [{ text: "Si un vector forma un ángulo θ con el eje horizontal, ¿con qué función trigonométrica se calcula su componente en X?", options: ["Seno", "Coseno", "Tangente", "Secante"], correct: 1 }] },
+                    { id: "01-05", file: videoPath(1, "01-05.mp4"), title: "01-05 Producto punto de vectores", duration: "5:45", level: "Intermedio", description: "Análisis físico y geométrico del producto escalar.", objectives: "Calcular el trabajo mecánico y la proyección escalar entre dos vectores.", questions: [{ text: "¿Qué tipo de cantidad matemática resulta al efectuar el producto punto de dos vectores?", options: ["Un vector", "Un escalar", "Un tensor", "Una matriz"], correct: 1 }] },
+                    { id: "01-06", file: videoPath(1, "01-06.mp4"), title: "01-06 Producto cruz de vectores", duration: "6:10", level: "Intermedio", description: "Demostración del producto vectorial y la regla de la mano derecha.", objectives: "Determinar vectores perpendiculares y momentos de torsión.", questions: [{ text: "¿Cuál es el valor del producto cruz entre dos vectores que tienen la misma dirección (paralelos)?", options: ["Máximo", "Uno", "Cero", "Infinito"], correct: 2 }] },
+                    { id: "01-07", file: videoPath(1, "01-07.mp4"), title: "01-07 Componentes de vectores en 3 dimensiones", duration: "7:15", level: "Avanzado", description: "Extensión del sistema coordenado tridimensional cartesiano (X, Y, Z).", objectives: "Ubicar y descomponer vectores espaciales mediante cosenos directores.", questions: [{ text: "En un espacio tridimensional cartesiano, ¿cómo son entre sí los ejes X, Y y Z?", options: ["Paralelos", "Mutuamente perpendiculares", "Forman 45 grados", "Colineales"], correct: 1 }] }
                 ]
             },
             2: {
                 title: "Capítulo 2: Cinemática lineal",
                 description: "Demostraciones de movimiento en una dimensión, velocidad constante y aceleración.",
                 videos: [
-                    { id: "02-01", file: "videos/02-01.mp4", title: "02-01 Velocidad constante", description: "Estudio experimental de cuerpos en movimiento rectilíneo uniforme.", objectives: "Analizar la constancia de la velocidad en intervalos iguales de tiempo.", questions: [{ text: "¿Cómo es la aceleración de un móvil que viaja a velocidad constante?", options: ["Constante y positiva", "Cero", "Variable", "Máxima"], correct: 1 }] },
-                    { id: "02-02", file: "videos/02-02.mp4", title: "02-02 Buldócer sobre una hoja en movimiento", description: "Análisis analítico de sistemas de referencia en movimiento.", objectives: "Comprender la relatividad del movimiento y velocidades relativas.", questions: [{ text: "La velocidad de un objeto medida por un observador en movimiento depende de:", options: ["Solo la masa del objeto", "El marco o sistema de referencia elegido", "La temperatura ambiente", "La presión atmosférica"], correct: 1 }] },
-                    { id: "02-03", file: "videos/02-03.mp4", title: "02-03 Plano inclinado con pelota que rueda", description: "Cinemática de cuerpos acelerados bajo la acción de la gravedad en planos inclinados.", objectives: "Determinar la aceleración constante en pendientes reducidas.", questions: [{ text: "Al disminuir el ángulo de inclinación de un plano respecto a la horizontal, ¿qué ocurre con la aceleración de la pelota?", options: ["Aumenta", "Disminuye", "Permanece invariable", "Se hace cero instantáneamente"], correct: 1 }] },
-                    { id: "02-04", file: "videos/02-04.mp4", title: "02-04 Aceleración constante", description: "Demostración de cambios uniformes en la velocidad a lo largo del tiempo.", objectives: "Calcular la aceleración media e instantánea experimentalmente.", questions: [{ text: "En un gráfico de velocidad en función del tiempo, ¿qué representa la pendiente de la recta?", options: ["El desplazamiento", "La aceleración", "La velocidad media", "La distancia recorrida"], correct: 1 }] },
-                    { id: "02-05", file: "videos/02-05.mp4", title: "02-05 Caída de una cuerda con tuercas", description: "Distribución espacial de intervalos temporales en la caída libre.", objectives: "Evidenciar la no linealidad del espacio recorrido respecto al tiempo en la caída libre.", questions: [{ text: "En la caída libre ideal, las distancias recorridas en intervalos de tiempo iguales sucesivos guardan proporción con:", options: ["Los números pares", "Los números impares (1, 3, 5...)", "Una progresión aritmética lineal", "Son idénticas"], correct: 1 }] },
-                    { id: "02-06", file: "videos/02-06.mp4", title: "02-06 Tiempo de reacción a la caída de un metro", description: "Experimento clásico para medir el tiempo de respuesta neurobiológica.", objectives: "Relacionar la distancia de caída libre con el tiempo de reacción humano.", questions: [{ text: "Si una regla cae una distancia mayor antes de ser atrapada, el tiempo de reacción del sujeto es:", options: ["Menor", "Mayor", "Exactamente igual", "Independiente"], correct: 1 }] },
-                    { id: "02-07", file: "videos/02-07.mp4", title: "02-07 Guinea y pluma", description: "Caída libre de objetos de diferente masa en el vacío y con resistencia del aire.", objectives: "Demostrar que en el vacío todos los cuerpos caen con la misma aceleración.", questions: [{ text: "¿Por qué una pluma cae más lento que una moneda en presencia de aire?", options: ["Por la gravedad local", "Por la fuerza de resistencia o fricción del aire", "Porque no tiene masa", "Por efecto magnético"], correct: 1 }] }
+                    { id: "02-01", file: videoPath(2, "02-01.mp4"), title: "02-01 Velocidad constante", duration: "4:00", level: "Básico", description: "Estudio experimental de cuerpos en movimiento rectilíneo uniforme.", objectives: "Analizar la constancia de la velocidad en intervalos iguales de tiempo.", questions: [{ text: "¿Cómo es la aceleración de un móvil que viaja a velocidad constante?", options: ["Constante y positiva", "Cero", "Variable", "Máxima"], correct: 1 }] },
+                    { id: "02-02", file: videoPath(2, "02-02.mp4"), title: "02-02 Buldócer sobre una hoja en movimiento", duration: "5:20", level: "Intermedio", description: "Análisis analítico de sistemas de referencia en movimiento.", objectives: "Comprender la relatividad del movimiento y velocidades relativas.", questions: [{ text: "La velocidad de un objeto medida por un observador en movimiento depende de:", options: ["Solo la masa del objeto", "El marco o sistema de referencia elegido", "La temperatura ambiente", "La presión atmosférica"], correct: 1 }] },
+                    { id: "02-03", file: videoPath(2, "02-03.mp4"), title: "02-03 Plano inclinado con pelota que rueda", duration: "4:45", level: "Básico", description: "Cinemática de cuerpos acelerados bajo la acción de la gravedad en planos inclinados.", objectives: "Determinar la aceleración constante en pendientes reducidas.", questions: [{ text: "Al disminuir el ángulo de inclinación de un plano respecto a la horizontal, ¿qué ocurre con la aceleración de la pelota?", options: ["Aumenta", "Disminuye", "Permanece invariable", "Se hace cero instantáneamente"], correct: 1 }] },
+                    { id: "02-04", file: videoPath(2, "02-04.mp4"), title: "02-04 Aceleración constante", duration: "5:30", level: "Intermedio", description: "Demostración de cambios uniformes en la velocidad a lo largo del tiempo.", objectives: "Calcular la aceleración media e instantánea experimentalmente.", questions: [{ text: "En un gráfico de velocidad en función del tiempo, ¿qué representa la pendiente de la recta?", options: ["El desplazamiento", "La aceleración", "La velocidad media", "La distancia recorrida"], correct: 1 }] },
+                    { id: "02-05", file: videoPath(2, "02-05.mp4"), title: "02-05 Caída de una cuerda con tuercas", duration: "3:50", level: "Básico", description: "Distribución espacial de intervalos temporales en la caída libre.", objectives: "Evidenciar la no linealidad del espacio recorrido respecto al tiempo en la caída libre.", questions: [{ text: "En la caída libre ideal, las distancias recorridas en intervalos de tiempo iguales sucesivos guardan proporción con:", options: ["Los números pares", "Los números impares (1, 3, 5...)", "Una progresión aritmética lineal", "Son idénticas"], correct: 1 }] },
+                    { id: "02-06", file: videoPath(2, "02-06.mp4"), title: "02-06 Tiempo de reacción a la caída de un metro", duration: "4:15", level: "Básico", description: "Experimento clásico para medir el tiempo de respuesta neurobiológica.", objectives: "Relacionar la distancia de caída libre con el tiempo de reacción humano.", questions: [{ text: "Si una regla cae una distancia mayor antes de ser atrapada, el tiempo de reacción del sujeto es:", options: ["Menor", "Mayor", "Exactamente igual", "Independiente"], correct: 1 }] },
+                    { id: "02-07", file: videoPath(2, "02-07.mp4"), title: "02-07 Guinea y pluma", duration: "6:00", level: "Intermedio", description: "Caída libre de objetos de diferente masa en el vacío y con resistencia del aire.", objectives: "Demostrar que en el vacío todos los cuerpos caen con la misma aceleración.", questions: [{ text: "¿Por qué una pluma cae más lento que una moneda en presencia de aire?", options: ["Por la gravedad local", "Por la fuerza de resistencia o fricción del aire", "Porque no tiene masa", "Por efecto magnético"], correct: 1 }] }
                 ]
             },
             3: {
                 title: "Capítulo 3: Dinámica lineal",
                 description: "Leyes de Newton, fuerzas y sistemas en aceleración lineal.",
                 videos: [
-                    { id: "03-01", file: "videos/03-01.mp4", title: "03-01 Aceleración por una cuerda con clip", description: "Demostración de fuerzas de tensión y aceleración en sistemas mecánicos.", objectives: "Aplicar la Segunda Ley de Newton en configuraciones de cuerdas.", questions: [{ text: "Según la Segunda Ley de Newton, la aceleración de un cuerpo es directamente proporcional a:", options: ["Su masa", "La fuerza neta aplicada", "La fricción estática", "El volumen"], correct: 1 }] },
-                    { id: "03-02", file: "videos/03-02.mp4", title: "03-02 La máquina de Atwood", description: "Análisis clásico de dos masas conectadas por una polea ligera.", objectives: "Medir experimentalmente pequeñas aceleraciones gravitatorias.", questions: [{ text: "En una máquina de Atwood ideal, si ambas masas son estrictamente iguales, el sistema:", options: ["Acelera infinitamente", "Permanece en reposo o con velocidad constante", "Gira sin control", "Se desintegra"], correct: 1 }] },
-                    { id: "03-03", file: "videos/03-03.mp4", title: "03-03 Aceleración por un resorte", description: "Interacción dinámica entre la fuerza elástica y la masa.", objectives: "Comprobar la Ley de Hooke en un contexto dinámico.", questions: [{ text: "La fuerza restauradora de un resorte ideal es directamente proporcional a:", options: ["La velocidad", "Su deformación o elongación", "Su masa total", "El tiempo"], correct: 1 }] },
-                    { id: "03-04", file: "videos/03-04.mp4", title: "03-04 Slinky que cae", description: "Comportamiento dinámico sorprendente de un resorte suspendido al ser soltado.", objectives: "Analizar el equilibrio de tensiones previas al colapso gravitatorio.", questions: [{ text: "Cuando se suelta un Slinky suspendido verticalmente por su extremo superior, ¿qué ocurre inicialmente con su extremo inferior?", options: ["Cae inmediatamente", "Permanece suspendido en el aire hasta que el resto lo alcanza", "Sube velozmente", "Se desplaza en horizontal"], correct: 1 }] },
-                    { id: "03-05", file: "videos/03-05.mp4", title: "03-05 Vela en un frasco que cae", description: "Efectos de la ingravidez aparente sobre la combustión durante la caída libre.", objectives: "Estudiar fenómenos térmicos en sistemas en caída libre.", questions: [{ text: "¿Qué le ocurre a la llama de una vela dentro de un frasco cuando este se encuentra en caída libre?", options: ["Se apaga al instante por falta de oxígeno", "Se estira adoptando forma esférica debido a la ausencia de convección por peso", "Explota violentamente", "No sufre ningún cambio físico"], correct: 1 }] }
+                    { id: "03-01", file: videoPath(3, "03-01.mp4"), title: "03-01 Aceleración por una cuerda con clip", duration: "4:30", level: "Básico", description: "Demostración de fuerzas de tensión y aceleración en sistemas mecánicos.", objectives: "Aplicar la Segunda Ley de Newton en configuraciones de cuerdas.", questions: [{ text: "Según la Segunda Ley de Newton, la aceleración de un cuerpo es directamente proporcional a:", options: ["Su masa", "La fuerza neta aplicada", "La fricción estática", "El volumen"], correct: 1 }] },
+                    { id: "03-02", file: videoPath(3, "03-02.mp4"), title: "03-02 La máquina de Atwood", duration: "6:45", level: "Intermedio", description: "Análisis clásico de dos masas conectadas por una polea ligera.", objectives: "Medir experimentalmente pequeñas aceleraciones gravitatorias.", questions: [{ text: "En una máquina de Atwood ideal, si ambas masas son estrictamente iguales, el sistema:", options: ["Acelera infinitamente", "Permanece en reposo o con velocidad constante", "Gira sin control", "Se desintegra"], correct: 1 }] },
+                    { id: "03-03", file: videoPath(3, "03-03.mp4"), title: "03-03 Aceleración por un resorte", duration: "5:10", level: "Intermedio", description: "Interacción dinámica entre la fuerza elástica y la masa.", objectives: "Comprobar la Ley de Hooke en un contexto dinámico.", questions: [{ text: "La fuerza restauradora de un resorte ideal es directamente proporcional a:", options: ["La velocidad", "Su deformación o elongación", "Su masa total", "El tiempo"], correct: 1 }] },
+                    { id: "03-04", file: videoPath(3, "03-04.mp4"), title: "03-04 Slinky que cae", duration: "5:00", level: "Avanzado", description: "Comportamiento dinámico sorprendente de un resorte suspendido al ser soltado.", objectives: "Analizar el equilibrio de tensiones previas al colapso gravitatorio.", questions: [{ text: "Cuando se suelta un Slinky suspendido verticalmente por su extremo superior, ¿qué ocurre inicialmente con su extremo inferior?", options: ["Cae inmediatamente", "Permanece suspendido en el aire hasta que el resto lo alcanza", "Sube velozmente", "Se desplaza en horizontal"], correct: 1 }] },
+                    { id: "03-05", file: videoPath(3, "03-05.mp4"), title: "03-05 Vela en un frasco que cae", duration: "4:20", level: "Intermedio", description: "Efectos de la ingravidez aparente sobre la combustión durante la caída libre.", objectives: "Estudiar fenómenos térmicos en sistemas en caída libre.", questions: [{ text: "¿Qué le ocurre a la llama de una vela dentro de un frasco cuando este se encuentra en caída libre?", options: ["Se apaga al instante por falta de oxígeno", "Se estira adoptando forma esférica debido a la ausencia de convección por peso", "Explota violentamente", "No sufre ningún cambio físico"], correct: 1 }] }
                 ]
             },
             4: {
                 title: "Capítulo 4: Movimiento en un plano",
                 description: "Tiro parabólico, movimiento bidimensional y composición de velocidades.",
                 videos: [
-                    { id: "04-01", file: "videos/04-01.mp4", title: "04-01 Disparó/caída", description: "Independencia de movimientos horizontal y vertical.", objectives: "Comprobar simultaneidad de impacto.", questions: [{ text: "¿Qué proyectil llega primero al suelo si uno se dispara horizontalmente y otro se deja caer?", options: ["El disparado", "El caído", "Llegan exactamente al mismo tiempo", "Depende del viento"], correct: 2 }] },
-                    { id: "04-02", file: "videos/04-02.mp4", title: "04-02 Cañón contra monos", description: "Demostración clásica de puntería con gravedad.", objectives: "Analizar trayectorias bajo aceleración uniforme.", questions: [{ text: "Si el blanco cae al mismo tiempo que se dispara el proyectil apuntando directamente a él, ¿qué sucede?", options: ["El proyectil pasa por alto", "El proyectil siempre acierta al blanco", "El blanco escapa", "Chocan antes de salir"], correct: 1 }] },
-                    { id: "04-03", file: "videos/04-03.mp4", title: "04-03 Cañón vertical sobre un carro", description: "Inercia horizontal en proyectiles.", objectives: "Comprobar conservación de velocidad horizontal.", questions: [{ text: "Al disparar verticalmente un objeto desde un carro en movimiento rectilíneo uniforme, el objeto cae:", options: ["Detrás del carro", "Exactamente de nuevo en el carro", "Delante del carro", "A un costado"], correct: 1 }] },
-                    { id: "04-04", file: "videos/04-04.mp4", title: "04-04 Cañón vertical sobre un carro acelerado", description: "Marcos no inerciales y proyectiles.", objectives: "Estudiar efectos de aceleración en la trayectoria.", questions: [{ text: "Si el carro acelera mientras el proyectil está en el aire, este caerá:", options: ["Dentro del tubo", "Detrás del carro", "Delante del carro", "En el mismo lugar exacto"], correct: 1 }] },
-                    { id: "04-05", file: "videos/04-05.mp4", title: "04-05 Parábolas en una mesa de aire", description: "Movimiento bidimensional sin fricción.", objectives: "Visualizar trayectorias parabólicas exactas.", questions: [{ text: "En ausencia de fricción, la trayectoria en el plano es:", options: ["Una elipse", "Una parábola", "Una línea recta", "Una espiral"], correct: 1 }] },
-                    { id: "04-06", file: "videos/04-06.mp4", title: "04-06 Cañón de alcance variable", description: "Estudio de ángulos de tiro y alcance máximo.", objectives: "Determinar el ángulo óptimo de 45 grados.", questions: [{ text: "¿Qué ángulo de salida proporciona el alcance horizontal máximo en el vacío?", options: ["30°", "45°", "60°", "90°"], correct: 1 }] },
-                    { id: "04-07", file: "videos/04-07.mp4", title: "04-07 Suma vectorial de velocidades", description: "Composición de movimientos simultáneos.", objectives: "Aplicar suma de velocidades relativas.", questions: [{ text: "La velocidad absoluta es la suma vectorial de la velocidad relativa más la del:", options: ["Objeto", "Sistema de referencia", "Fluido", "Vacío"], correct: 1 }] },
-                    { id: "04-08", file: "videos/04-08.mp4", title: "04-08 Buldócer sobre una hoja en movimiento (2 dimensiones)", description: "Movimiento relativo bidimensional.", objectives: "Analizar trayectorias en dos dimensiones.", questions: [{ text: "El desplazamiento neto es la combinación de los movimientos:", options: ["Independientes", "Perpendiculares u oblicuos", "Circulares", "Tangenciales"], correct: 1 }] },
-                    { id: "04-09", file: "videos/04-09.mp4", title: "04-09 Pesas que se deslizan en un triángulo", description: "Dinámica en planos inclinados múltiples.", objectives: "Calcular fuerzas componentes.", questions: [{ text: "La fuerza impulsora depende de la pendiente del:", options: ["Triángulo", "Plano", "Suelo", "Eje"], correct: 1 }] },
-                    { id: "04-10", file: "videos/04-10.mp4", title: "04-10 Navegando contra el viento", description: "Vector velocidad en navegación.", objectives: "Resolver triángulos de velocidades.", questions: [{ text: "Para ir en dirección perpendicular al viento, la embarcación debe apuntar:", options: ["Directamente al destino", "Contra el viento (barlovento)", "A favor", "Atrás"], correct: 1 }] },
-                    { id: "04-11", file: "videos/04-11.mp4", title: "04-11 Vertical local con aceleración", description: "Efecto de la aceleración en la plomada.", objectives: "Estudiar la dirección aparente de la gravedad.", questions: [{ text: "En un sistema acelerado, la plomada se desvía respecto a la vertical:", options: ["Verdadera", "Aparente o efectiva", "Constante", "Nula"], correct: 1 }] }
+                    { id: "04-01", file: videoPath(4, "04-01.mp4"), title: "04-01 Disparó/caída", duration: "4:00", level: "Básico", description: "Independencia de movimientos horizontal y vertical.", objectives: "Comprobar simultaneidad de impacto.", questions: [{ text: "¿Qué proyectil llega primero al suelo si uno se dispara horizontalmente y otro se deja caer?", options: ["El disparado", "El caído", "Llegan exactamente al mismo tiempo", "Depende del viento"], correct: 2 }] },
+                    { id: "04-02", file: videoPath(4, "04-02.mp4"), title: "04-02 Cañón contra monos", duration: "5:30", level: "Intermedio", description: "Demostración clásica de puntería con gravedad.", objectives: "Analizar trayectorias bajo aceleración uniforme.", questions: [{ text: "Si el blanco cae al mismo tiempo que se dispara el proyectil apuntando directamente a él, ¿qué sucede?", options: ["El proyectil pasa por alto", "El proyectil siempre acierta al blanco", "El blanco escapa", "Chocan antes de salir"], correct: 1 }] },
+                    { id: "04-03", file: videoPath(4, "04-03.mp4"), title: "04-03 Cañón vertical sobre un carro", duration: "4:45", level: "Intermedio", description: "Inercia horizontal en proyectiles.", objectives: "Comprobar conservación de velocidad horizontal.", questions: [{ text: "Al disparar verticalmente un objeto desde un carro en movimiento rectilíneo uniforme, el objeto cae:", options: ["Detrás del carro", "Exactamente de nuevo en el carro", "Delante del carro", "A un costado"], correct: 1 }] },
+                    { id: "04-04", file: videoPath(4, "04-04.mp4"), title: "04-04 Cañón vertical sobre un carro acelerado", duration: "5:15", level: "Avanzado", description: "Marcos no inerciales y proyectiles.", objectives: "Estudiar efectos de aceleración en la trayectoria.", questions: [{ text: "Si el carro acelera mientras el proyectil está en el aire, este caerá:", options: ["Dentro del tubo", "Detrás del carro", "Delante del carro", "En el mismo lugar exacto"], correct: 1 }] },
+                    { id: "04-05", file: videoPath(4, "04-05.mp4"), title: "04-05 Parábolas en una mesa de aire", duration: "6:00", level: "Intermedio", description: "Movimiento bidimensional sin fricción.", objectives: "Visualizar trayectorias parabólicas exactas.", questions: [{ text: "En ausencia de fricción, la trayectoria en el plano es:", options: ["Una elipse", "Una parábola", "Una línea recta", "Una espiral"], correct: 1 }] },
+                    { id: "04-06", file: videoPath(4, "04-06.mp4"), title: "04-06 Cañón de alcance variable", duration: "5:40", level: "Intermedio", description: "Estudio de ángulos de tiro y alcance máximo.", objectives: "Determinar el ángulo óptimo de 45 grados.", questions: [{ text: "¿Qué ángulo de salida proporciona el alcance horizontal máximo en el vacío?", options: ["30°", "45°", "60°", "90°"], correct: 1 }] },
+                    { id: "04-07", file: videoPath(4, "04-07.mp4"), title: "04-07 Suma vectorial de velocidades", duration: "4:50", level: "Intermedio", description: "Composición de movimientos simultáneos.", objectives: "Aplicar suma de velocidades relativas.", questions: [{ text: "La velocidad absoluta es la suma vectorial de la velocidad relativa más la del:", options: ["Objeto", "Sistema de referencia", "Fluido", "Vacío"], correct: 1 }] },
+                    { id: "04-08", file: videoPath(4, "04-08.mp4"), title: "04-08 Buldócer sobre una hoja en movimiento (2 dimensiones)", duration: "5:25", level: "Avanzado", description: "Movimiento relativo bidimensional.", objectives: "Analizar trayectorias en dos dimensiones.", questions: [{ text: "El desplazamiento neto es la combinación de los movimientos:", options: ["Independientes", "Perpendiculares u oblicuos", "Circulares", "Tangenciales"], correct: 1 }] },
+                    { id: "04-09", file: videoPath(4, "04-09.mp4"), title: "04-09 Pesas que se deslizan en un triángulo", duration: "4:35", level: "Intermedio", description: "Dinámica en planos inclinados múltiples.", objectives: "Calcular fuerzas componentes.", questions: [{ text: "La fuerza impulsora depende de la pendiente del:", options: ["Triángulo", "Plano", "Suelo", "Eje"], correct: 1 }] },
+                    { id: "04-10", file: videoPath(4, "04-10.mp4"), title: "04-10 Navegando contra el viento", duration: "5:55", level: "Avanzado", description: "Vector velocidad en navegación.", objectives: "Resolver triángulos de velocidades.", questions: [{ text: "Para ir en dirección perpendicular al viento, la embarcación debe apuntar:", options: ["Directamente al destino", "Contra el viento (barlovento)", "A favor", "Atrás"], correct: 1 }] },
+                    { id: "04-11", file: videoPath(4, "04-11.mp4"), title: "04-11 Vertical local con aceleración", duration: "4:10", level: "Intermedio", description: "Efecto de la aceleración en la plomada.", objectives: "Estudiar la dirección aparente de la gravedad.", questions: [{ text: "En un sistema acelerado, la plomada se desvía respecto a la vertical:", options: ["Verdadera", "Aparente o efectiva", "Constante", "Nula"], correct: 1 }] }
                 ]
             },
             5: {
                 title: "Capítulo 5: Inercia",
                 description: "Estudio de la primera ley de Newton y resistencia al cambio de movimiento.",
                 videos: [
-                    { id: "05-01", file: "videos/05-01.mp4", title: "05-01 Inercia en un riel de aire que se desplaza", description: "Movimiento inercial sin fricción.", objectives: "Comprobar la ley de inercia.", questions: [{ text: "Un objeto sobre un riel de aire sin fricción mantiene su velocidad por:", options: ["Inercia", "Un motor oculto", "Gravedad", "Fricción"], correct: 0 }] },
-                    { id: "05-02", file: "videos/05-02.mp4", title: "05-02 Cilindro de inercia", description: "Respuesta de cuerpos masivos a fuerzas repentinas.", objectives: "Analizar masa inercial.", questions: [{ text: "A mayor masa, la inercia del cuerpo es:", options: ["Menor", "Mayor", "Igual", "Nula"], correct: 1 }] },
-                    { id: "05-03", file: "videos/05-03.mp4", title: "05-03 Roca de hule espuma", description: "Demostración visual de peso versus inercia.", objectives: "Distinguir propiedades mecánicas.", questions: [{ text: "Aunque un objeto sea liviano, su inercia depende de su:", options: ["Color", "Masa", "Volumen", "Forma"], correct: 1 }] },
-                    { id: "05-04", file: "videos/05-04.mp4", title: "05-04 Sacudida del mantel", description: "Inercia aplicada a utensilios en reposo.", objectives: "Explicar la permanencia en reposo.", questions: [{ text: "Los objetos sobre la mesa permanecen quietos si el tirón del mantel es:", options: ["Lento", "Rápido y brusco", "Constante", "Suave"], correct: 1 }] },
-                    { id: "05-05", file: "videos/05-05.mp4", title: "05-05 Huevos y plato de pizza", description: "Inercia y caída vertical de objetos.", objectives: "Demostrar independencia inercial al retirar soportes.", questions: [{ text: "Al golpear el plato, el huevo cae al vaso debido a:", options: ["La gravedad", "El impulso", "La fuerza centrífuga", "El viento"], correct: 0 }] },
-                    { id: "05-06", file: "videos/05-06.mp4", title: "05-06 Lápiz y madera terciada", description: "Demostración de impacto y perforación por inercia.", objectives: "Evaluar transferencia rápida de momento.", questions: [{ text: "El lápiz atraviesa la madera debido a la resistencia inercial del:", options: ["Aire", "Lápiz al cambiar de estado de reposo", "Objeto", "Suelo"], correct: 1 }] }
+                    { id: "05-01", file: videoPath(5, "05-01.mp4"), title: "05-01 Inercia en un riel de aire que se desplaza", duration: "3:55", level: "Básico", description: "Movimiento inercial sin fricción.", objectives: "Comprobar la ley de inercia.", questions: [{ text: "Un objeto sobre un riel de aire sin fricción mantiene su velocidad por:", options: ["Inercia", "Un motor oculto", "Gravedad", "Fricción"], correct: 0 }] },
+                    { id: "05-02", file: videoPath(5, "05-02.mp4"), title: "05-02 Cilindro de inercia", duration: "4:30", level: "Básico", description: "Respuesta de cuerpos masivos a fuerzas repentinas.", objectives: "Analizar masa inercial.", questions: [{ text: "A mayor masa, la inercia del cuerpo es:", options: ["Menor", "Mayor", "Igual", "Nula"], correct: 1 }] },
+                    { id: "05-03", file: videoPath(5, "05-03.mp4"), title: "05-03 Roca de hule espuma", duration: "4:15", level: "Básico", description: "Demostración visual de peso versus inercia.", objectives: "Distinguir propiedades mecánicas.", questions: [{ text: "Aunque un objeto sea liviano, su inercia depende de su:", options: ["Color", "Masa", "Volumen", "Forma"], correct: 1 }] },
+                    { id: "05-04", file: videoPath(5, "05-04.mp4"), title: "05-04 Sacudida del mantel", duration: "3:40", level: "Básico", description: "Inercia aplicada a utensilios en reposo.", objectives: "Explicar la permanencia en reposo.", questions: [{ text: "Los objetos sobre la mesa permanecen quietos si el tirón del mantel es:", options: ["Lento", "Rápido y brusco", "Constante", "Suave"], correct: 1 }] },
+                    { id: "05-05", file: videoPath(5, "05-05.mp4"), title: "05-05 Huevos y plato de pizza", duration: "4:05", level: "Básico", description: "Inercia y caída vertical de objetos.", objectives: "Demostrar independencia inercial al retirar soportes.", questions: [{ text: "Al golpear el plato, el huevo cae al vaso debido a:", options: ["La gravedad", "El impulso", "La fuerza centrífuga", "El viento"], correct: 0 }] },
+                    { id: "05-06", file: videoPath(5, "05-06.mp4"), title: "05-06 Lápiz y madera terciada", duration: "4:25", level: "Intermedio", description: "Demostración de impacto y perforación por inercia.", objectives: "Evaluar transferencia rápida de momento.", questions: [{ text: "El lápiz atraviesa la madera debido a la resistencia inercial del:", options: ["Aire", "Lápiz al cambiar de estado de reposo", "Objeto", "Suelo"], correct: 1 }] }
                 ]
             },
             6: {
                 title: "Capítulo 6: Acción y reacción",
                 description: "Demostraciones de la Tercera Ley de Newton y conservación del momento lineal.",
                 videos: [
-                    { id: "06-01", file: "videos/06-01.mp4", title: "06-01 Deslizadores de reacción", description: "Acción y reacción en rieles de aire.", objectives: "Verificar fuerzas mutuas iguales y opuestas.", questions: [{ text: "Las fuerzas de acción y reacción actúan sobre:", options: ["El mismo cuerpo", "Cuerpos diferentes", "El aire", "El soporte"], correct: 1 }] },
-                    { id: "06-02", file: "videos/06-02.mp4", title: "06-02 Conservación del momento de deslizadores de reacción", description: "Momento lineal en colisiones y explosiones.", objectives: "Comprobar conservación del momento.", questions: [{ text: "En un sistema aislado, la cantidad de movimiento total:", options: ["Cambia", "Se conserva", "Aumenta", "Disminuye"], correct: 1 }] },
-                    { id: "06-03", file: "videos/06-03.mp4", title: "06-03 Carro sobre una tabla que rueda", description: "Interacción mecánica interna.", objectives: "Analizar centro de masa y acción mutua.", questions: [{ text: "Si el carro avanza sobre la tabla, la tabla se mueve en sentido:", options: ["Igual", "Opuesto", "No se mueve", "Vertical"], correct: 1 }] },
-                    { id: "06-04", file: "videos/06-04.mp4", title: "06-04 Carro de ventilador con vela", description: "Paradoja de acción y reacción con viento interno.", objectives: "Estudiar sistemas cerrados de fuerza.", questions: [{ text: "El carro con vela y ventilador integrado se desplaza debido a:", options: ["Acción del aire en la vela", "Empuje del chorro de aire del ventilador hacia atrás", "La gravedad", "Fricción"], correct: 1 }] },
-                    { id: "06-05", file: "videos/06-05.mp4", title: "06-05 Cohete de CO2", description: "Propulsión a chorro por gas comprimido.", objectives: "Aplicar conservación de momento por expulsión de masa.", questions: [{ text: "El cohete se impulsa hacia adelante porque expulsa gas hacia:", options: ["Adelante", "Atrás", "Los lados", "Arriba"], correct: 1 }] },
-                    { id: "06-06", file: "videos/06-06.mp4", title: "06-06 Cohete de agua", description: "Propulsión por eyección de líquido.", objectives: "Analizar velocidad de expulsión y empuje.", questions: [{ text: "El agua expulsada genera una fuerza de reacción:", options: ["Opuesta e igual", "Nula", "Menor", "Vertical"], correct: 0 }] },
-                    { id: "06-07", file: "videos/06-07.mp4", title: "06-07 Carro movido por un extinguidor de fuego", description: "Propulsión de alta potencia por gas.", objectives: "Estudiar flujos masivos y aceleración.", questions: [{ text: "El carro acelera debido al principio de:", options: ["Inercia", "Acción y reacción (3era ley de Newton)", "Energía potencial", "Palanca"], correct: 1 }] },
-                    { id: "06-08", file: "videos/06-08.mp4", title: "06-08 Hélice", description: "Interacción de aspas con el aire circundante.", objectives: "Comprender empuje aerodinámico.", questions: [{ text: "La hélice empuja el aire hacia atrás para avanzar hacia:", options: ["Atrás", "Adelante", "Abajo", "Arriba"], correct: 1 }] },
-                    { id: "06-09", file: "videos/06-09.mp4", title: "06-09 Carros de reacción en un subibaja", description: "Equilibrio y fuerzas de retroceso.", objectives: "Analizar momentos de fuerza y reacción.", questions: [{ text: "Al disparar los carros en extremos opuestos, el subibaja mantiene su:", options: ["Movimiento", "Equilibrio dinámico de momento", "Inclinación", "Velocidad"], correct: 1 }] }
+                    { id: "06-01", file: videoPath(6, "06-01.mp4"), title: "06-01 Deslizadores de reacción", duration: "4:40", level: "Básico", description: "Acción y reacción en rieles de aire.", objectives: "Verificar fuerzas mutuas iguales y opuestas.", questions: [{ text: "Las fuerzas de acción y reacción actúan sobre:", options: ["El mismo cuerpo", "Cuerpos diferentes", "El aire", "El soporte"], correct: 1 }] },
+                    { id: "06-02", file: videoPath(6, "06-02.mp4"), title: "06-02 Conservación del momento de deslizadores de reacción", duration: "5:20", level: "Intermedio", description: "Momento lineal en colisiones y explosiones.", objectives: "Comprobar conservación del momento.", questions: [{ text: "En un sistema aislado, la cantidad de movimiento total:", options: ["Cambia", "Se conserva", "Aumenta", "Disminuye"], correct: 1 }] },
+                    { id: "06-03", file: videoPath(6, "06-03.mp4"), title: "06-03 Carro sobre una tabla que rueda", duration: "4:55", level: "Intermedio", description: "Interacción mecánica interna.", objectives: "Analizar centro de masa y acción mutua.", questions: [{ text: "Si el carro avanza sobre la tabla, la tabla se mueve en sentido:", options: ["Igual", "Opuesto", "No se mueve", "Vertical"], correct: 1 }] },
+                    { id: "06-04", file: videoPath(6, "06-04.mp4"), title: "06-04 Carro de ventilador con vela", duration: "5:35", level: "Avanzado", description: "Paradoja de acción y reacción con viento interno.", objectives: "Estudiar sistemas cerrados de fuerza.", questions: [{ text: "El carro con vela y ventilador integrado se desplaza debido a:", options: ["Acción del aire en la vela", "Empuje del chorro de aire del ventilador hacia atrás", "La gravedad", "Fricción"], correct: 1 }] },
+                    { id: "06-05", file: videoPath(6, "06-05.mp4"), title: "06-05 Cohete de CO2", duration: "6:10", level: "Intermedio", description: "Propulsión a chorro por gas comprimido.", objectives: "Aplicar conservación de momento por expulsión de masa.", questions: [{ text: "El cohete se impulsa hacia adelante porque expulsa gas hacia:", options: ["Adelante", "Atrás", "Los lados", "Arriba"], correct: 1 }] },
+                    { id: "06-06", file: videoPath(6, "06-06.mp4"), title: "06-06 Cohete de agua", duration: "5:45", level: "Intermedio", description: "Propulsión por eyección de líquido.", objectives: "Analizar velocidad de expulsión y empuje.", questions: [{ text: "El agua expulsada genera una fuerza de reacción:", options: ["Opuesta e igual", "Nula", "Menor", "Vertical"], correct: 0 }] },
+                    { id: "06-07", file: videoPath(6, "06-07.mp4"), title: "06-07 Carro movido por un extinguidor de fuego", duration: "5:30", level: "Avanzado", description: "Propulsión de alta potencia por gas.", objectives: "Estudiar flujos masivos y aceleración.", questions: [{ text: "El carro acelera debido al principio de:", options: ["Inercia", "Acción y reacción (3era ley de Newton)", "Energía potencial", "Palanca"], correct: 1 }] },
+                    { id: "06-08", file: videoPath(6, "06-08.mp4"), title: "06-08 Hélice", duration: "4:20", level: "Básico", description: "Interacción de aspas con el aire circundante.", objectives: "Comprender empuje aerodinámico.", questions: [{ text: "La hélice empuja el aire hacia atrás para avanzar hacia:", options: ["Atrás", "Adelante", "Abajo", "Arriba"], correct: 1 }] },
+                    { id: "06-09", file: videoPath(6, "06-09.mp4"), title: "06-09 Carros de reacción en un subibaja", duration: "5:00", level: "Intermedio", description: "Equilibrio y fuerzas de retroceso.", objectives: "Analizar momentos de fuerza y reacción.", questions: [{ text: "Al disparar los carros en extremos opuestos, el subibaja mantiene su:", options: ["Movimiento", "Equilibrio dinámico de momento", "Inclinación", "Velocidad"], correct: 1 }] }
                 ]
             },
             7: {
                 title: "Capítulo 7: Fricción",
                 description: "Fricción estática, cinética y su dependencia con las superficies y el peso.",
                 videos: [
-                    { id: "07-01", file: "Fricción en un riel de aire.mp4", title: "07-01 Fricción en un riel de aire", description: "Demostración de la eliminación casi total de la fricción mediante colchón de aire.", objectives: "Estudiar el movimiento sin fuerzas disipativas de rozamiento.", questions: [{ text: "¿Qué propósito cumple el colchón de aire en el riel?", options: ["Aumentar la masa", "Eliminar prácticamente la fricción por contacto", "Calentar el riel", "Generar electricidad"], correct: 1 }] },
-                    { id: "07-02", file: "Fricción estática vs. Fricción cinética.mp4", title: "07-02 Fricción estática vs. Fricción cinética", description: "Comparación de las fuerzas necesarias para iniciar el movimiento frente a mantenerlo.", objectives: "Diferenciar los coeficientes de fricción estático y cinético.", questions: [{ text: "Generalmente, ¿cómo es la fuerza máxima de fricción estática en comparación con la fricción cinética?", options: ["Menor", "Mayor", "Exactamente igual", "Nula"], correct: 1 }] },
-                    { id: "07-03", file: "07-03 Dependencia de la fricción con respecto al área.mp4", title: "07-03 Dependencia de la fricción con respecto al área", description: "Estudio experimental de la independencia del área aparente de contacto.", objectives: "Comprobar las leyes empíricas clásicas del rozamiento.", questions: [{ text: "Si se cambia el bloque de posición apoyándolo sobre su cara más pequeña, la fuerza de fricción por deslizamiento:", options: ["Aumenta notablemente", "Disminuye a la mitad", "Permanece prácticamente constante", "Se anula"], correct: 2 }] },
-                    { id: "07-04", file: "07-04 Dependencia de la fricción con respecto al peso.mp4", title: "07-04 Dependencia de la fricción con respecto al peso", description: "Análisis de la proporcionalidad entre la fuerza normal y el rozamiento.", objectives: "Relacionar el peso del cuerpo con la fuerza de fricción generada.", questions: [{ text: "Al duplicar el peso (fuerza normal) de un bloque sobre una superficie rugosa, la fuerza de fricción máxima:", options: ["Se duplica", "Se reduce a la mitad", "No cambia", "Se cuadruplica"], correct: 0 }] },
-                    { id: "07-05", file: "07-05 Dependencia de la fricción con respecto a la superfície.mp4", title: "07-05 Dependencia de la fricción con respecto a la superfície", description: "Influencia de la naturaleza de los materiales en contacto.", objectives: "Determinar el coeficiente de fricción según el tipo de superficie.", questions: [{ text: "El coeficiente de fricción depende fundamentalmente de:", options: ["La velocidad del cuerpo", "La naturaleza de los materiales en contacto", "El volumen del objeto", "La temperatura exterior"], correct: 1 }] },
-                    { id: "07-06", file: "07-06 Estabilidad de un carro que rueda.mp4", title: "07-06 Estabilidad de un carro que rueda", description: "Condiciones de vuelco y deslizamiento en vehículos en movimiento.", objectives: "Analizar los límites de estabilidad mecánica por fricción.", questions: [{ text: "¿Qué condición favorece que un carro derrape antes de volcarse?", options: ["Bajo coeficiente de fricción con el suelo", "Centro de gravedad muy alto", "Exceso de peso", "Neumáticos muy anchos"], correct: 0 }] }
+                    { id: "07-01", file: videoPath(7, "07-01.mp4"), title: "07-01 Fricción en un riel de aire", duration: "4:15", level: "Básico", description: "Demostración de la eliminación casi total de la fricción mediante colchón de aire.", objectives: "Estudiar el movimiento sin fuerzas disipativas de rozamiento.", questions: [{ text: "¿Qué propósito cumple el colchón de aire en el riel?", options: ["Aumentar la masa", "Eliminar prácticamente la fricción por contacto", "Calentar el riel", "Generar electricidad"], correct: 1 }] },
+                    { id: "07-02", file: videoPath(7, "07-02.mp4"), title: "07-02 Fricción estática vs. Fricción cinética", duration: "5:50", level: "Intermedio", description: "Comparación de las fuerzas necesarias para iniciar el movimiento frente a mantenerlo.", objectives: "Diferenciar los coeficientes de fricción estático y cinético.", questions: [{ text: "Generalmente, ¿cómo es la fuerza máxima de fricción estática en comparación con la fricción cinética?", options: ["Menor", "Mayor", "Exactamente igual", "Nula"], correct: 1 }] },
+                    { id: "07-03", file: videoPath(7, "07-03.mp4"), title: "07-03 Dependencia de la fricción con respecto al área", duration: "4:40", level: "Intermedio", description: "Estudio experimental de la independencia del área aparente de contacto.", objectives: "Comprobar las leyes empíricas clásicas del rozamiento.", questions: [{ text: "Si se cambia el bloque de posición apoyándolo sobre su cara más pequeña, la fuerza de fricción por deslizamiento:", options: ["Aumenta notablemente", "Disminuye a la mitad", "Permanece prácticamente constante", "Se anula"], correct: 2 }] },
+                    { id: "07-04", file: videoPath(7, "07-04.mp4"), title: "07-04 Dependencia de la fricción con respecto al peso", duration: "5:10", level: "Intermedio", description: "Análisis de la proporcionalidad entre la fuerza normal y el rozamiento.", objectives: "Relacionar el peso del cuerpo con la fuerza de fricción generada.", questions: [{ text: "Al duplicar el peso (fuerza normal) de un bloque sobre una superficie rugosa, la fuerza de fricción máxima:", options: ["Se duplica", "Se reduce a la mitad", "No cambia", "Se cuadruplica"], correct: 0 }] },
+                    { id: "07-05", file: videoPath(7, "07-05.mp4"), title: "07-05 Dependencia de la fricción con respecto a la superficie", duration: "4:55", level: "Intermedio", description: "Influencia de la naturaleza de los materiales en contacto.", objectives: "Determinar el coeficiente de fricción según el tipo de superficie.", questions: [{ text: "El coeficiente de fricción depende fundamentalmente de:", options: ["La velocidad del cuerpo", "La naturaleza de los materiales en contacto", "El volumen del objeto", "La temperatura exterior"], correct: 1 }] },
+                    { id: "07-06", file: videoPath(7, "07-06.mp4"), title: "07-06 Estabilidad de un carro que rueda", duration: "5:25", level: "Avanzado", description: "Condiciones de vuelco y deslizamiento en vehículos en movimiento.", objectives: "Analizar los límites de estabilidad mecánica por fricción.", questions: [{ text: "¿Qué condición favorece que un carro derrape antes de volcarse?", options: ["Bajo coeficiente de fricción con el suelo", "Centro de gravedad muy alto", "Exceso de peso", "Neumáticos muy anchos"], correct: 0 }] }
                 ]
             },
             8: {
                 title: "Capítulo 8: Trabajo, energía y potencia",
                 description: "Conservación de la energía mecánica, resortes y generadores.",
                 videos: [
-                    { id: "08-01", file: "videos/08-01.mp4", title: "08-01 Martinete", description: "Transformación de energía potencial en trabajo de impacto.", objectives: "Estudiar conversión energética.", questions: [{ text: "La energía potencial gravitatoria se convierte en energía:", options: ["Cinética y de deformación", "Eléctrica", "Nuclear", "Térmica pura"], correct: 0 }] },
-                    { id: "08-02", file: "videos/08-02.mp4", title: "08-02 Cañón de resorte", description: "Energía potencial elástica convertida en cinética.", objectives: "Aplicar conservación de energía en resortes.", questions: [{ text: "La energía almacenada en un resorte comprimido es de tipo:", options: ["Cinética", "Potencial elástica", "Térmica", "Magnética"], correct: 1 }] },
-                    { id: "08-03", file: "videos/08-03.mp4", title: "08-03 El saltarín", description: "Conservación de energía en dispositivos de rebote.", objectives: "Analizar restitución de energía mecánica.", questions: [{ text: "En un rebote perfectamente elástico, la energía mecánica total del sistema:", options: ["Se conserva", "Disminuye", "Aumenta", "Se anula"], correct: 0 }] },
-                    { id: "08-04", file: "videos/08-04.mp4", title: "08-04 Dependencia de la energía de un resorte del cuadrado de la distancia", description: "Relación cuadrática de la energía elástica.", objectives: "Verificar la fórmula U = 1/2 kx².", questions: [{ text: "Si se duplica la deformación x de un resorte, su energía potencial elástica se multiplica por:", options: ["2", "4", "8", "16"], correct: 1 }] },
-                    { id: "08-05", file: "videos/08-05.mp4", title: "08-05 Paradoja del gran rebote", description: "Demostración de transferencia de cantidad de movimiento y energía.", objectives: "Estudiar colisiones con múltiples objetos apilados.", questions: [{ text: "El rebote exagerado de la pelota superior se debe a:", options: ["Magia", "Transferencia eficiente de momento desde la pelota pesada inferior", "Expansión térmica", "Aumento de gravedad"], correct: 1 }] },
-                    { id: "08-06", file: "videos/08-06.mp4", title: "08-06 Riel de pozo de energía", description: "Pozos de potencial efectivo en física.", objectives: "Analizar estados ligados y energía total.", questions: [{ text: "Un objeto atrapado en un pozo de energía potencial no puede salir si su energía total es menor que:", options: ["La altura del borde o barrera", "Cero", "Su masa", "La velocidad"], correct: 0 }] },
-                    { id: "08-07", file: "videos/08-07.mp4", title: "08-07 El péndulo de Galileo", description: "Conservación de la energía en un péndulo con obstáculo.", objectives: "Demostrar que la altura máxima depende solo del nivel de referencia inicial.", questions: [{ text: "Al interrumpir la cuerda con un clavo, la esfera alcanza una altura máxima:", options: ["Menor", "Exactamente igual a la inicial", "Mayor", "Cero"], correct: 1 }] },
-                    { id: "08-08", file: "videos/08-08.mp4", title: "08-08 Péndulo de bola de boliche", description: "Conservación estricta de la energía en un péndulo pesado.", objectives: "Comprobar que el péndulo no supera su punto de partida.", questions: [{ text: "Si se suelta la bola sin impulso inicial desde la nariz, al regresar esta:", options: ["Golpeará la nariz", "Se quedará antes por la fricción del pivote", "Saldrá disparada", "Subirá más alto"], correct: 1 }] },
-                    { id: "08-09", file: "videos/08-09.mp4", title: "08-09 Riel triple", description: "Comparación de tiempos y velocidades en pistas de distinta forma.", objectives: "Estudiar conservación de energía frente a trayectorias.", questions: [{ text: "Al final de las pistas con diferente perfil pero misma altura inicial, las velocidades finales son:", options: ["Distintas", "Iguales por conservación de energía", "Cero", "Infinitas"], correct: 1 }] },
-                    { id: "08-10", file: "videos/08-10.mp4", title: "08-10 Generador movido a mano", description: "Conversión de energía mecánica en eléctrica.", objectives: "Demostrar principio de inducción electromagnética.", questions: [{ text: "El generador transforma trabajo muscular en energía:", options: ["Eléctrica", "Química", "Térmica pura", "Nuclear"], correct: 0 }] },
-                    { id: "08-11", file: "videos/08-11.mp4", title: "08-11 Generador movido por una pesa que cae", description: "Conversión de energía potencial gravitatoria en eléctrica.", objectives: "Analizar eficiencia de conversión energética.", questions: [{ text: "La caída de la pesa reduce su energía potencial para alimentar el:", options: ["Generador", "Resorte", "Péndulo", "Imán"], correct: 0 }] },
-                    { id: "08-12", file: "videos/08-12.mp4", title: "08-12 Freno de fricción constante", description: "Disipación de energía mecánica en calor por rozamiento.", objectives: "Estudiar trabajo de fuerzas no conservativas.", questions: [{ text: "La energía mecánica perdida por fricción se disipa principalmente en forma de:", options: ["Luz", "Calor o energía térmica", "Sonido agudo", "Electricidad"], correct: 1 }] }
+                    { id: "08-01", file: videoPath(8, "08-01.mp4"), title: "08-01 Martinete", duration: "5:30", level: "Básico", description: "Transformación de energía potencial en trabajo de impacto.", objectives: "Estudiar conversión energética.", questions: [{ text: "La energía potencial gravitatoria se convierte en energía:", options: ["Cinética y de deformación", "Eléctrica", "Nuclear", "Térmica pura"], correct: 0 }] },
+                    { id: "08-02", file: videoPath(8, "08-02.mp4"), title: "08-02 Cañón de resorte", duration: "4:45", level: "Básico", description: "Energía potencial elástica convertida en cinética.", objectives: "Aplicar conservación de energía en resortes.", questions: [{ text: "La energía almacenada en un resorte comprimido es de tipo:", options: ["Cinética", "Potencial elástica", "Térmica", "Magnética"], correct: 1 }] },
+                    { id: "08-03", file: videoPath(8, "08-03.mp4"), title: "08-03 El saltarín", duration: "4:20", level: "Básico", description: "Conservación de energía en dispositivos de rebote.", objectives: "Analizar restitución de energía mecánica.", questions: [{ text: "En un rebote perfectamente elástico, la energía mecánica total del sistema:", options: ["Se conserva", "Disminuye", "Aumenta", "Se anula"], correct: 0 }] },
+                    { id: "08-04", file: videoPath(8, "08-04.mp4"), title: "08-04 Dependencia de la energía de un resorte del cuadrado de la distancia", duration: "6:10", level: "Intermedio", description: "Relación cuadrática de la energía elástica.", objectives: "Verificar la fórmula U = 1/2 kx².", questions: [{ text: "Si se duplica la deformación x de un resorte, su energía potencial elástica se multiplica por:", options: ["2", "4", "8", "16"], correct: 1 }] },
+                    { id: "08-05", file: videoPath(8, "08-05.mp4"), title: "08-05 Paradoja del gran rebote", duration: "5:40", level: "Avanzado", description: "Demostración de transferencia de cantidad de movimiento y energía.", objectives: "Estudiar colisiones con múltiples objetos apilados.", questions: [{ text: "El rebote exagerado de la pelota superior se debe a:", options: ["Magia", "Transferencia eficiente de momento desde la pelota pesada inferior", "Expansión térmica", "Aumento de gravedad"], correct: 1 }] },
+                    { id: "08-06", file: videoPath(8, "08-06.mp4"), title: "08-06 Riel de pozo de energía", duration: "5:15", level: "Intermedio", description: "Pozos de potencial efectivo en física.", objectives: "Analizar estados ligados y energía total.", questions: [{ text: "Un objeto atrapado en un pozo de energía potencial no puede salir si su energía total es menor que:", options: ["La altura del borde o barrera", "Cero", "Su masa", "La velocidad"], correct: 0 }] },
+                    { id: "08-07", file: videoPath(8, "08-07.mp4"), title: "08-07 El péndulo de Galileo", duration: "5:50", level: "Intermedio", description: "Conservación de la energía en un péndulo con obstáculo.", objectives: "Demostrar que la altura máxima depende solo del nivel de referencia inicial.", questions: [{ text: "Al interrumpir la cuerda con un clavo, la esfera alcanza una altura máxima:", options: ["Menor", "Exactamente igual a la inicial", "Mayor", "Cero"], correct: 1 }] },
+                    { id: "08-08", file: videoPath(8, "08-08.mp4"), title: "08-08 Péndulo de bola de boliche", duration: "6:30", level: "Intermedio", description: "Conservación estricta de la energía en un péndulo pesado.", objectives: "Comprobar que el péndulo no supera su punto de partida.", questions: [{ text: "Si se suelta la bola sin impulso inicial desde la nariz, al regresar esta:", options: ["Golpeará la nariz", "Se quedará antes por la fricción del pivote", "Saldrá disparada", "Subirá más alto"], correct: 1 }] },
+                    { id: "08-09", file: videoPath(8, "08-09.mp4"), title: "08-09 Riel triple", duration: "4:35", level: "Intermedio", description: "Comparación de tiempos y velocidades en pistas de distinta forma.", objectives: "Estudiar conservación de energía frente a trayectorias.", questions: [{ text: "Al final de las pistas con diferente perfil pero misma altura inicial, las velocidades finales son:", options: ["Distintas", "Iguales por conservación de energía", "Cero", "Infinitas"], correct: 1 }] },
+                    { id: "08-10", file: videoPath(8, "08-10.mp4"), title: "08-10 Generador movido a mano", duration: "5:20", level: "Básico", description: "Conversión de energía mecánica en eléctrica.", objectives: "Demostrar principio de inducción electromagnética.", questions: [{ text: "El generador transforma trabajo muscular en energía:", options: ["Eléctrica", "Química", "Térmica pura", "Nuclear"], correct: 0 }] },
+                    { id: "08-11", file: videoPath(8, "08-11.mp4"), title: "08-11 Generador movido por una pesa que cae", duration: "5:45", level: "Intermedio", description: "Conversión de energía potencial gravitatoria en eléctrica.", objectives: "Analizar eficiencia de conversión energética.", questions: [{ text: "La caída de la pesa reduce su energía potencial para alimentar el:", options: ["Generador", "Resorte", "Péndulo", "Imán"], correct: 0 }] },
+                    { id: "08-12", file: videoPath(8, "08-12.mp4"), title: "08-12 Freno de fricción constante", duration: "4:50", level: "Intermedio", description: "Disipación de energía mecánica en calor por rozamiento.", objectives: "Estudiar trabajo de fuerzas no conservativas.", questions: [{ text: "La energía mecánica perdida por fricción se disipa principalmente en forma de:", options: ["Luz", "Calor o energía térmica", "Sonido agudo", "Electricidad"], correct: 1 }] }
                 ]
             },
             9: {
                 title: "Capítulo 9: Centro de masa",
                 description: "Estudio del punto de equilibrio, estabilidad y centro de gravedad.",
                 videos: [
-                    { id: "09-01", file: "Estabilidad.mp4", title: "09-01 Estabilidad", description: "Condiciones de equilibrio estable, inestable e indiferente.", objectives: "Analizar la posición del centro de gravedad respecto a la base de sustentación.", questions: [{ text: "Un objeto es estable si su línea de acción del peso cae:", options: ["Fuera de la base de sustentación", "Dentro de su base de sustentación", "En el aire", "A la altura del suelo"], correct: 1 }] },
-                    { id: "09-02", file: "videos/09-02.mp4", title: "09-02 Centro de masa de un objeto irregular", description: "Método de las plomadas sucesivas para hallar el centro de gravedad.", objectives: "Determinar experimentalmente el centro de masa.", questions: [{ text: "La intersección de las líneas de plomada trazadas desde distintos puntos de suspensión indica:", options: ["El centro de masa", "El borde", "El punto más pesado", "El centro geométrico exacto"], correct: 0 }] },
-                    { id: "09-03", file: "videos/09-03.mp4", title: "09-03 Centro de masa de un disco", description: "Localización del centro de masa en cuerpos simétricos.", objectives: "Identificar simetría geométrica y física.", questions: [{ text: "En un disco homogéneo, el centro de masa se ubica en:", options: ["El borde", "Su centro geométrico", "Fuera del disco", "En la parte más baja"], correct: 1 }] },
-                    { id: "09-04", file: "videos/09-04.mp4", title: "09-04 Silla en un pedestal", description: "Demostración de equilibrio precario pero estable.", objectives: "Evaluar la proyección del centro de gravedad.", questions: [{ text: "Para que la silla se mantenga sobre un solo punto del pedestal, su centro de gravedad debe estar:", options: ["Directamente sobre el punto de apoyo", "Fuera de la base", "En movimiento acelerado", "Inclinado 90 grados"], correct: 0 }] },
-                    { id: "09-05", file: "videos/09-05.mp4", title: "09-05 Payaso en la cuerda floja", description: "Uso de balancines para bajar el centro de gravedad.", objectives: "Explicar estabilidad mediante masas colgantes.", questions: [{ text: "El uso de un balancín curvado hacia abajo ayuda al payaso porque:", options: ["Sube su centro de masa", "Desciende su centro de masa por debajo del punto de apoyo", "Aumenta su peso total", "Reduce la fricción"], correct: 1 }] },
-                    { id: "09-06", file: "videos/09-06.mp4", title: "09-06 Cono doble en una pendiente", description: "Paradoja del movimiento ascendente del centro de masa.", objectives: "Analizar la geometría del cono doble en rieles divergentes.", questions: [{ text: "Aunque parezca que sube, el centro de masa del cono doble durante su movimiento:", options: ["Sube", "Desciende", "Se mantiene a altura constante", "Oscila horizontalmente"], correct: 1 }] },
-                    { id: "09-07", file: "videos/09-07.mp4", title: "09-07 Disco cargado", description: "Desplazamiento intencional del centro de masa en un cilindro.", objectives: "Estudiar el comportamiento dinámico de masas excéntricas.", questions: [{ text: "Al colocar un peso interno excéntrico, el disco tiende a detenerse siempre con la masa:", options: ["Arriba", "En la parte más baja (equilibrio estable)", "A la derecha", "Girando sin parar"], correct: 1 }] },
-                    { id: "09-08", file: "videos/09-08.mp4", title: "09-08 Cilindros que caen", description: "Dinámica de rotación y traslación combinada.", objectives: "Comparar momentos de inercia en caída.", questions: [{ text: "El movimiento de los cilindros depende de cómo está distribuida su:", options: ["Masa respecto al eje", "Temperatura", "Color", "Longitud"], correct: 0 }] },
-                    { id: "09-09", file: "videos/09-09.mp4", title: "09-09 Centro de masa en una mesa de aire", description: "Trayectoria del centro de masa en sistemas libres de fuerzas externas.", objectives: "Verificar que el centro de masa sigue una trayectoria rectilínea o reposo.", questions: [{ text: "Si dos objetos ligados explotan o chocan sobre una mesa de aire sin fuerzas externas, su centro de masa:", options: ["Se desvía bruscamente", "Mantiene su estado de movimiento inercial", "Se detiene al instante", "Gira en círculos"], correct: 1 }] }
+                    { id: "09-01", file: videoPath(9, "09-01.mp4"), title: "09-01 Estabilidad", duration: "5:00", level: "Básico", description: "Condiciones de equilibrio estable, inestable e indiferente.", objectives: "Analizar la posición del centro de gravedad respecto a la base de sustentación.", questions: [{ text: "Un objeto es estable si su línea de acción del peso cae:", options: ["Fuera de la base de sustentación", "Dentro de su base de sustentación", "En el aire", "A la altura del suelo"], correct: 1 }] },
+                    { id: "09-02", file: videoPath(9, "09-02.mp4"), title: "09-02 Centro de masa de un objeto irregular", duration: "5:35", level: "Intermedio", description: "Método de las plomadas sucesivas para hallar el centro de gravedad.", objectives: "Determinar experimentalmente el centro de masa.", questions: [{ text: "La intersección de las líneas de plomada trazadas desde distintos puntos de suspensión indica:", options: ["El centro de masa", "El borde", "El punto más pesado", "El centro geométrico exacto"], correct: 0 }] },
+                    { id: "09-03", file: videoPath(9, "09-03.mp4"), title: "09-03 Centro de masa de un disco", duration: "4:25", level: "Básico", description: "Localización del centro de masa en cuerpos simétricos.", objectives: "Identificar simetría geométrica y física.", questions: [{ text: "En un disco homogéneo, el centro de masa se ubica en:", options: ["El borde", "Su centro geométrico", "Fuera del disco", "En la parte más baja"], correct: 1 }] },
+                    { id: "09-04", file: videoPath(9, "09-04.mp4"), title: "09-04 Silla en un pedestal", duration: "4:50", level: "Intermedio", description: "Demostración de equilibrio precario pero estable.", objectives: "Evaluar la proyección del centro de gravedad.", questions: [{ text: "Para que la silla se mantenga sobre un solo punto del pedestal, su centro de gravedad debe estar:", options: ["Directamente sobre el punto de apoyo", "Fuera de la base", "En movimiento acelerado", "Inclinado 90 grados"], correct: 0 }] },
+                    { id: "09-05", file: videoPath(9, "09-05.mp4"), title: "09-05 Payaso en la cuerda floja", duration: "5:20", level: "Intermedio", description: "Uso de balancines para bajar el centro de gravedad.", objectives: "Explicar estabilidad mediante masas colgantes.", questions: [{ text: "El uso de un balancín curvado hacia abajo ayuda al payaso porque:", options: ["Sube su centro de masa", "Desciende su centro de masa por debajo del punto de apoyo", "Aumenta su peso total", "Reduce la fricción"], correct: 1 }] },
+                    { id: "09-06", file: videoPath(9, "09-06.mp4"), title: "09-06 Cono doble en una pendiente", duration: "5:45", level: "Avanzado", description: "Paradoja del movimiento ascendente del centro de masa.", objectives: "Analizar la geometría del cono doble en rieles divergentes.", questions: [{ text: "Aunque parezca que sube, el centro de masa del cono doble durante su movimiento:", options: ["Sube", "Desciende", "Se mantiene a altura constante", "Oscila horizontalmente"], correct: 1 }] },
+                    { id: "09-07", file: videoPath(9, "09-07.mp4"), title: "09-07 Disco cargado", duration: "4:40", level: "Intermedio", description: "Desplazamiento intencional del centro de masa en un cilindro.", objectives: "Estudiar el comportamiento dinámico de masas excéntricas.", questions: [{ text: "Al colocar un peso interno excéntrico, el disco tiende a detenerse siempre con la masa:", options: ["Arriba", "En la parte más baja (equilibrio estable)", "A la derecha", "Girando sin parar"], correct: 1 }] },
+                    { id: "09-08", file: videoPath(9, "09-08.mp4"), title: "09-08 Cilindros que caen", duration: "5:10", level: "Intermedio", description: "Dinámica de rotación y traslación combinada.", objectives: "Comparar momentos de inercia en caída.", questions: [{ text: "El movimiento de los cilindros depende de cómo está distribuida su:", options: ["Masa respecto al eje", "Temperatura", "Color", "Longitud"], correct: 0 }] },
+                    { id: "09-09", file: videoPath(9, "09-09.mp4"), title: "09-09 Centro de masa en una mesa de aire", duration: "5:30", level: "Intermedio", description: "Trayectoria del centro de masa en sistemas libres de fuerzas externas.", objectives: "Verificar que el centro de masa sigue una trayectoria rectilínea o reposo.", questions: [{ text: "Si dos objetos ligados explotan o chocan sobre una mesa de aire sin fuerzas externas, su centro de masa:", options: ["Se desvía bruscamente", "Mantiene su estado de movimiento inercial", "Se detiene al instante", "Gira en círculos"], correct: 1 }] }
                 ]
             }
         };
 
-        // Íconos SVG para cada capítulo (relacionados con su temática)
+        // Íconos SVG de capítulos
         const chapterIcons = {
-            1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 5 5-9"/></svg>', // Vectores/gráfica
-            2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', // Cinemática/reloj
-            3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>', // Fuerza/llave
-            4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22s2-8 8-11 8-8 8-8"/><circle cx="6" cy="20" r="2"/></svg>', // Parábola/trayectoria
-            5: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>', // Inercia/átomo
-            6: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>', // Acción-reacción/flechas
-            7: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M5 14V8a2 2 0 0 1 2-2h3"/><path d="M14 14V6a2 2 0 0 1 2-2h3"/></svg>', // Fricción/superficie
-            8: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', // Rayo/energía
-            9: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/></svg>' // Centro de masa/balanza
+            1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 5 5-9"/></svg>',
+            2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+            4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22s2-8 8-11 8-8 8-8"/><circle cx="6" cy="20" r="2"/></svg>',
+            5: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+            6: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>',
+            7: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M5 14V8a2 2 0 0 1 2-2h3"/><path d="M14 14V6a2 2 0 0 1 2-2h3"/></svg>',
+            8: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+            9: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/></svg>'
         };
 
         let activeChapterId = null;
+        let lastResults = null; // Almacena el último resultado evaluado
 
+        // ============================================================
+        //  VALIDACIÓN Y CAPTURA DE DATOS DEL ESTUDIANTE
+        // ============================================================
+        function getStudentData() {
+            return {
+                name: document.getElementById('student-name').value.trim(),
+                code: document.getElementById('student-code').value.trim(),
+                email: document.getElementById('student-email').value.trim(),
+                group: document.getElementById('student-group').value.trim(),
+                professor: document.getElementById('student-professor').value.trim()
+            };
+        }
+
+        function validateStudentData() {
+            const data = getStudentData();
+            const missing = [];
+            if (!data.name) missing.push("Apellidos y Nombres");
+            if (!data.code) missing.push("Código de Matrícula");
+
+            if (missing.length > 0) {
+                alert("⚠️ Por favor complete los siguientes datos obligatorios antes de continuar:\n\n• " + missing.join("\n• "));
+
+                // Enfocar el primer campo faltante
+                if (!data.name) document.getElementById('student-name').focus();
+                else if (!data.code) document.getElementById('student-code').focus();
+
+                return false;
+            }
+            return true;
+        }
+
+        // ============================================================
+        //  RANDOMIZACIÓN Y RENDERIZADO
+        // ============================================================
         function randomizeOptions(question) {
             let indexedOpts = question.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
             for (let i = indexedOpts.length - 1; i > 0; i--) {
@@ -730,6 +1004,9 @@
         }
 
         function openChapter(id) {
+            // Validar datos del estudiante antes de abrir el capítulo
+            if (!validateStudentData()) return;
+
             activeChapterId = id;
             const ch = physicsChapters[id];
 
@@ -767,6 +1044,8 @@
                     `;
                 });
 
+                const poster = posterPath(parseInt(id), vid.file.split('/').pop());
+
                 const videoCard = document.createElement('div');
                 videoCard.className = 'video-card';
                 videoCard.innerHTML = `
@@ -782,8 +1061,43 @@
                         <p><strong>Descripción:</strong> ${vid.description}</p>
                         <p><strong>Objetivos:</strong> ${vid.objectives}</p>
                     </div>
+
+                    <!-- INFO DIDÁCTICA EXTRA -->
+                    <div class="video-extra-info">
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            <div>
+                                <span class="info-label">Duración</span>
+                                <span class="info-value">${vid.duration || '—'}</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                            <div>
+                                <span class="info-label">Nivel</span>
+                                <span class="info-value">${vid.level || '—'}</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            <div>
+                                <span class="info-label">Preguntas</span>
+                                <span class="info-value">${randomizedQuestions.length}</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="video-responsive">
-                        <video controls preload="metadata">
+                        <video controls preload="metadata" poster="${poster}">
                             <source src="${vid.file}" type="video/mp4">
                             Tu navegador no soporta la reproducción de videos locales.
                         </video>
@@ -812,6 +1126,10 @@
 
         function submitChapterQuiz() {
             if (!activeChapterId) return;
+
+            // Validar datos del estudiante antes de evaluar
+            if (!validateStudentData()) return;
+
             const ch = physicsChapters[activeChapterId];
 
             let total = 0;
@@ -835,11 +1153,24 @@
             });
 
             if (!allAnswered) {
-                alert("Por favor, responda todas las preguntas antes de enviar su evaluación.");
+                alert("⚠️ Por favor, responda todas las preguntas antes de enviar su evaluación.");
                 return;
             }
 
-            let grade = Math.round((correctCount / total) * 20 * 10) / 10;
+            const grade = Math.round((correctCount / total) * 20 * 10) / 10;
+            const student = getStudentData();
+            const now = new Date();
+
+            // Guardar resultados para exportar
+            lastResults = {
+                timestamp: now.toLocaleString('es-PE'),
+                chapterId: activeChapterId,
+                chapterTitle: ch.title,
+                student: student,
+                correct: correctCount,
+                total: total,
+                grade: grade
+            };
 
             const scoreBox = document.getElementById('score-box');
             scoreBox.style.display = 'block';
@@ -848,14 +1179,95 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                     <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
-                ¡Evaluación completada con éxito!<br>
-                Respuestas Correctas: ${correctCount} de ${total}<br>
-                Nota Obtenida: ${grade} / 20
+                <strong>¡Evaluación completada con éxito!</strong><br>
+                <span style="font-size: 0.9rem; color: #047857;">
+                    Estudiante: <strong>${student.name}</strong> · Código: <strong>${student.code}</strong>
+                </span>
+                <span class="score-number">${grade} / 20</span>
+                Respuestas Correctas: <strong>${correctCount} de ${total}</strong>
+                <br><br>
+                <button class="btn-export" onclick="exportToCSV()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Descargar Resultado (CSV para Excel)
+                </button>
             `;
 
             document.querySelectorAll('#videos-container input[type="radio"]').forEach(r => r.disabled = true);
             document.getElementById('btn-evaluar').style.display = 'none';
             scoreBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ============================================================
+        //  EXPORTAR RESULTADOS A CSV (compatible con Excel)
+        // ============================================================
+        function exportToCSV() {
+            if (!lastResults) {
+                alert("No hay resultados para exportar.");
+                return;
+            }
+
+            const r = lastResults;
+            const headers = [
+                "Fecha y Hora",
+                "Apellidos y Nombres",
+                "Código de Matrícula",
+                "Correo Institucional",
+                "Grupo / Sección",
+                "Docente del Curso",
+                "Capítulo",
+                "Respuestas Correctas",
+                "Total de Preguntas",
+                "Nota (0-20)"
+            ];
+
+            const row = [
+                r.timestamp,
+                r.student.name,
+                r.student.code,
+                r.student.email || "—",
+                r.student.group || "—",
+                r.student.professor || "—",
+                r.chapterTitle,
+                r.correct,
+                r.total,
+                r.grade
+            ];
+
+            // Escapar comillas y envolver en comillas para seguridad en Excel
+            const escapeCSV = (val) => {
+                const str = String(val);
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return '"' + str.replace(/"/g, '""') + '"';
+                }
+                return str;
+            };
+
+            // Añadir BOM UTF-8 para que Excel reconozca tildes y ñ
+            const BOM = "\uFEFF";
+            const csvContent = BOM
+                + headers.map(escapeCSV).join(",") + "\n"
+                + row.map(escapeCSV).join(",") + "\n";
+
+            // Generar nombre de archivo único
+            const safeCode = r.student.code.replace(/[^a-zA-Z0-9]/g, "_") || "estudiante";
+            const safeChapter = r.chapterId;
+            const fecha = new Date().toISOString().slice(0, 10);
+            const filename = `resultado_${safeCode}_cap${safeChapter}_${fecha}.csv`;
+
+            // Descargar el archivo
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
         }
 
         window.onload = function() { goToHome(); };
