@@ -296,7 +296,7 @@
         }
         .options-list label:hover { background-color: var(--panel-alt); }
 
-        /* MODAL DE DETALLE DE RESPUESTAS PARA LA PROFESORA */
+        /* MODAL DE DETALLE DE RESPUESTAS */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.6); z-index: 1000; align-items: center; justify-content: center;
@@ -356,7 +356,6 @@
             <div class="role-selection-box">
                 <h3>Bienvenido a la Enciclopedia. Seleccione su rol:</h3>
                 <div class="role-buttons-grid">
-                    <!-- SOY ALUMNO -->
                     <button class="role-card student" onclick="switchView('view-student-access')">
                         <div class="role-card-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="44" height="44">
@@ -372,7 +371,6 @@
                         </div>
                     </button>
 
-                    <!-- SOY DOCENTE -->
                     <button class="role-card teacher" onclick="switchView('view-teacher-register')">
                         <div class="role-card-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="44" height="44">
@@ -425,7 +423,6 @@
         <div id="view-teacher-dashboard" class="view">
             <div class="alert-banner-docente" id="docente-info-banner"></div>
             
-            <!-- SECCIÓN DE ESTADÍSTICAS GLOBAL DE PREGUNTAS MÁS / MENOS ACERTADAS -->
             <div class="teacher-stats-grid">
                 <div class="stat-card success">
                     <div class="stat-card-title">⭐ Pregunta más acertada por el aula</div>
@@ -521,7 +518,6 @@
                     </div>
                     <button class="btn-action-student" onclick="submitStudentQuiz()" style="margin-top:0.5rem; width:100%;">EVALUAR Y GUARDAR RESPUESTAS</button>
                     
-                    <!-- WIDGET DE CALIFICACIÓN (6 ESTRELLAS) -->
                     <div id="rating-container" class="rating-box-container">
                         <label style="font-size: 0.8rem; font-weight: 700; color: #065f46;">¿QUÉ TE PARECIÓ LA PÁGINA?</label>
                         <div class="rating-stars" id="star-rating-stars" onclick="handleStarClick(event)" onmousemove="handleStarMove(event)" onmouseleave="resetStarHover()">
@@ -535,7 +531,7 @@
 
     </div>
 
-    <!-- MODAL PARA VER DETALLE DE RESPUESTAS DEL ALUMNO (DOCENTE) -->
+    <!-- MODAL PARA VER DETALLE DE RESPUESTAS -->
     <div id="student-detail-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -571,16 +567,17 @@
         let selectedChapterId = 1;
         let cachedStudentsData = {};
 
+        // CATÁLOGO DE CAPÍTULOS CON EL NOMBRE DE SU RESPECTIVA CARPETA EN "videos/"
         const capitulosCatalog = [
-            { id: 1, title: "Capítulo 1: Unidades y vectores", desc: "Demostraciones prácticas sobre sistemas de unidades, vectores en 2D y 3D, y operaciones vectoriales.", color: "#1e3a8a", icon: "∰" },
-            { id: 2, title: "Capítulo 2: Cinemática lineal", desc: "Demostraciones de movimiento en una dimensión, velocidad constante y aceleración.", color: "#5b21b6", icon: "📈" },
-            { id: 3, title: "Capítulo 3: Dinámica lineal", desc: "Leyes de Newton aplicadas al movimiento rectilíneo y fuerzas en juego.", color: "#047857", icon: "⚪" },
-            { id: 4, title: "Capítulo 4: Movimiento plano", desc: "Cinemática bidimensional, proyectiles y movimiento circular.", color: "#d97706", icon: "📐" },
-            { id: 5, title: "Capítulo 5: Inercia", desc: "Demostraciones de la primeira ley de Newton y marcos inerciales.", color: "#be123c", icon: "⚛" },
-            { id: 6, title: "Capítulo 6: Acción y reacción", desc: "Tercera Ley de Newton y fuerzas de contacto/interacción.", color: "#1d4ed8", icon: "⇄" },
-            { id: 7, title: "Capítulo 7: Fricción", desc: "Fuerzas de rozamiento estático y cinético en superficies.", color: "#15803d", icon: "📦" },
-            { id: 8, title: "Capítulo 8: Trabajo y energía", desc: "Teorema del trabajo y la energía cinética, conservación de la energía mecánica.", color: "#1e40af", icon: "⚡" },
-            { id: 9, title: "Capítulo 9: Centro de masa", desc: "Estudio del centro de masa y sistemas de partículas.", color: "#6b21a8", icon: "⚛" }
+            { id: 1, folder: "capitulo-01-unidades-vectores", title: "Capítulo 1: Unidades y vectores", desc: "Demostraciones prácticas sobre sistemas de unidades, vectores en 2D y 3D, y operaciones vectoriales.", color: "#1e3a8a", icon: "∰" },
+            { id: 2, folder: "capitulo-02-cinematica-lineal", title: "Capítulo 2: Cinemática lineal", desc: "Demostraciones de movimiento en una dimensión, velocidad constante y aceleración.", color: "#5b21b6", icon: "📈" },
+            { id: 3, folder: "capitulo-03-dinamica-lineal", title: "Capítulo 3: Dinámica lineal", desc: "Leyes de Newton aplicadas al movimiento rectilíneo y fuerzas en juego.", color: "#047857", icon: "⚪" },
+            { id: 4, folder: "capitulo-04-movimiento-plano", title: "Capítulo 4: Movimiento plano", desc: "Cinemática bidimensional, proyectiles y movimiento circular.", color: "#d97706", icon: "📐" },
+            { id: 5, folder: "capitulo-05-inercia", title: "Capítulo 5: Inercia", desc: "Demostraciones de la primera ley de Newton y marcos inerciales.", color: "#be123c", icon: "⚛" },
+            { id: 6, folder: "capitulo-06-accion-reaccion", title: "Capítulo 6: Acción y reacción", desc: "Tercera Ley de Newton y fuerzas de contacto/interacción.", color: "#1d4ed8", icon: "⇄" },
+            { id: 7, folder: "capitulo-07-friccion", title: "Capítulo 7: Fricción", desc: "Fuerzas de rozamiento estático y cinético en superficies.", color: "#15803d", icon: "📦" },
+            { id: 8, folder: "capitulo-08-trabajo-energia", title: "Capítulo 8: Trabajo y energía", desc: "Teorema del trabajo y la energía cinética, conservación de la energía mecánica.", color: "#1e40af", icon: "⚡" },
+            { id: 9, folder: "capitulo-09-centro-masa", title: "Capítulo 9: Centro de masa", desc: "Estudio del centro de masa y sistemas de partículas.", color: "#6b21a8", icon: "⚛" }
         ];
 
         window.onload = function() {
@@ -659,7 +656,6 @@
                     return;
                 }
 
-                // ANÁLISIS ESTADÍSTICO GLOBAL DE PREGUNTAS MÁS / MENOS ACERTADAS
                 let questionStats = {};
                 let list = Object.values(data);
 
@@ -781,6 +777,7 @@
         function loadWorkspaceChapter(chapId) {
             const chapInfo = capitulosCatalog.find(c => c.id === chapId) || {
                 title: "Capítulo " + chapId,
+                folder: "capitulo-01-unidades-vectores",
                 desc: "Demostraciones experimentales de laboratorio.",
                 color: "#1e3a8a",
                 icon: "⚛"
@@ -832,7 +829,8 @@
                     });
                 }
 
-                const videoFileName = (vid.id === "Friccion en un riel de aire") ? "Friccion en un riel de aire.mp4" : vid.id + ".mp4";
+                // CONSTRUCCIÓN AUTOMÁTICA DE LA RUTA BASADA EN LA CARPETA DEL CAPÍTULO Y EL ID DEL VIDEO
+                const videoFilePath = `videos/${chapInfo.folder}/${vid.id}.mp4`;
 
                 container.innerHTML += `
                     <div class="video-card">
@@ -840,7 +838,7 @@
                         <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.8rem;"><b>Tema:</b> ${vid.tema || ''}</p>
                         <div class="video-responsive">
                             <video controls preload="metadata">
-                                <source src="${videoFileName}" type="video/mp4">
+                                <source src="${videoFilePath}" type="video/mp4">
                                 Su navegador no soporta la reproducción de video.
                             </video>
                         </div>
