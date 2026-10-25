@@ -37,37 +37,11 @@
         header h1 { margin: 0.1rem 0; font-family: Georgia, serif; font-size: 1.8rem; color: var(--text-main); }
         header h2 { margin: 0; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
 
-        /* NUEVO DISEÑO DEL SELECTOR DE TEMAS (ANCLADO) */
-        .theme-switcher-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            background: var(--panel-alt);
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-soft);
-        }
-        .theme-switcher-container span {
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-        .theme-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        .theme-buttons button {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--border-strong);
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.2s, border-color 0.2s;
-            background: var(--panel-bg);
-        }
+        /* SELECTOR DE TEMAS */
+        .theme-switcher-container { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--panel-alt); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-soft); }
+        .theme-switcher-container span { font-size: 0.7rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
+        .theme-buttons { display: flex; gap: 8px; }
+        .theme-buttons button { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-strong); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, border-color 0.2s; background: var(--panel-bg); }
         .theme-buttons button:hover { transform: scale(1.15); border-color: var(--accent-student); }
 
         @media (max-width: 850px) {
@@ -140,15 +114,57 @@
         
         /* ALERTA TIEMPO DOCENTE */
         .timer-teacher { background: var(--accent-teacher); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-family: monospace; display: none; }
+
+        /* =========================================
+           ESTILOS EXCLUSIVOS PARA IMPRESIÓN (PDF)
+           ========================================= */
+        @media print {
+            body { background: #fff; color: #000; margin: 0; padding: 0; }
+            header, .container, .theme-switcher-container, .timer-floating, .modal-overlay, .btn { display: none !important; }
+            
+            /* Solo mostramos el contenedor de impresión */
+            #print-section { display: block !important; padding: 2rem; }
+            
+            #print-section h1 { font-family: Georgia, serif; font-size: 1.5rem; text-align: center; margin-bottom: 0.5rem; }
+            #print-section p { text-align: center; font-size: 0.9rem; margin-bottom: 2rem; color: #555; }
+            
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th { background: #eee !important; color: #000 !important; border: 1px solid #000; padding: 8px; text-align: left; }
+            td { border: 1px solid #000; padding: 8px; color: #000 !important; }
+            
+            .print-footer { margin-top: 3rem; text-align: center; font-size: 10px; color: #888; border-top: 1px solid #ccc; padding-top: 1rem; }
+        }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
+    <!-- SECCIÓN OCULTA QUE SE MUESTRA AL IMPRIMIR -->
+    <div id="print-section" style="display: none;">
+        <h1>Reporte de Notas - Sistema de Evaluación en Vivo</h1>
+        <p>Universidad Nacional Mayor de San Marcos - Facultad de Ciencias Físicas</p>
+        <p id="print-class-info" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 1rem;"></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Apellidos y Nombres</th>
+                    <th>Código</th>
+                    <th>Grupo</th>
+                    <th>Nota Final (0-20)</th>
+                    <th>Aciertos / Total</th>
+                </tr>
+            </thead>
+            <tbody id="print-table-body"></tbody>
+        </table>
+        <div class="print-footer">
+            Generado automáticamente el <span id="print-date"></span> | Sistema de Evaluación en Vivo
+        </div>
+    </div>
+
     <header>
         <div class="header-content">
-            <!-- Bloque Izquierdo: Logos y Título -->
             <div class="header-brand">
                 <img src="logo-san-marcos.png" alt="UNMSM" class="header-logo" onerror="this.style.display='none'" />
                 <div class="header-logo-placeholder">⚛</div>
@@ -159,7 +175,6 @@
                 </div>
             </div>
 
-            <!-- Bloque Derecho: Selector de Temas -->
             <div class="theme-switcher-container">
                 <span>Apariencia</span>
                 <div class="theme-buttons">
@@ -224,7 +239,11 @@
             <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
                 <button class="btn btn-student" id="btn-start-exam" onclick="startExam()" style="width:auto;">▶ Iniciar Examen</button>
                 <button class="btn btn-danger" id="btn-stop-exam" onclick="stopExam()" style="width:auto; display:none;">⏹ Finalizar Examen</button>
-                <button class="btn btn-teacher" id="btn-show-solutions" onclick="toggleSolutions(true)" style="width:auto; display:none; background:var(--highlight); color:#000;">👁️ Mostrar Solucionario y Feedback</button>
+                <button class="btn btn-teacher" id="btn-show-solutions" onclick="toggleSolutions(true)" style="width:auto; display:none; background:var(--highlight); color:#000;">👁️ Mostrar Solucionario</button>
+                
+                <!-- NUEVO BOTÓN DE IMPRESIÓN (Oculto por defecto) -->
+                <button class="btn btn-secondary" id="btn-print-grades" onclick="printGrades()" style="display:none; background:var(--success); color:#fff; border:none;">🖨️ Imprimir Notas Finales</button>
+                
                 <button class="btn-secondary" onclick="logoutTeacher()">Cerrar Sesión</button>
             </div>
             <div class="dashboard-table-container">
@@ -276,7 +295,6 @@
 
         <!-- RESULTADOS / FEEDBACK ALUMNO -->
         <div id="view-student-results" class="view">
-            <!-- Caja de Feedback (Aparece DESPUÉS de enviar las respuestas) -->
             <div class="form-card" id="feedback-form-container" style="display:none;">
                 <h2 style="font-family:Georgia, serif; text-align:center; color:var(--success);">¡Respuestas Enviadas!</h2>
                 <p style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem;">Tus respuestas ya fueron guardadas. Por favor, ayúdanos a mejorar completando esta breve encuesta.</p>
@@ -309,7 +327,6 @@
                 <button class="btn btn-student" onclick="submitFeedbackSeparately()">Enviar Sugerencias</button>
             </div>
 
-            <!-- Resultados Finales -->
             <div class="form-card" id="results-container" style="display:none; text-align:center;">
                 <h2 style="font-family:Georgia, serif;">Examen Finalizado</h2>
                 <p>Tu nota final es:</p>
@@ -452,14 +469,21 @@
             const btnStart = document.getElementById('btn-start-exam');
             const btnStop = document.getElementById('btn-stop-exam');
             const btnSolutions = document.getElementById('btn-show-solutions');
+            const btnPrint = document.getElementById('btn-print-grades'); // Botón de impresión
             const teacherTimer = document.getElementById('teacher-timer');
 
             if (data.status === 'waiting') {
-                btnStart.style.display = 'block'; btnStop.style.display = 'none'; btnSolutions.style.display = 'none';
+                btnStart.style.display = 'block'; 
+                btnStop.style.display = 'none'; 
+                btnSolutions.style.display = 'none';
+                btnPrint.style.display = 'none'; // Ocultar si no ha empezado
                 teacherTimer.style.display = 'none';
                 clearInterval(teacherTimerInterval);
             } else if (data.status === 'active') {
-                btnStart.style.display = 'none'; btnStop.style.display = 'block'; btnSolutions.style.display = 'none';
+                btnStart.style.display = 'none'; 
+                btnStop.style.display = 'block'; 
+                btnSolutions.style.display = 'none';
+                btnPrint.style.display = 'none'; // Ocultar si está en curso
                 teacherTimer.style.display = 'block';
                 
                 const endTime = data.startTime + (data.timeLimit * 60000);
@@ -477,7 +501,11 @@
                 }, 1000);
 
             } else {
-                btnStart.style.display = 'none'; btnStop.style.display = 'none'; btnSolutions.style.display = 'block';
+                // Examen finalizado o en solucionario
+                btnStart.style.display = 'none'; 
+                btnStop.style.display = 'none'; 
+                btnSolutions.style.display = 'block';
+                btnPrint.style.display = 'inline-flex'; // MOSTRAR BOTÓN DE IMPRESIÓN AQUÍ
                 teacherTimer.style.display = 'none';
                 clearInterval(teacherTimerInterval);
             }
@@ -499,6 +527,48 @@
                         </tr>`;
                 });
             }
+        }
+
+        // LÓGICA PARA IMPRIMIR NOTAS
+        function printGrades() {
+            const classKey = localStorage.getItem("docenteClase");
+            if (!classKey) return;
+
+            db.ref("clases/" + classKey).once("value").then(snap => {
+                const data = snap.val();
+                if (!data || !data.estudiantes) return alert("No hay datos para imprimir.");
+
+                const printBody = document.getElementById('print-table-body');
+                printBody.innerHTML = ''; // Limpiar tabla
+
+                // Llenar datos de la cabecera de impresión
+                document.getElementById('print-class-info').innerText = `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName}`;
+                document.getElementById('print-date').innerText = new Date().toLocaleString();
+
+                // Ordenar alumnos por nota (de mayor a menor)
+                const studentsList = Object.values(data.estudiantes).sort((a, b) => (b.score || 0) - (a.score || 0));
+
+                let index = 1;
+                studentsList.forEach(st => {
+                    let nota = st.finished ? st.score : 'N/A';
+                    let aciertos = st.finished ? `${st.correctas} / ${st.totalQ}` : '-';
+
+                    printBody.innerHTML += `
+                        <tr>
+                            <td>${index}</td>
+                            <td>${st.name}</td>
+                            <td>${st.code}</td>
+                            <td>${st.group}</td>
+                            <td style="text-align:center; font-weight:bold;">${nota}</td>
+                            <td style="text-align:center;">${aciertos}</td>
+                        </tr>
+                    `;
+                    index++;
+                });
+
+                // Disparar la ventana de impresión del navegador
+                window.print();
+            });
         }
 
         function startExam() {
@@ -839,13 +909,14 @@
                 
                 let feedbackHtml = "";
                 if(st.feedback) {
+                    // AQUI ESTA LA CORRECCIÓN: Usar variables CSS en lugar de colores fijos
                     feedbackHtml = `
-                        <div style="background:#f0fdf4; padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid #bbf7d0;">
-                            <h4 style="margin-top:0; color:#166534;">Feedback del Alumno</h4>
-                            <p><b>Estrellas:</b> ${st.feedback.estrellas} / 6</p>
-                            <p><b>Preguntas:</b> ${st.feedback.utilidad}</p>
-                            <p><b>Interfaz:</b> ${st.feedback.intuitiva}</p>
-                            <p><b>Sugerencias:</b> ${st.feedback.texto || 'Ninguna'}</p>
+                        <div style="background: var(--panel-alt); border-left: 4px solid var(--accent-teacher); padding:1rem; border-radius:8px; margin-bottom:1rem; color: var(--text-main);">
+                            <h4 style="margin-top:0; color: var(--accent-teacher);">Feedback del Alumno</h4>
+                            <p style="margin: 0.3rem 0;"><b>Estrellas:</b> <span style="color: var(--highlight);">${st.feedback.estrellas} / 6</span></p>
+                            <p style="margin: 0.3rem 0;"><b>Preguntas:</b> ${st.feedback.utilidad}</p>
+                            <p style="margin: 0.3rem 0;"><b>Interfaz:</b> ${st.feedback.intuitiva}</p>
+                            <p style="margin: 0.3rem 0;"><b>Sugerencias:</b> ${st.feedback.texto || 'Ninguna'}</p>
                         </div>
                     `;
                 }
@@ -858,14 +929,18 @@
                         let ops = "";
                         d.opciones.forEach((op, optIdx) => {
                             let style = "";
-                            if (optIdx === d.correcta) style = "background:#dcfce7; color:#166534; font-weight:bold;";
-                            else if (optIdx === d.elegida && !d.esCorrecta) style = "background:#fee2e2; color:#991b1b; text-decoration:line-through;";
-                            ops += `<div style="padding:0.2rem 0.5rem; margin:0.1rem 0; border-radius:4px; ${style}">${String.fromCharCode(65+optIdx)}) ${op}</div>`;
+                            // Usar variables CSS para las opciones correctas/incorrectas también
+                            if (optIdx === d.correcta) style = "background: #dcfce7; color: #166534; font-weight:bold;";
+                            else if (optIdx === d.elegida && !d.esCorrecta) style = "background: #fee2e2; color: #991b1b; text-decoration:line-through;";
+                            
+                            ops += `<div style="padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px; ${style}">${String.fromCharCode(65+optIdx)}) ${op}</div>`;
                         });
                         
                         let just = "";
                         if (d.justificacion) {
-                            just = `<div style="margin-top:0.5rem; font-size:0.8rem; color:#1e3a8a; background:#eff6ff; padding:0.5rem; border-radius:4px;"><b>Justificación:</b> ${d.justificacion}</div>`;
+                            just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
+                                        <b>Sustentación:</b> ${d.justificacion}
+                                    </div>`;
                         } else {
                             const chapId = classroomConfig.chapters.find(cId => bancoPreguntas[cId].videos.some(v => v.titulo === d.videoTitulo));
                             if (chapId) {
@@ -873,7 +948,9 @@
                                 if (vid) {
                                     const q = vid.preguntas.find(q => q.pregunta === d.preguntaTexto);
                                     if (q && q.justificacion) {
-                                        just = `<div style="margin-top:0.5rem; font-size:0.8rem; color:#1e3a8a; background:#eff6ff; padding:0.5rem; border-radius:4px;"><b>Justificación:</b> ${q.justificacion}</div>`;
+                                        just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
+                                                    <b>Sustentación:</b> ${q.justificacion}
+                                                </div>`;
                                     }
                                 }
                             }
