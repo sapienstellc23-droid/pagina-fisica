@@ -25,15 +25,57 @@
         * { box-sizing: border-box; }
         body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
         
-        /* CABECERA AGRANDADA */
+        /* CABECERA CON SELECTOR DE TEMAS INTEGRADO */
         header { background: var(--panel-bg); border-bottom: 4px solid var(--accent-student); padding: 1.4rem 2rem; box-shadow: var(--shadow-md); transition: all 0.3s; }
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 1.5rem; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; }
-        .header-logo { width: 110px; height: 110px; object-fit: contain; }
-        .header-logo-placeholder { width: 110px; height: 110px; background: linear-gradient(135deg, var(--accent-student), var(--highlight)); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); font-size: 3.5rem; }
-        .header-text { text-align: left; flex: 1; min-width: 280px; }
-        .header-instituciones { font-size: 0.85rem; font-weight: 700; letter-spacing: 1.2px; color: var(--accent-student); text-transform: uppercase; }
-        header h1 { margin: 0.1rem 0; font-family: Georgia, serif; font-size: 2rem; color: var(--text-main); }
-        header h2 { margin: 0; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; max-width: 1250px; margin: 0 auto; flex-wrap: wrap; }
+        
+        .header-brand { display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 300px; }
+        .header-logo { width: 100px; height: 100px; object-fit: contain; }
+        .header-logo-placeholder { width: 100px; height: 100px; background: linear-gradient(135deg, var(--accent-student), var(--highlight)); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); font-size: 3rem; }
+        .header-text { text-align: left; }
+        .header-instituciones { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-student); text-transform: uppercase; }
+        header h1 { margin: 0.1rem 0; font-family: Georgia, serif; font-size: 1.8rem; color: var(--text-main); }
+        header h2 { margin: 0; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* NUEVO DISEÑO DEL SELECTOR DE TEMAS (ANCLADO) */
+        .theme-switcher-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: var(--panel-alt);
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+        }
+        .theme-switcher-container span {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .theme-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .theme-buttons button {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border-strong);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, border-color 0.2s;
+            background: var(--panel-bg);
+        }
+        .theme-buttons button:hover { transform: scale(1.15); border-color: var(--accent-student); }
+
+        @media (max-width: 850px) {
+            .header-content { flex-direction: column; text-align: center; }
+            .header-brand { flex-direction: column; text-align: center; }
+            .header-text { text-align: center; }
+            .theme-switcher-container { margin-top: 0.5rem; }
+        }
 
         .container { max-width: 1150px; margin: 2rem auto; padding: 0 1.5rem; }
         .view { display: none; }
@@ -84,10 +126,6 @@
 
         /* CRONÓMETRO FLOTANTE */
         .timer-floating { position: fixed; top: 20px; right: 20px; background: var(--error); color: white; padding: 1rem 1.5rem; border-radius: 12px; font-size: 1.5rem; font-weight: bold; box-shadow: var(--shadow-lg); z-index: 9999; display: none; align-items: center; gap: 10px; font-family: monospace; }
-        
-        /* TEMAS */
-        .theme-switcher { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 10px; background: var(--panel-bg); padding: 10px; border-radius: 30px; box-shadow: var(--shadow-md); z-index: 9999; border: 2px solid var(--border-soft); }
-        .theme-switcher button { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--border-soft); cursor: pointer; font-size: 1.1rem; }
 
         /* UTILIDADES */
         .badge-correct { background: #dcfce7; color: #166534; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem;}
@@ -108,25 +146,31 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
-    <!-- CABECERA AGRANDADA -->
     <header>
         <div class="header-content">
-            <img src="logo-san-marcos.png" alt="UNMSM" class="header-logo" onerror="this.style.display='none'" />
-            <div class="header-logo-placeholder">⚛</div>
-            <div class="header-text">
-                <div class="header-instituciones">Universidad Nacional Mayor de San Marcos · Facultad de Ciencias Físicas</div>
-                <h1>Sistema de Evaluación en Vivo - Física</h1>
-                <h2>Portal Académico Interactivo</h2>
+            <!-- Bloque Izquierdo: Logos y Título -->
+            <div class="header-brand">
+                <img src="logo-san-marcos.png" alt="UNMSM" class="header-logo" onerror="this.style.display='none'" />
+                <div class="header-logo-placeholder">⚛</div>
+                <div class="header-text">
+                    <div class="header-instituciones">Universidad Nacional Mayor de San Marcos · Facultad de Ciencias Físicas</div>
+                    <h1>Sistema de Evaluación en Vivo - Física</h1>
+                    <h2>Portal Académico Interactivo</h2>
+                </div>
+            </div>
+
+            <!-- Bloque Derecho: Selector de Temas -->
+            <div class="theme-switcher-container">
+                <span>Apariencia</span>
+                <div class="theme-buttons">
+                    <button onclick="setTheme('light-green')" title="Claro Verde">☀️</button>
+                    <button onclick="setTheme('light-blue')" title="Claro Azul">☁️</button>
+                    <button onclick="setTheme('dark-purple')" title="Oscuro Púrpura">🌙</button>
+                    <button onclick="setTheme('dark-gray')" title="Oscuro Gris">🌑</button>
+                </div>
             </div>
         </div>
     </header>
-
-    <div class="theme-switcher">
-        <button onclick="setTheme('light-green')">☀️</button>
-        <button onclick="setTheme('light-blue')">☁️</button>
-        <button onclick="setTheme('dark-purple')">🌙</button>
-        <button onclick="setTheme('dark-gray')">🌑</button>
-    </div>
 
     <div class="container">
         <!-- SELECTOR DE ROLES -->
@@ -396,7 +440,6 @@
 
         function enterTeacherDashboard(classKey, data) {
             classroomConfig = data;
-            // NOMBRE DE LA CLASE AÑADIDO AQUÍ
             document.getElementById('docente-text-info').innerHTML = `
                 <h3 style="margin:0; color:var(--accent-teacher);">Sala: <span style="text-transform:uppercase;">${data.className}</span></h3>
                 <p style="margin:0;">Docente: ${data.teacherName} | Capítulos: ${data.chapters.length} | Tiempo: ${data.timeLimit} min</p>
@@ -419,7 +462,6 @@
                 btnStart.style.display = 'none'; btnStop.style.display = 'block'; btnSolutions.style.display = 'none';
                 teacherTimer.style.display = 'block';
                 
-                // Temporizador para el docente
                 const endTime = data.startTime + (data.timeLimit * 60000);
                 clearInterval(teacherTimerInterval);
                 teacherTimerInterval = setInterval(() => {
@@ -518,7 +560,6 @@
                 } 
                 else if (data.status === 'finished') {
                     if (!currentStudent.finished) {
-                        // Tiempo agotado o docente finalizó antes: Enviar respuestas y mostrar feedback
                         autoSubmitQuizAndShowFeedback(); 
                     } else { 
                         switchView('view-student-results', true); 
@@ -560,7 +601,7 @@
                 if (diff <= 0) {
                     clearInterval(examTimerInterval);
                     document.getElementById('timer-text').innerText = "00:00";
-                    autoSubmitQuizAndShowFeedback(); // Se acabó el tiempo
+                    autoSubmitQuizAndShowFeedback(); 
                 } else {
                     const m = Math.floor(diff / 60000);
                     const s = Math.floor((diff % 60000) / 1000);
@@ -645,20 +686,17 @@
             }
         }
 
-        // BOTÓN DE TERMINAR (Envía respuestas inmediatamente y muestra feedback)
         function finishStudentExam(autoSubmit = false) {
             if (!autoSubmit && !confirm("¿Estás seguro de terminar? Tus respuestas serán enviadas y no podrás cambiarlas.")) return;
             autoSubmitQuizAndShowFeedback();
         }
 
-        // LOGICA DE ENVÍO AUTOMÁTICO DE RESPUESTAS (AL ACABAR EL TIEMPO O PRESIONAR BOTÓN)
         function autoSubmitQuizAndShowFeedback() {
-            if (currentStudent.finished) return; // Evitar doble envío
+            if (currentStudent.finished) return; 
 
             if (examTimerInterval) clearInterval(examTimerInterval);
             document.getElementById('exam-timer').style.display = 'none'; 
             
-            // Calcular nota total
             let totalCorrect = 0, totalQ = 0, detallesFinales = [];
 
             classroomConfig.chapters.forEach(chapId => {
@@ -677,10 +715,9 @@
             const nota20 = ((totalCorrect / totalQ) * 20).toFixed(1);
             const classKey = classroomConfig.className.toLowerCase();
 
-            // Guardar RESPUESTAS en Firebase (Aún sin el feedback)
             db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`).update({
                 finished: true, 
-                feedbackEnviado: false, // Aún no ha enviado el feedback
+                feedbackEnviado: false,
                 score: nota20, 
                 correctas: totalCorrect, 
                 totalQ: totalQ, 
@@ -692,14 +729,12 @@
                 saved.student = currentStudent;
                 localStorage.setItem("alumnoSala", JSON.stringify(saved));
                 
-                // Mostrar Formulario de Feedback
                 document.getElementById('feedback-form-container').style.display = 'block';
                 document.getElementById('results-container').style.display = 'none';
                 switchView('view-student-results', true);
             });
         }
 
-        // ENVÍO DEL FEEDBACK (POR SEPARADO)
         function submitFeedbackSeparately() {
             if(studentRating === 0) return alert("Por favor, califica la página con las estrellas antes de enviar.");
 
@@ -709,7 +744,6 @@
 
             const classKey = classroomConfig.className.toLowerCase();
 
-            // Guardar SOLO EL FEEDBACK en Firebase
             db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`).update({
                 feedbackEnviado: true,
                 feedback: {
@@ -731,7 +765,6 @@
             });
         }
 
-        // SISTEMA DE ESTRELLAS
         function handleStarClick(e) {
             const span = e.target.closest('span');
             if (!span) return;
@@ -791,14 +824,12 @@
             });
         }
 
-        // LIMPIEZA DE SESIÓN
         function salirSalaAlumno() {
             localStorage.removeItem("alumnoSala");
             if(examTimerInterval) clearInterval(examTimerInterval);
             window.location.href = window.location.pathname;
         }
 
-        // MODAL DOCENTE (AHORA CON SOLUCIONARIO Y VIDEOS)
         function openStudentDetail(code) {
             db.ref(`clases/${localStorage.getItem("docenteClase")}/estudiantes/${code}`).once('value').then(snap => {
                 const st = snap.val();
@@ -832,12 +863,10 @@
                             ops += `<div style="padding:0.2rem 0.5rem; margin:0.1rem 0; border-radius:4px; ${style}">${String.fromCharCode(65+optIdx)}) ${op}</div>`;
                         });
                         
-                        // Añadir justificación en el panel del docente
                         let just = "";
                         if (d.justificacion) {
                             just = `<div style="margin-top:0.5rem; font-size:0.8rem; color:#1e3a8a; background:#eff6ff; padding:0.5rem; border-radius:4px;"><b>Justificación:</b> ${d.justificacion}</div>`;
                         } else {
-                            // Si no está guardada en el detalle del alumno, la buscamos en el banco de preguntas actual
                             const chapId = classroomConfig.chapters.find(cId => bancoPreguntas[cId].videos.some(v => v.titulo === d.videoTitulo));
                             if (chapId) {
                                 const vid = bancoPreguntas[chapId].videos.find(v => v.titulo === d.videoTitulo);
