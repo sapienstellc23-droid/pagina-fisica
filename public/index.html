@@ -1,501 +1,1520 @@
 <!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enciclopedia en Videos de Demostración de Física - UNMSM</title>
-    <style>
-        :root {
-            --bg-main: #f8fafc; --panel-bg: #ffffff; --panel-alt: #f1f5f9;
-            --accent-student: #059669; --accent-teacher: #1e3a8a;
-            --highlight: #f59e0b; --error: #ef4444; --success: #10b981;
-            --text-main: #0f172a; --text-muted: #64748b;
-            --border-soft: #e2e8f0; --border-strong: #cbd5e1;
-            --shadow-sm: 0 1px 3px rgba(15,23,42,0.08); --shadow-md: 0 4px 12px rgba(15,23,42,0.1); --shadow-lg: 0 10px 25px rgba(15,23,42,0.15);
-        }
-        
-        /* TEMAS */
-        body.theme-light-green { --bg-main: #f8fafc; --text-main: #0f172a; --panel-bg: #ffffff; --panel-alt: #f1f5f9; --border-soft: #e2e8f0; --border-strong: #cbd5e1; --accent-student: #059669; --accent-teacher: #059669; }
-        body.theme-light-blue { --bg-main: #eff6ff; --text-main: #1e293b; --panel-bg: #ffffff; --panel-alt: #dbeafe; --border-soft: #bfdbfe; --border-strong: #93c5fd; --accent-student: #1e40af; --accent-teacher: #1e40af; }
-        body.theme-dark-purple { --bg-main: #1e1b4b; --text-main: #f8fafc; --text-muted: #c7d2fe; --panel-bg: #312e81; --panel-alt: #3730a3; --border-soft: #4338ca; --border-strong: #4f46e5; --accent-student: #a78bfa; --accent-teacher: #818cf8; }
-        body.theme-dark-purple header { background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%); border-bottom-color: var(--accent-student); }
-        body.theme-dark-gray { --bg-main: #111827; --text-main: #f9fafb; --text-muted: #9ca3af; --panel-bg: #1f2937; --panel-alt: #374151; --border-soft: #374151; --border-strong: #4b5563; --accent-student: #60a5fa; --accent-teacher: #3b82f6; }
-        body.theme-dark-gray header { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border-bottom-color: var(--accent-student); }
-
-        * { box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
-        
-        /* CABECERA */
-        header { background: var(--panel-bg); border-bottom: 4px solid var(--accent-student); padding: 1.4rem 2rem; box-shadow: var(--shadow-md); transition: all 0.3s; }
-        .header-content { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; max-width: 1250px; margin: 0 auto; flex-wrap: wrap; }
-        
-        .header-brand { display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 300px; }
-        .header-logo { width: 100px; height: 100px; object-fit: contain; }
-        .header-atom-img { width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2)); border-radius: 50%; }
-        
-        .header-text { text-align: left; }
-        .header-instituciones { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; color: var(--accent-student); text-transform: uppercase; }
-        header h1 { margin: 0.1rem 0; font-family: Georgia, serif; font-size: 1.8rem; color: var(--text-main); }
-        header h2 { margin: 0; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
-
-        /* SELECTOR DE TEMAS */
-        .theme-switcher-container { display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--panel-alt); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-soft); }
-        .theme-switcher-container span { font-size: 0.7rem; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
-        .theme-buttons { display: flex; gap: 8px; }
-        .theme-buttons button { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-strong); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, border-color 0.2s; background: var(--panel-bg); }
-        .theme-buttons button:hover { transform: scale(1.15); border-color: var(--accent-student); }
-
-        @media (max-width: 850px) {
-            .header-content { flex-direction: column; text-align: center; }
-            .header-brand { flex-direction: column; text-align: center; }
-            .header-text { text-align: center; }
-            .theme-switcher-container { margin-top: 0.5rem; }
-        }
-
-        .container { max-width: 1150px; margin: 2rem auto; padding: 0 1.5rem; }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* BIENVENIDA */
-        .role-selection-box { background: var(--panel-bg); border-radius: 20px; padding: 3rem 2.5rem; text-align: center; box-shadow: var(--shadow-lg); border: 1px solid var(--border-soft); max-width: 850px; margin: 2rem auto; }
-        .role-selection-box h3 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 2.2rem; font-family: Georgia, serif; }
-        .role-buttons-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-        .role-card { border-radius: 16px; padding: 1.8rem 2rem; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 1.8rem; box-shadow: var(--shadow-md); border: 2px solid var(--border-soft); text-align: left; width: 100%; background: var(--panel-bg); }
-        .role-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--accent-student); }
-        .role-card-icon { width: 85px; height: 85px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); color: #fff; font-size: 2rem; }
-        .role-card.student .role-card-icon { background: var(--accent-student); }
-        .role-card.teacher .role-card-icon { background: var(--accent-teacher); }
-        .role-card-title { font-size: 1.45rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-main); }
-        .role-card-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.4; font-weight: 500; }
-
-        /* FORMULARIOS */
-        .form-card { background: var(--panel-bg); border-radius: 16px; padding: 2.5rem; box-shadow: var(--shadow-md); max-width: 850px; margin: 0 auto 2rem auto; border: 1px solid var(--border-soft); }
-        .form-card h3 { font-family: Georgia, serif; margin-top: 0; text-align: center; color: var(--text-main); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-        .form-field { display: flex; flex-direction: column; gap: 0.3rem; }
-        .form-field.full { grid-column: 1 / -1; }
-        .form-field label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); }
-        .form-field input, .form-field select, .form-field textarea { padding: 0.8rem; border: 1.5px solid var(--border-strong); border-radius: 8px; background: var(--panel-bg); color: var(--text-main); font-size: 1rem; font-family: inherit; }
-        
-        .btn { border: none; padding: 1rem; border-radius: 8px; font-weight: 700; cursor: pointer; text-transform: uppercase; width: 100%; letter-spacing: 1px; transition: all 0.2s; }
-        .btn-student { background: var(--accent-student); color: #fff; }
-        .btn-teacher { background: var(--accent-teacher); color: #fff; }
-        .btn-secondary { background: var(--panel-alt); color: var(--text-main); border: 1.5px solid var(--border-strong); padding: 0.5rem 1rem; width: auto; display: inline-flex; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-danger { background: var(--error); color: #fff; }
-
-        /* TABLA DOCENTE */
-        .dashboard-table-container { background: var(--panel-bg); border-radius: 12px; border: 1px solid var(--border-soft); overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th { background: var(--accent-teacher); color: #fff; padding: 1rem; text-align: left; }
-        td { padding: 1rem; border-bottom: 1px solid var(--border-soft); color: var(--text-main); }
-
-        /* CONTENIDO ALUMNO */
-        .banner-info { background: var(--panel-bg); border-left: 5px solid var(--accent-student); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
-        .video-card { background: var(--panel-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border-soft); color: var(--text-main); }
-        .video-responsive video { width: 100%; max-height: 400px; border-radius: 8px; background: #000; }
-        .quiz-box { background: var(--panel-alt); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--highlight); }
-        .question-item { margin-bottom: 1rem; border-bottom: 1px dashed var(--border-strong); padding-bottom: 1rem; }
-        .options-list label { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; cursor: pointer; border-radius: 6px; color: var(--text-main); }
-        .options-list label:hover { background: var(--border-soft); }
-
-        /* CRONÓMETRO FLOTANTE */
-        .timer-floating { position: fixed; top: 20px; right: 20px; background: var(--error); color: white; padding: 1rem 1.5rem; border-radius: 12px; font-size: 1.5rem; font-weight: bold; box-shadow: var(--shadow-lg); z-index: 9999; display: none; align-items: center; gap: 10px; font-family: monospace; }
-
-        /* UTILIDADES */
-        .badge-correct { background: #dcfce7; color: #166534; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem;}
-        .badge-incorrect { background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem;}
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: var(--panel-bg); padding: 2rem; border-radius: 12px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; color: var(--text-main); }
-
-        /* ESTRELLAS */
-        .rating-stars { display: flex; justify-content: center; gap: 5px; font-size: 2rem; cursor: pointer; margin: 0.5rem 0; color: var(--border-strong); user-select: none; }
-        .rating-stars span { transition: color 0.2s; }
-        .rating-stars span.filled, .rating-stars span.half { color: var(--highlight) !important; }
-        
-        /* ALERTA TIEMPO DOCENTE */
-        .timer-teacher { background: var(--accent-teacher); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; font-family: monospace; display: none; }
-
-        /* CSS PARA LA LISTA DE CAPÍTULOS DEL DOCENTE */
-        .chapter-review-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem; background: var(--panel-alt); border: 1px solid var(--border-soft);
-            border-radius: 8px; margin-bottom: 0.5rem;
-        }
-        .chapter-review-item label { display: flex; align-items: center; gap: 0.8rem; font-weight: 600; cursor: pointer; }
-        .chapter-review-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
-
-        /* =========================================
-           ESTILOS EXCLUSIVOS PARA IMPRESIÓN (PDF)
-           ========================================= */
-        @media print {
-            body { background: #fff; color: #000; margin: 0; padding: 0; }
-            header, .container, .theme-switcher-container, .timer-floating, .modal-overlay, .btn { display: none !important; }
-            
-            #print-section { display: block !important; padding: 2rem; }
-            
-            #print-section h1 { font-family: Georgia, serif; font-size: 1.5rem; text-align: center; margin-bottom: 0.5rem; }
-            #print-section p { text-align: center; font-size: 0.9rem; margin-bottom: 2rem; color: #555; }
-            
-            table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 1rem; }
-            th { background: #eee !important; color: #000 !important; border: 1px solid #000; padding: 6px; text-align: left; }
-            td { border: 1px solid #000; padding: 6px; color: #000 !important; vertical-align: top; }
-            
-            .print-footer { margin-top: 2rem; text-align: center; font-size: 10px; color: #888; border-top: 1px solid #ccc; padding-top: 1rem; }
-        }
-    </style>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-</head>
-<body>
-    <!-- SECCIÓN OCULTA QUE SE MUESTRA AL IMPRIMIR -->
-    <div id="print-section" style="display: none;">
-        <h1>Reporte de Notas y Feedback - Física</h1>
-        <p>Universidad Nacional Mayor de San Marcos - Facultad de Ciencias Físicas</p>
-        <p id="print-class-info" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 1rem;"></p>
-        <table>
-            <thead>
-                <tr>
-                    <th>N°</th>
-                    <th>Apellidos y Nombres</th>
-                    <th>Código</th>
-                    <th>Grupo</th>
-                    <th>Nota Final</th>
-                    <th>Aciertos</th>
-                    <th>Feedback del Alumno</th>
-                </tr>
-            </thead>
-            <tbody id="print-table-body"></tbody>
-        </table>
-        <div class="print-footer">
-            Generado automáticamente el <span id="print-date"></span> | Sistema de Evaluación en Vivo
-        </div>
-    </div>
-
-    <header>
-        <div class="header-content">
-            <div class="header-brand">
-                <img src="logo-san-marcos.png" alt="UNMSM" class="header-logo" onerror="this.style.display='none'" />
-                <img src="atom-logo.jpg" alt="Átomo" class="header-atom-img" onerror="this.style.display='none'" />
-                
-                <div class="header-text">
-                    <div class="header-instituciones">Universidad Nacional Mayor de San Marcos · Facultad de Ciencias Físicas</div>
-                    <h1>Sistema de Evaluación en Vivo - Física</h1>
-                    <h2>Portal Académico Interactivo</h2>
-                </div>
-            </div>
-
-            <div class="theme-switcher-container">
-                <span>Apariencia</span>
-                <div class="theme-buttons">
-                    <button onclick="setTheme('light-green')" title="Claro Verde">☀️</button>
-                    <button onclick="setTheme('light-blue')" title="Claro Azul">☁️</button>
-                    <button onclick="setTheme('dark-purple')" title="Oscuro Púrpura">🌙</button>
-                    <button onclick="setTheme('dark-gray')" title="Oscuro Gris">🌑</button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <!-- SELECTOR DE ROLES -->
-        <div id="view-role-selection" class="view active">
-            <div class="role-selection-box">
-                <h3>Bienvenido a la Enciclopedia. Seleccione su rol:</h3>
-                <div class="role-buttons-grid">
-                    <button class="role-card student" onclick="switchView('view-student-access', true)">
-                        <div class="role-card-icon">👨‍🎓</div>
-                        <div class="role-card-body">
-                            <div class="role-card-title">SOY ALUMNO</div>
-                            <div class="role-card-desc">Accede a tus cursos, videos y evaluaciones</div>
-                        </div>
-                    </button>
-                    <button class="role-card teacher" onclick="requestTeacherAccess()">
-                        <div class="role-card-icon">👨‍🏫</div>
-                        <div class="role-card-body">
-                            <div class="role-card-title">SOY DOCENTE</div>
-                            <div class="role-card-desc">Gestiona a tus alumnos, calificaciones y contenido (Requiere Clave)</div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN -->
-        <div id="view-teacher-register" class="view">
-            <div class="form-card">
-                <button class="btn-secondary" onclick="switchView('view-role-selection', true)" style="margin-bottom:1rem;">← Volver</button>
-                <h3>Configurar Nueva Sala de Examen</h3>
-                
-                <div class="form-grid">
-                    <div class="form-field full"><label>Nombre del Docente</label><input type="text" id="t-teachername" placeholder="Ej: Dr. Juan Pérez"></div>
-                    <div class="form-field"><label>Nombre de la Sala (Clave)</label><input type="text" id="t-classname" placeholder="Ej: FisicaLunes"></div>
-                    <div class="form-field"><label>Contraseña de Ingreso</label><input type="password" id="t-pass" placeholder="****"></div>
-                    <div class="form-field"><label>Tiempo Límite (Minutos)</label><input type="number" id="t-time" value="30" min="1"></div>
-                    
-                    <div class="form-field full">
-                        <label style="margin-bottom:0.5rem;">1. Seleccione los Capítulos a Evaluar</label>
-                        <div id="chapters-cards-container" style="display:flex; flex-direction:column;"></div>
-                    </div>
-                </div>
-                <button class="btn btn-teacher" onclick="createClass()" style="margin-top:1.5rem;">CREAR SALA Y COMENZAR</button>
-            </div>
-        </div>
-
-        <!-- DASHBOARD DOCENTE -->
-        <div id="view-teacher-dashboard" class="view">
-            <div class="banner-info" id="docente-info-banner" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <div id="docente-text-info"></div>
-                <div class="timer-teacher" id="teacher-timer">⏱️ --:--</div>
-            </div>
-            <div style="display:flex; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
-                <button class="btn btn-student" id="btn-start-exam" onclick="startExam()" style="width:auto;">▶ Iniciar Examen</button>
-                <button class="btn btn-danger" id="btn-stop-exam" onclick="stopExam()" style="width:auto; display:none;">⏹ Finalizar Examen</button>
-                
-                <button class="btn btn-secondary" onclick="openTeacherQuestions()" style="width:auto; background:var(--panel-alt); color:var(--text-main); border:1px solid var(--border-strong);">👁️ Ver Preguntas del Examen</button>
-                
-                <button class="btn btn-teacher" id="btn-show-solutions" onclick="toggleSolutions(true)" style="width:auto; display:none; background:var(--highlight); color:#000;">👁️ Mostrar Solucionario a Alumnos</button>
-                
-                <button class="btn btn-secondary" id="btn-print-grades" onclick="printGrades()" style="display:none; background:var(--success); color:#fff; border:none;">🖨️ Imprimir Notas Finales</button>
-                
-                <button class="btn-secondary" onclick="logoutTeacher()">Cerrar Sesión</button>
-            </div>
-            <div class="dashboard-table-container">
-                <table>
-                    <thead><tr><th>Alumno</th><th>Código</th><th>Grupo</th><th>Estado</th><th>Nota Final</th><th>Aciertos</th><th>Acciones</th></tr></thead>
-                    <tbody id="students-table-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ACCESO ALUMNO -->
-        <div id="view-student-access" class="view">
-            <div class="form-card">
-                <button class="btn-secondary" onclick="switchView('view-role-selection', true)" style="margin-bottom:1rem;">← Volver</button>
-                <h3>Ingresar a Evaluación</h3>
-                <div class="form-grid">
-                    <div class="form-field full"><label>Apellidos y Nombres</label><input type="text" id="s-name" placeholder="Quispe Mendoza, Carlos"></div>
-                    <div class="form-field"><label>Código (8 dígitos)</label><input type="text" id="s-code" maxlength="8" placeholder="20130026"></div>
-                    <div class="form-field"><label>Grupo</label><select id="s-group"><option value="1">Grupo 1</option><option value="2">Grupo 2</option><option value="3">Grupo 3</option></select></div>
-                    <div class="form-field"><label>Nombre de la Sala</label><input type="text" id="s-classname" placeholder="FisicaLunes"></div>
-                    <div class="form-field"><label>Contraseña</label><input type="password" id="s-pass" placeholder="****"></div>
-                </div>
-                <button class="btn btn-student" onclick="studentEnter()" style="margin-top:1.5rem;">ENTRAR A LA SALA</button>
-            </div>
-        </div>
-
-        <!-- LOBBY ALUMNO -->
-        <div id="view-student-lobby" class="view">
-            <div class="form-card" style="text-align:center;">
-                <h2 style="font-family:Georgia, serif;">Sala de Espera</h2>
-                <p>Bienvenido/a, <b id="lobby-name"></b>. Espera a que el docente inicie el examen.</p>
-                <div style="font-size:3rem; margin:2rem 0;">⏳</div>
-                <button class="btn-secondary" onclick="salirSalaAlumno()">Cancelar y Salir</button>
-            </div>
-        </div>
-
-        <!-- EXAMEN ALUMNO -->
-        <div id="view-student-exam" class="view">
-            <div id="workspace-chapter-banner" class="banner-info"></div>
-            <div id="lab-info-dynamic"></div>
-            <div id="workspace-videos-container"></div>
-            
-            <div style="margin-top:2rem; display:flex; justify-content:space-between; align-items:center;">
-                <button class="btn btn-danger" id="btn-exit-student" onclick="salirSalaAlumno()" style="width:auto;">Abandonar Examen</button>
-                <button class="btn btn-student" id="btn-next-chapter" onclick="nextChapter()" style="width:auto; display:none;">Siguiente Capítulo ➔</button>
-                <button class="btn btn-student" id="btn-finish-exam" onclick="finishStudentExam(false)" style="width:auto; display:none; background:var(--error);">Terminar y Enviar Respuestas</button>
-            </div>
-        </div>
-
-        <!-- RESULTADOS / FEEDBACK ALUMNO -->
-        <div id="view-student-results" class="view">
-            <div class="form-card" id="feedback-form-container" style="display:none;">
-                <h2 style="font-family:Georgia, serif; text-align:center; color:var(--success);">¡Respuestas Enviadas!</h2>
-                <p style="text-align:center; color:var(--text-muted); margin-bottom:1.5rem;">Tus respuestas ya fueron guardadas. Por favor, ayúdanos a mejorar completando esta breve encuesta. <b>Es obligatorio.</b></p>
-                
-                <div style="background:var(--panel-alt); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem;">
-                    <label style="font-weight:bold; display:block; margin-bottom:0.5rem;">1. ¿El diseño de la página fue de su agrado?</label>
-                    <div class="rating-stars" id="rating-stars-ui" onclick="handleStarClick(event)">
-                        <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span><span data-val="6">★</span>
-                    </div>
-                    
-                    <label style="font-weight:bold; display:block; margin-top:1rem; margin-bottom:0.5rem;">2. ¿La información presentada le fue útil y las preguntas fueron adecuadas?</label>
-                    <select id="feedback-utilidad" style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid var(--border-strong); background:var(--panel-bg); color:var(--text-main);">
-                        <option value="Muy buenas">Sí, muy buenas</option>
-                        <option value="Adecuadas">Adecuadas</option>
-                        <option value="Regulares">Regulares</option>
-                        <option value="Muy difíciles">Muy difíciles</option>
-                    </select>
-
-                    <label style="font-weight:bold; display:block; margin-top:1rem; margin-bottom:0.5rem;">3. ¿Fue intuitiva la interfaz de la página?</label>
-                    <select id="feedback-intuitiva" style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid var(--border-strong); background:var(--panel-bg); color:var(--text-main);">
-                        <option value="Muy intuitiva">Sí, muy intuitiva</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Confusa">Confusa</option>
-                    </select>
-
-                    <label style="font-weight:bold; display:block; margin-top:1rem; margin-bottom:0.5rem;">4. Déjanos tus sugerencias o comentarios (Opcional):</label>
-                    <textarea id="feedback-texto" rows="3" style="width:100%; border-radius:8px; border:1px solid var(--border-strong); background:var(--panel-bg); color:var(--text-main); padding:0.8rem;" placeholder="¿Qué podríamos mejorar?"></textarea>
-                </div>
-                
-                <button class="btn btn-student" onclick="submitFeedbackSeparately()">Enviar Sugerencias</button>
-            </div>
-
-            <div class="form-card" id="results-container" style="display:none; text-align:center;">
-                <h2 style="font-family:Georgia, serif;">Examen Finalizado</h2>
-                <p>Tu nota final es:</p>
-                <div style="font-size:4rem; color:var(--accent-student); font-weight:bold; margin:1rem 0;" id="final-score-display">- / 20</div>
-                <p id="result-msg">Esperando a que el docente habilite el solucionario o finalice la práctica...</p>
-                <button class="btn btn-secondary" id="btn-exit-final" onclick="salirSalaAlumno()" style="margin-top:2rem;">Salir al Menú Principal</button>
-            </div>
-
-            <div id="solutions-container" style="display:none; margin-top:2rem;"></div>
-        </div>
-    </div>
-
-    <!-- CRONÓMETRO FLOTANTE ALUMNO -->
-    <div class="timer-floating" id="exam-timer">⏱️ <span id="timer-text">00:00</span></div>
-
-    <!-- MODAL DETALLE ALUMNO (DOCENTE) -->
-    <div id="student-detail-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-soft); padding-bottom:1rem; margin-bottom:1rem;">
-                <h3 id="modal-student-title" style="margin:0;">Detalle</h3>
-                <button onclick="document.getElementById('student-detail-modal').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-main);">✕</button>
-            </div>
-            <div id="modal-student-body"></div>
-        </div>
-    </div>
-
-    <!-- MODAL PARA VER PREGUNTAS (DOCENTE) -->
-    <div id="teacher-questions-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 800px;">
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-soft); padding-bottom:1rem; margin-bottom:1rem;">
-                <h3 style="margin:0; color:var(--accent-teacher);">Preguntas de la Evaluación</h3>
-                <button onclick="document.getElementById('teacher-questions-modal').style.display='none'" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-main);">✕</button>
-            </div>
-            <div id="teacher-questions-body"></div>
-        </div>
-    </div>
-
-    <script src="pregunta.js"></script>
-    <script>
-        // ================= CONFIGURACIÓN =================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCy65wlimm43nD8uWo1DPsGlPo29XNZWjQ",
-            authDomain: "project01-24faf.firebaseapp.com",
-            databaseURL: "https://project01-24faf-default-rtdb.firebaseio.com",
-            projectId: "project01-24faf",
-            storageBucket: "project01-24faf.firebasestorage.app",
-            messagingSenderId: "764949303228",
-            appId: "1:764949303228:web:68152ed98479bc5550a5b9",
-        };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // CLAVE MAESTRA PARA DOCENTES
-        const TEACHER_MASTER_KEY = "unmsm2026";
-
-        let currentStudent = null;
-        let classroomConfig = null;
-        let currentChapterIndex = 0;
-        let tempAnswers = {};
-        let examTimerInterval = null;
-        let teacherTimerInterval = null;
-        let studentRating = 0;
-        
-        const capitulosCatalog = [
-            { id: 1, folder: "capitulo-01-unidades-vectores", title: "Cap. 1: Unidades y vectores" },
-            { id: 2, folder: "capitulo-02-cinematica-lineal", title: "Cap. 2: Cinemática lineal" },
-            { id: 3, folder: "capitulo-03-dinamica-lineal", title: "Cap. 3: Dinámica lineal" },
-            { id: 4, folder: "capitulo-04-movimiento-plano", title: "Cap. 4: Movimiento plano" },
-            { id: 5, folder: "capitulo-05-inercia", title: "Cap. 5: Inercia" },
-            { id: 6, folder: "capitulo-06-accion-reaccion", title: "Cap. 6: Acción y reacción" },
-            { id: 7, folder: "capitulo-07-friccion", title: "Cap. 7: Fricción" },
-            { id: 8, folder: "capitulo-08-trabajo-energia", title: "Cap. 8: Trabajo y energía" },
-            { id: 9, folder: "capitulo-09-centro-masa", title: "Cap. 9: Centro de masa" },
-        ];
-
-        // VALIDACIÓN DE CLAVE DOCENTE
-        function requestTeacherAccess() {
-            const pass = prompt("🔒 Acceso Restringido. Por favor, ingrese la clave de docente:");
-            if (pass === TEACHER_MASTER_KEY) {
-                switchView('view-teacher-register', true);
-            } else if (pass !== null) {
-                alert("❌ Clave incorrecta. Acceso denegado.");
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Enciclopedia en Videos de Demostración de Física - UNMSM</title>
+        <style>
+            :root {
+                --bg-main: #f8fafc;
+                --panel-bg: #ffffff;
+                --panel-alt: #f1f5f9;
+                --accent-student: #059669;
+                --accent-teacher: #1e3a8a;
+                --highlight: #f59e0b;
+                --error: #ef4444;
+                --success: #10b981;
+                --text-main: #0f172a;
+                --text-muted: #64748b;
+                --border-soft: #e2e8f0;
+                --border-strong: #cbd5e1;
+                --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+                --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.1);
+                --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.15);
             }
-        }
 
-        // BLOQUEO DE BOTONES DEL NAVEGADOR EN EXAMEN
-        window.addEventListener('popstate', function(event) {
-            if (document.getElementById('view-student-exam').classList.contains('active') || document.getElementById('view-student-lobby').classList.contains('active')) {
-                const confirmExit = confirm("⚠️ ¡Atención! Si retrocedes, saldrás de la sala de examen y se perderá tu progreso actual. ¿Seguro que deseas salir?");
-                if (confirmExit) {
-                    salirSalaAlumno();
-                } else {
-                    history.pushState({ view: 'view-student-exam' }, '', '#view-student-exam');
+            /* TEMAS */
+            body.theme-light-green {
+                --bg-main: #f8fafc;
+                --text-main: #0f172a;
+                --panel-bg: #ffffff;
+                --panel-alt: #f1f5f9;
+                --border-soft: #e2e8f0;
+                --border-strong: #cbd5e1;
+                --accent-student: #059669;
+                --accent-teacher: #059669;
+            }
+            body.theme-light-blue {
+                --bg-main: #eff6ff;
+                --text-main: #1e293b;
+                --panel-bg: #ffffff;
+                --panel-alt: #dbeafe;
+                --border-soft: #bfdbfe;
+                --border-strong: #93c5fd;
+                --accent-student: #1e40af;
+                --accent-teacher: #1e40af;
+            }
+            body.theme-dark-purple {
+                --bg-main: #1e1b4b;
+                --text-main: #f8fafc;
+                --text-muted: #c7d2fe;
+                --panel-bg: #312e81;
+                --panel-alt: #3730a3;
+                --border-soft: #4338ca;
+                --border-strong: #4f46e5;
+                --accent-student: #a78bfa;
+                --accent-teacher: #818cf8;
+            }
+            body.theme-dark-purple header {
+                background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
+                border-bottom-color: var(--accent-student);
+            }
+            body.theme-dark-gray {
+                --bg-main: #111827;
+                --text-main: #f9fafb;
+                --text-muted: #9ca3af;
+                --panel-bg: #1f2937;
+                --panel-alt: #374151;
+                --border-soft: #374151;
+                --border-strong: #4b5563;
+                --accent-student: #60a5fa;
+                --accent-teacher: #3b82f6;
+            }
+            body.theme-dark-gray header {
+                background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+                border-bottom-color: var(--accent-student);
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                background-color: var(--bg-main);
+                color: var(--text-main);
+                margin: 0;
+                padding: 0;
+                line-height: 1.6;
+                transition:
+                    background 0.3s,
+                    color 0.3s;
+            }
+
+            /* CABECERA */
+            header {
+                background: var(--panel-bg);
+                border-bottom: 4px solid var(--accent-student);
+                padding: 1.4rem 2rem;
+                box-shadow: var(--shadow-md);
+                transition: all 0.3s;
+            }
+            .header-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1.5rem;
+                max-width: 1250px;
+                margin: 0 auto;
+                flex-wrap: wrap;
+            }
+
+            .header-brand {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                flex: 1;
+                min-width: 300px;
+            }
+            .header-logo {
+                width: 100px;
+                height: 100px;
+                object-fit: contain;
+            }
+            .header-atom-img {
+                width: 100px;
+                height: 100px;
+                object-fit: contain;
+                filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+                border-radius: 50%;
+            }
+
+            .header-text {
+                text-align: left;
+            }
+            .header-instituciones {
+                font-size: 0.82rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: var(--accent-student);
+                text-transform: uppercase;
+            }
+            header h1 {
+                margin: 0.1rem 0;
+                font-family: Georgia, serif;
+                font-size: 1.8rem;
+                color: var(--text-main);
+            }
+            header h2 {
+                margin: 0;
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+
+            /* SELECTOR DE TEMAS */
+            .theme-switcher-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                background: var(--panel-alt);
+                padding: 10px 12px;
+                border-radius: 12px;
+                border: 1px solid var(--border-soft);
+            }
+            .theme-switcher-container span {
+                font-size: 0.7rem;
+                font-weight: bold;
+                color: var(--text-muted);
+                text-transform: uppercase;
+            }
+            .theme-buttons {
+                display: flex;
+                gap: 8px;
+            }
+            .theme-buttons button {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 2px solid var(--border-strong);
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition:
+                    transform 0.2s,
+                    border-color 0.2s;
+                background: var(--panel-bg);
+            }
+            .theme-buttons button:hover {
+                transform: scale(1.15);
+                border-color: var(--accent-student);
+            }
+
+            @media (max-width: 850px) {
+                .header-content {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                .header-brand {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                .header-text {
+                    text-align: center;
+                }
+                .theme-switcher-container {
+                    margin-top: 0.5rem;
                 }
             }
-        });
 
-        window.addEventListener('load', () => {
-            setTheme(localStorage.getItem("theme") || "light-green");
-            
-            // RENDERIZAR CAPÍTULOS CON BOTÓN DE PREVISUALIZACIÓN
-            const container = document.getElementById('chapters-cards-container');
-            capitulosCatalog.forEach(c => {
-                container.innerHTML += `
+            .container {
+                max-width: 1150px;
+                margin: 2rem auto;
+                padding: 0 1.5rem;
+            }
+            .view {
+                display: none;
+            }
+            .view.active {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* BIENVENIDA */
+            .role-selection-box {
+                background: var(--panel-bg);
+                border-radius: 20px;
+                padding: 3rem 2.5rem;
+                text-align: center;
+                box-shadow: var(--shadow-lg);
+                border: 1px solid var(--border-soft);
+                max-width: 850px;
+                margin: 2rem auto;
+            }
+            .role-selection-box h3 {
+                font-size: 1.5rem;
+                color: var(--text-main);
+                margin-bottom: 2.2rem;
+                font-family: Georgia, serif;
+            }
+            .role-buttons-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .role-card {
+                border-radius: 16px;
+                padding: 1.8rem 2rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 1.8rem;
+                box-shadow: var(--shadow-md);
+                border: 2px solid var(--border-soft);
+                text-align: left;
+                width: 100%;
+                background: var(--panel-bg);
+            }
+            .role-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-lg);
+                border-color: var(--accent-student);
+            }
+            .role-card-icon {
+                width: 85px;
+                height: 85px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: var(--shadow-sm);
+                color: #fff;
+                font-size: 2rem;
+            }
+            .role-card.student .role-card-icon {
+                background: var(--accent-student);
+            }
+            .role-card.teacher .role-card-icon {
+                background: var(--accent-teacher);
+            }
+            .role-card-title {
+                font-size: 1.45rem;
+                font-weight: 800;
+                letter-spacing: 1.2px;
+                text-transform: uppercase;
+                color: var(--text-main);
+            }
+            .role-card-desc {
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                line-height: 1.4;
+                font-weight: 500;
+            }
+
+            /* FORMULARIOS */
+            .form-card {
+                background: var(--panel-bg);
+                border-radius: 16px;
+                padding: 2.5rem;
+                box-shadow: var(--shadow-md);
+                max-width: 850px;
+                margin: 0 auto 2rem auto;
+                border: 1px solid var(--border-soft);
+            }
+            .form-card h3 {
+                font-family: Georgia, serif;
+                margin-top: 0;
+                text-align: center;
+                color: var(--text-main);
+            }
+            .form-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            .form-field {
+                display: flex;
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            .form-field.full {
+                grid-column: 1 / -1;
+            }
+            .form-field label {
+                font-size: 0.8rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: var(--text-main);
+            }
+            .form-field input,
+            .form-field select,
+            .form-field textarea {
+                padding: 0.8rem;
+                border: 1.5px solid var(--border-strong);
+                border-radius: 8px;
+                background: var(--panel-bg);
+                color: var(--text-main);
+                font-size: 1rem;
+                font-family: inherit;
+            }
+
+            .btn {
+                border: none;
+                padding: 1rem;
+                border-radius: 8px;
+                font-weight: 700;
+                cursor: pointer;
+                text-transform: uppercase;
+                width: 100%;
+                letter-spacing: 1px;
+                transition: all 0.2s;
+            }
+            .btn-student {
+                background: var(--accent-student);
+                color: #fff;
+            }
+            .btn-teacher {
+                background: var(--accent-teacher);
+                color: #fff;
+            }
+            .btn-secondary {
+                background: var(--panel-alt);
+                color: var(--text-main);
+                border: 1.5px solid var(--border-strong);
+                padding: 0.5rem 1rem;
+                width: auto;
+                display: inline-flex;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+            .btn-danger {
+                background: var(--error);
+                color: #fff;
+            }
+
+            /* TABLA DOCENTE */
+            .dashboard-table-container {
+                background: var(--panel-bg);
+                border-radius: 12px;
+                border: 1px solid var(--border-soft);
+                overflow-x: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.9rem;
+            }
+            th {
+                background: var(--accent-teacher);
+                color: #fff;
+                padding: 1rem;
+                text-align: left;
+            }
+            td {
+                padding: 1rem;
+                border-bottom: 1px solid var(--border-soft);
+                color: var(--text-main);
+            }
+
+            /* CONTENIDO ALUMNO */
+            .banner-info {
+                background: var(--panel-bg);
+                border-left: 5px solid var(--accent-student);
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin-bottom: 1.5rem;
+                box-shadow: var(--shadow-sm);
+            }
+            .video-card {
+                background: var(--panel-bg);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                border: 1px solid var(--border-soft);
+                color: var(--text-main);
+            }
+            .video-responsive video {
+                width: 100%;
+                max-height: 400px;
+                border-radius: 8px;
+                background: #000;
+            }
+            .quiz-box {
+                background: var(--panel-alt);
+                padding: 1.5rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+                border-left: 4px solid var(--highlight);
+            }
+            .question-item {
+                margin-bottom: 1rem;
+                border-bottom: 1px dashed var(--border-strong);
+                padding-bottom: 1rem;
+            }
+            .options-list label {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                cursor: pointer;
+                border-radius: 6px;
+                color: var(--text-main);
+            }
+            .options-list label:hover {
+                background: var(--border-soft);
+            }
+
+            /* CRONÓMETRO FLOTANTE */
+            .timer-floating {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--error);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                box-shadow: var(--shadow-lg);
+                z-index: 9999;
+                display: none;
+                align-items: center;
+                gap: 10px;
+                font-family: monospace;
+            }
+
+            /* UTILIDADES */
+            .badge-correct {
+                background: #dcfce7;
+                color: #166534;
+                padding: 0.2rem 0.5rem;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 0.8rem;
+            }
+            .badge-incorrect {
+                background: #fee2e2;
+                color: #991b1b;
+                padding: 0.2rem 0.5rem;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 0.8rem;
+            }
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            }
+            .modal-content {
+                background: var(--panel-bg);
+                padding: 2rem;
+                border-radius: 12px;
+                max-width: 600px;
+                width: 90%;
+                max-height: 85vh;
+                overflow-y: auto;
+                color: var(--text-main);
+            }
+
+            /* ESTRELLAS */
+            .rating-stars {
+                display: flex;
+                justify-content: center;
+                gap: 5px;
+                font-size: 2rem;
+                cursor: pointer;
+                margin: 0.5rem 0;
+                color: var(--border-strong);
+                user-select: none;
+            }
+            .rating-stars span {
+                transition: color 0.2s;
+            }
+            .rating-stars span.filled,
+            .rating-stars span.half {
+                color: var(--highlight) !important;
+            }
+
+            /* ALERTA TIEMPO DOCENTE */
+            .timer-teacher {
+                background: var(--accent-teacher);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-weight: bold;
+                font-family: monospace;
+                display: none;
+            }
+
+            /* CSS PARA LA LISTA DE CAPÍTULOS DEL DOCENTE */
+            .chapter-review-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                background: var(--panel-alt);
+                border: 1px solid var(--border-soft);
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+            }
+            .chapter-review-item label {
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                font-weight: 600;
+                cursor: pointer;
+            }
+            .chapter-review-item input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+            }
+
+            /* =========================================
+           ESTILOS EXCLUSIVOS PARA IMPRESIÓN (PDF)
+           ========================================= */
+            @media print {
+                body {
+                    background: #fff;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                }
+                header,
+                .container,
+                .theme-switcher-container,
+                .timer-floating,
+                .modal-overlay,
+                .btn {
+                    display: none !important;
+                }
+
+                #print-section {
+                    display: block !important;
+                    padding: 2rem;
+                }
+
+                #print-section h1 {
+                    font-family: Georgia, serif;
+                    font-size: 1.5rem;
+                    text-align: center;
+                    margin-bottom: 0.5rem;
+                }
+                #print-section p {
+                    text-align: center;
+                    font-size: 0.9rem;
+                    margin-bottom: 2rem;
+                    color: #555;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 11px;
+                    margin-bottom: 1rem;
+                }
+                th {
+                    background: #eee !important;
+                    color: #000 !important;
+                    border: 1px solid #000;
+                    padding: 6px;
+                    text-align: left;
+                }
+                td {
+                    border: 1px solid #000;
+                    padding: 6px;
+                    color: #000 !important;
+                    vertical-align: top;
+                }
+
+                .print-footer {
+                    margin-top: 2rem;
+                    text-align: center;
+                    font-size: 10px;
+                    color: #888;
+                    border-top: 1px solid #ccc;
+                    padding-top: 1rem;
+                }
+            }
+        </style>
+
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    </head>
+    <body>
+        <!-- SECCIÓN OCULTA QUE SE MUESTRA AL IMPRIMIR -->
+        <div id="print-section" style="display: none">
+            <h1>Reporte de Notas y Feedback - Física</h1>
+            <p>
+                Universidad Nacional Mayor de San Marcos - Facultad de Ciencias
+                Físicas
+            </p>
+            <p
+                id="print-class-info"
+                style="
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                    margin-bottom: 1rem;
+                "
+            ></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Apellidos y Nombres</th>
+                        <th>Código</th>
+                        <th>Grupo</th>
+                        <th>Nota Final</th>
+                        <th>Aciertos</th>
+                        <th>Feedback del Alumno</th>
+                    </tr>
+                </thead>
+                <tbody id="print-table-body"></tbody>
+            </table>
+            <div class="print-footer">
+                Generado automáticamente el <span id="print-date"></span> |
+                Sistema de Evaluación en Vivo
+            </div>
+        </div>
+
+        <header>
+            <div class="header-content">
+                <div class="header-brand">
+                    <img
+                        src="logo-san-marcos.png"
+                        alt="UNMSM"
+                        class="header-logo"
+                        onerror="this.style.display = 'none'"
+                    />
+                    <img
+                        src="atom-logo.jpg"
+                        alt="Átomo"
+                        class="header-atom-img"
+                        onerror="this.style.display = 'none'"
+                    />
+
+                    <div class="header-text">
+                        <div class="header-instituciones">
+                            Universidad Nacional Mayor de San Marcos · Facultad
+                            de Ciencias Físicas
+                        </div>
+                        <h1>Sistema de Evaluación en Vivo - Física</h1>
+                        <h2>Portal Académico Interactivo</h2>
+                    </div>
+                </div>
+
+                <div class="theme-switcher-container">
+                    <span>Apariencia</span>
+                    <div class="theme-buttons">
+                        <button
+                            onclick="setTheme('light-green')"
+                            title="Claro Verde"
+                        >
+                            ☀️
+                        </button>
+                        <button
+                            onclick="setTheme('light-blue')"
+                            title="Claro Azul"
+                        >
+                            ☁️
+                        </button>
+                        <button
+                            onclick="setTheme('dark-purple')"
+                            title="Oscuro Púrpura"
+                        >
+                            🌙
+                        </button>
+                        <button
+                            onclick="setTheme('dark-gray')"
+                            title="Oscuro Gris"
+                        >
+                            🌑
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- SELECTOR DE ROLES -->
+            <div id="view-role-selection" class="view active">
+                <div class="role-selection-box">
+                    <h3>Bienvenido a la Enciclopedia. Seleccione su rol:</h3>
+                    <div class="role-buttons-grid">
+                        <button
+                            class="role-card student"
+                            onclick="switchView('view-student-access', true)"
+                        >
+                            <div class="role-card-icon">👨‍🎓</div>
+                            <div class="role-card-body">
+                                <div class="role-card-title">SOY ALUMNO</div>
+                                <div class="role-card-desc">
+                                    Accede a tus cursos, videos y evaluaciones
+                                </div>
+                            </div>
+                        </button>
+                        <button
+                            class="role-card teacher"
+                            onclick="requestTeacherAccess()"
+                        >
+                            <div class="role-card-icon">👨‍🏫</div>
+                            <div class="role-card-body">
+                                <div class="role-card-title">SOY DOCENTE</div>
+                                <div class="role-card-desc">
+                                    Gestiona a tus alumnos, calificaciones y
+                                    contenido (Requiere Clave)
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN -->
+            <div id="view-teacher-register" class="view">
+                <div class="form-card">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-role-selection', true)"
+                        style="margin-bottom: 1rem"
+                    >
+                        ← Volver
+                    </button>
+                    <h3>Configurar Nueva Sala de Examen</h3>
+
+                    <div class="form-grid">
+                        <div class="form-field full">
+                            <label>Nombre del Docente</label
+                            ><input
+                                type="text"
+                                id="t-teachername"
+                                placeholder="Ej: Dr. Juan Pérez"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Nombre de la Sala (Clave)</label
+                            ><input
+                                type="text"
+                                id="t-classname"
+                                placeholder="Ej: FisicaLunes"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Contraseña de Ingreso</label
+                            ><input
+                                type="password"
+                                id="t-pass"
+                                placeholder="****"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Tiempo Límite (Minutos)</label
+                            ><input
+                                type="number"
+                                id="t-time"
+                                value="30"
+                                min="1"
+                            />
+                        </div>
+
+                        <div class="form-field full">
+                            <label style="margin-bottom: 0.5rem"
+                                >1. Seleccione los Capítulos a Evaluar</label
+                            >
+                            <div
+                                id="chapters-cards-container"
+                                style="display: flex; flex-direction: column"
+                            ></div>
+                        </div>
+                    </div>
+                    <button
+                        class="btn btn-teacher"
+                        onclick="createClass()"
+                        style="margin-top: 1.5rem"
+                    >
+                        CREAR SALA Y COMENZAR
+                    </button>
+                </div>
+            </div>
+
+            <!-- DASHBOARD DOCENTE -->
+            <div id="view-teacher-dashboard" class="view">
+                <div
+                    class="banner-info"
+                    id="docente-info-banner"
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 1rem;
+                    "
+                >
+                    <div id="docente-text-info"></div>
+                    <div class="timer-teacher" id="teacher-timer">⏱️ --:--</div>
+                </div>
+                <div
+                    style="
+                        display: flex;
+                        gap: 1rem;
+                        margin-bottom: 1rem;
+                        flex-wrap: wrap;
+                    "
+                >
+                    <button
+                        class="btn btn-student"
+                        id="btn-start-exam"
+                        onclick="startExam()"
+                        style="width: auto"
+                    >
+                        ▶ Iniciar Examen
+                    </button>
+                    <button
+                        class="btn btn-danger"
+                        id="btn-stop-exam"
+                        onclick="stopExam()"
+                        style="width: auto; display: none"
+                    >
+                        ⏹ Finalizar Examen
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="openTeacherQuestions()"
+                        style="
+                            width: auto;
+                            background: var(--panel-alt);
+                            color: var(--text-main);
+                            border: 1px solid var(--border-strong);
+                        "
+                    >
+                        👁️ Ver Preguntas del Examen
+                    </button>
+
+                    <button
+                        class="btn btn-teacher"
+                        id="btn-show-solutions"
+                        onclick="toggleSolutions(true)"
+                        style="
+                            width: auto;
+                            display: none;
+                            background: var(--highlight);
+                            color: #000;
+                        "
+                    >
+                        👁️ Mostrar Solucionario a Alumnos
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        id="btn-print-grades"
+                        onclick="printGrades()"
+                        style="
+                            display: none;
+                            background: var(--success);
+                            color: #fff;
+                            border: none;
+                        "
+                    >
+                        🖨️ Imprimir Notas Finales
+                    </button>
+
+                    <button class="btn-secondary" onclick="logoutTeacher()">
+                        Cerrar Sesión
+                    </button>
+                </div>
+                <div class="dashboard-table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Código</th>
+                                <th>Grupo</th>
+                                <th>Estado</th>
+                                <th>Nota Final</th>
+                                <th>Aciertos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ACCESO ALUMNO -->
+            <div id="view-student-access" class="view">
+                <div class="form-card">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-role-selection', true)"
+                        style="margin-bottom: 1rem"
+                    >
+                        ← Volver
+                    </button>
+                    <h3>Ingresar a Evaluación</h3>
+                    <div class="form-grid">
+                        <div class="form-field full">
+                            <label>Apellidos y Nombres</label
+                            ><input
+                                type="text"
+                                id="s-name"
+                                placeholder="Quispe Mendoza, Carlos"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Código (8 dígitos)</label
+                            ><input
+                                type="text"
+                                id="s-code"
+                                maxlength="8"
+                                placeholder="20130026"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Grupo</label
+                            ><select id="s-group">
+                                <option value="1">Grupo 1</option>
+                                <option value="2">Grupo 2</option>
+                                <option value="3">Grupo 3</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label>Nombre de la Sala</label
+                            ><input
+                                type="text"
+                                id="s-classname"
+                                placeholder="FisicaLunes"
+                            />
+                        </div>
+                        <div class="form-field">
+                            <label>Contraseña</label
+                            ><input
+                                type="password"
+                                id="s-pass"
+                                placeholder="****"
+                            />
+                        </div>
+                    </div>
+                    <button
+                        class="btn btn-student"
+                        onclick="studentEnter()"
+                        style="margin-top: 1.5rem"
+                    >
+                        ENTRAR A LA SALA
+                    </button>
+                </div>
+            </div>
+
+            <!-- LOBBY ALUMNO -->
+            <div id="view-student-lobby" class="view">
+                <div class="form-card" style="text-align: center">
+                    <h2 style="font-family: Georgia, serif">Sala de Espera</h2>
+                    <p>
+                        Bienvenido/a, <b id="lobby-name"></b>. Espera a que el
+                        docente inicie el examen.
+                    </p>
+                    <div style="font-size: 3rem; margin: 2rem 0">⏳</div>
+                    <button class="btn-secondary" onclick="salirSalaAlumno()">
+                        Cancelar y Salir
+                    </button>
+                </div>
+            </div>
+
+            <!-- EXAMEN ALUMNO -->
+            <div id="view-student-exam" class="view">
+                <div id="workspace-chapter-banner" class="banner-info"></div>
+                <div id="lab-info-dynamic"></div>
+                <div id="workspace-videos-container"></div>
+
+                <div
+                    style="
+                        margin-top: 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    "
+                >
+                    <button
+                        class="btn btn-danger"
+                        id="btn-exit-student"
+                        onclick="salirSalaAlumno()"
+                        style="width: auto"
+                    >
+                        Abandonar Examen
+                    </button>
+                    <button
+                        class="btn btn-student"
+                        id="btn-next-chapter"
+                        onclick="nextChapter()"
+                        style="width: auto; display: none"
+                    >
+                        Siguiente Capítulo ➔
+                    </button>
+                    <button
+                        class="btn btn-student"
+                        id="btn-finish-exam"
+                        onclick="finishStudentExam(false)"
+                        style="
+                            width: auto;
+                            display: none;
+                            background: var(--error);
+                        "
+                    >
+                        Terminar y Enviar Respuestas
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTADOS / FEEDBACK ALUMNO -->
+            <div id="view-student-results" class="view">
+                <div
+                    class="form-card"
+                    id="feedback-form-container"
+                    style="display: none"
+                >
+                    <h2
+                        style="
+                            font-family: Georgia, serif;
+                            text-align: center;
+                            color: var(--success);
+                        "
+                    >
+                        ¡Respuestas Enviadas!
+                    </h2>
+                    <p
+                        style="
+                            text-align: center;
+                            color: var(--text-muted);
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        Tus respuestas ya fueron guardadas. Por favor, ayúdanos
+                        a mejorar completando esta breve encuesta.
+                        <b>Es obligatorio.</b>
+                    </p>
+
+                    <div
+                        style="
+                            background: var(--panel-alt);
+                            padding: 1.5rem;
+                            border-radius: 12px;
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        <label
+                            style="
+                                font-weight: bold;
+                                display: block;
+                                margin-bottom: 0.5rem;
+                            "
+                            >1. ¿El diseño de la página fue de su agrado?</label
+                        >
+                        <div
+                            class="rating-stars"
+                            id="rating-stars-ui"
+                            onclick="handleStarClick(event)"
+                        >
+                            <span data-val="1">★</span
+                            ><span data-val="2">★</span
+                            ><span data-val="3">★</span
+                            ><span data-val="4">★</span
+                            ><span data-val="5">★</span
+                            ><span data-val="6">★</span>
+                        </div>
+
+                        <label
+                            style="
+                                font-weight: bold;
+                                display: block;
+                                margin-top: 1rem;
+                                margin-bottom: 0.5rem;
+                            "
+                            >2. ¿La información presentada le fue útil y las
+                            preguntas fueron adecuadas?</label
+                        >
+                        <select
+                            id="feedback-utilidad"
+                            style="
+                                width: 100%;
+                                padding: 0.8rem;
+                                border-radius: 8px;
+                                border: 1px solid var(--border-strong);
+                                background: var(--panel-bg);
+                                color: var(--text-main);
+                            "
+                        >
+                            <option value="Muy buenas">Sí, muy buenas</option>
+                            <option value="Adecuadas">Adecuadas</option>
+                            <option value="Regulares">Regulares</option>
+                            <option value="Muy difíciles">Muy difíciles</option>
+                        </select>
+
+                        <label
+                            style="
+                                font-weight: bold;
+                                display: block;
+                                margin-top: 1rem;
+                                margin-bottom: 0.5rem;
+                            "
+                            >3. ¿Fue intuitiva la interfaz de la página?</label
+                        >
+                        <select
+                            id="feedback-intuitiva"
+                            style="
+                                width: 100%;
+                                padding: 0.8rem;
+                                border-radius: 8px;
+                                border: 1px solid var(--border-strong);
+                                background: var(--panel-bg);
+                                color: var(--text-main);
+                            "
+                        >
+                            <option value="Muy intuitiva">
+                                Sí, muy intuitiva
+                            </option>
+                            <option value="Normal">Normal</option>
+                            <option value="Confusa">Confusa</option>
+                        </select>
+
+                        <label
+                            style="
+                                font-weight: bold;
+                                display: block;
+                                margin-top: 1rem;
+                                margin-bottom: 0.5rem;
+                            "
+                            >4. Déjanos tus sugerencias o comentarios
+                            (Opcional):</label
+                        >
+                        <textarea
+                            id="feedback-texto"
+                            rows="3"
+                            style="
+                                width: 100%;
+                                border-radius: 8px;
+                                border: 1px solid var(--border-strong);
+                                background: var(--panel-bg);
+                                color: var(--text-main);
+                                padding: 0.8rem;
+                            "
+                            placeholder="¿Qué podríamos mejorar?"
+                        ></textarea>
+                    </div>
+
+                    <button
+                        class="btn btn-student"
+                        onclick="submitFeedbackSeparately()"
+                    >
+                        Enviar Sugerencias
+                    </button>
+                </div>
+
+                <div
+                    class="form-card"
+                    id="results-container"
+                    style="display: none; text-align: center"
+                >
+                    <h2 style="font-family: Georgia, serif">
+                        Examen Finalizado
+                    </h2>
+                    <p>Tu nota final es:</p>
+                    <div
+                        style="
+                            font-size: 4rem;
+                            color: var(--accent-student);
+                            font-weight: bold;
+                            margin: 1rem 0;
+                        "
+                        id="final-score-display"
+                    >
+                        - / 20
+                    </div>
+                    <p id="result-msg">
+                        Esperando a que el docente habilite el solucionario o
+                        finalice la práctica...
+                    </p>
+                    <button
+                        class="btn btn-secondary"
+                        id="btn-exit-final"
+                        onclick="salirSalaAlumno()"
+                        style="margin-top: 2rem"
+                    >
+                        Salir al Menú Principal
+                    </button>
+                </div>
+
+                <div
+                    id="solutions-container"
+                    style="display: none; margin-top: 2rem"
+                ></div>
+            </div>
+        </div>
+
+        <!-- CRONÓMETRO FLOTANTE ALUMNO -->
+        <div class="timer-floating" id="exam-timer">
+            ⏱️ <span id="timer-text">00:00</span>
+        </div>
+
+        <!-- MODAL DETALLE ALUMNO (DOCENTE) -->
+        <div id="student-detail-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        border-bottom: 1px solid var(--border-soft);
+                        padding-bottom: 1rem;
+                        margin-bottom: 1rem;
+                    "
+                >
+                    <h3 id="modal-student-title" style="margin: 0">Detalle</h3>
+                    <button
+                        onclick="
+                            document.getElementById(
+                                'student-detail-modal',
+                            ).style.display = 'none'
+                        "
+                        style="
+                            background: none;
+                            border: none;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: var(--text-main);
+                        "
+                    >
+                        ✕
+                    </button>
+                </div>
+                <div id="modal-student-body"></div>
+            </div>
+        </div>
+
+        <!-- MODAL PARA VER PREGUNTAS (DOCENTE) -->
+        <div id="teacher-questions-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 800px">
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        border-bottom: 1px solid var(--border-soft);
+                        padding-bottom: 1rem;
+                        margin-bottom: 1rem;
+                    "
+                >
+                    <h3 style="margin: 0; color: var(--accent-teacher)">
+                        Preguntas de la Evaluación
+                    </h3>
+                    <button
+                        onclick="
+                            document.getElementById(
+                                'teacher-questions-modal',
+                            ).style.display = 'none'
+                        "
+                        style="
+                            background: none;
+                            border: none;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            color: var(--text-main);
+                        "
+                    >
+                        ✕
+                    </button>
+                </div>
+                <div id="teacher-questions-body"></div>
+            </div>
+        </div>
+
+        <script src="pregunta.js"></script>
+        <script>
+            // ================= CONFIGURACIÓN =================
+            const firebaseConfig = {
+                apiKey: "AIzaSyCy65wlimm43nD8uWo1DPsGlPo29XNZWjQ",
+                authDomain: "project01-24faf.firebaseapp.com",
+                databaseURL:
+                    "https://project01-24faf-default-rtdb.firebaseio.com",
+                projectId: "project01-24faf",
+                storageBucket: "project01-24faf.firebasestorage.app",
+                messagingSenderId: "764949303228",
+                appId: "1:764949303228:web:68152ed98479bc5550a5b9",
+            };
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+
+            // CLAVE MAESTRA PARA DOCENTES
+            const TEACHER_MASTER_KEY = "unmsm2026";
+
+            let currentStudent = null;
+            let classroomConfig = null;
+            let currentChapterIndex = 0;
+            let tempAnswers = {};
+            let examTimerInterval = null;
+            let teacherTimerInterval = null;
+            let studentRating = 0;
+
+            const capitulosCatalog = [
+                {
+                    id: 1,
+                    folder: "capitulo-01-unidades-vectores",
+                    title: "Cap. 1: Unidades y vectores",
+                },
+                {
+                    id: 2,
+                    folder: "capitulo-02-cinematica-lineal",
+                    title: "Cap. 2: Cinemática lineal",
+                },
+                {
+                    id: 3,
+                    folder: "capitulo-03-dinamica-lineal",
+                    title: "Cap. 3: Dinámica lineal",
+                },
+                {
+                    id: 4,
+                    folder: "capitulo-04-movimiento-plano",
+                    title: "Cap. 4: Movimiento plano",
+                },
+                {
+                    id: 5,
+                    folder: "capitulo-05-inercia",
+                    title: "Cap. 5: Inercia",
+                },
+                {
+                    id: 6,
+                    folder: "capitulo-06-accion-reaccion",
+                    title: "Cap. 6: Acción y reacción",
+                },
+                {
+                    id: 7,
+                    folder: "capitulo-07-friccion",
+                    title: "Cap. 7: Fricción",
+                },
+                {
+                    id: 8,
+                    folder: "capitulo-08-trabajo-energia",
+                    title: "Cap. 8: Trabajo y energía",
+                },
+                {
+                    id: 9,
+                    folder: "capitulo-09-centro-masa",
+                    title: "Cap. 9: Centro de masa",
+                },
+            ];
+
+            // VALIDACIÓN DE CLAVE DOCENTE
+            function requestTeacherAccess() {
+                const pass = prompt(
+                    "🔒 Acceso Restringido. Por favor, ingrese la clave de docente:",
+                );
+                if (pass === TEACHER_MASTER_KEY) {
+                    switchView("view-teacher-register", true);
+                } else if (pass !== null) {
+                    alert("❌ Clave incorrecta. Acceso denegado.");
+                }
+            }
+
+            // BLOQUEO DE BOTONES DEL NAVEGADOR EN EXAMEN
+            window.addEventListener("popstate", function (event) {
+                if (
+                    document
+                        .getElementById("view-student-exam")
+                        .classList.contains("active") ||
+                    document
+                        .getElementById("view-student-lobby")
+                        .classList.contains("active")
+                ) {
+                    const confirmExit = confirm(
+                        "⚠️ ¡Atención! Si retrocedes, saldrás de la sala de examen y se perderá tu progreso actual. ¿Seguro que deseas salir?",
+                    );
+                    if (confirmExit) {
+                        salirSalaAlumno();
+                    } else {
+                        history.pushState(
+                            { view: "view-student-exam" },
+                            "",
+                            "#view-student-exam",
+                        );
+                    }
+                }
+            });
+
+            window.addEventListener("load", () => {
+                setTheme(localStorage.getItem("theme") || "light-green");
+
+                // RENDERIZAR CAPÍTULOS CON BOTÓN DE PREVISUALIZACIÓN
+                const container = document.getElementById(
+                    "chapters-cards-container",
+                );
+                capitulosCatalog.forEach((c) => {
+                    container.innerHTML += `
                     <div class="chapter-review-item">
                         <label>
-                            <input type="checkbox" value="${c.id}" class="chapter-checkbox"> 
+                            <input type="checkbox" value="${c.id}" class="chapter-checkbox">
                             ${c.title}
                         </label>
                         <button class="btn-secondary" onclick="previewChapter(${c.id})" style="font-size:0.8rem; padding:0.4rem 0.8rem;">👁️ Revisar Contenido</button>
                     </div>
                 `;
+                });
+
+                const savedClass = localStorage.getItem("docenteClase");
+                if (savedClass) {
+                    db.ref("clases/" + savedClass)
+                        .once("value")
+                        .then((snap) => {
+                            if (snap.exists())
+                                enterTeacherDashboard(savedClass, snap.val());
+                        });
+                }
+
+                const savedStudent = localStorage.getItem("alumnoSala");
+                if (savedStudent) {
+                    const data = JSON.parse(savedStudent);
+                    db.ref("clases/" + data.classKey)
+                        .once("value")
+                        .then((snap) => {
+                            if (snap.exists()) {
+                                classroomConfig = snap.val();
+                                currentStudent = data.student;
+                                if (data.tempAnswers)
+                                    tempAnswers = data.tempAnswers;
+                                checkStudentStatus(data.classKey);
+                            }
+                        });
+                }
             });
 
-            const savedClass = localStorage.getItem("docenteClase");
-            if (savedClass) {
-                db.ref("clases/" + savedClass).once("value").then(snap => {
-                    if (snap.exists()) enterTeacherDashboard(savedClass, snap.val());
-                });
+            function switchView(viewId, push = true) {
+                document
+                    .querySelectorAll(".view")
+                    .forEach((v) => v.classList.remove("active"));
+                document.getElementById(viewId).classList.add("active");
+                if (push) history.pushState({ view: viewId }, "", `#${viewId}`);
             }
-            
-            const savedStudent = localStorage.getItem("alumnoSala");
-            if (savedStudent) {
-                const data = JSON.parse(savedStudent);
-                db.ref("clases/" + data.classKey).once("value").then(snap => {
-                    if (snap.exists()) {
-                        classroomConfig = snap.val();
-                        currentStudent = data.student;
-                        if(data.tempAnswers) tempAnswers = data.tempAnswers;
-                        checkStudentStatus(data.classKey);
-                    }
-                });
+            function setTheme(t) {
+                document.body.className = "theme-" + t;
+                localStorage.setItem("theme", t);
             }
-        });
 
-        function switchView(viewId, push = true) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            if (push) history.pushState({ view: viewId }, "", `#${viewId}`);
-        }
-        function setTheme(t) { document.body.className = "theme-" + t; localStorage.setItem("theme", t); }
+            // ================= PREVISUALIZACIÓN DOCENTE =================
+            function previewChapter(chapId) {
+                const dataCap = bancoPreguntas[chapId];
+                const chapInfo = capitulosCatalog.find((c) => c.id === chapId);
 
-        // ================= PREVISUALIZACIÓN DOCENTE =================
-        function previewChapter(chapId) {
-            const dataCap = bancoPreguntas[chapId];
-            const chapInfo = capitulosCatalog.find(c => c.id === chapId);
-            
-            const body = document.getElementById('teacher-questions-body');
-            body.innerHTML = "";
-            
-            let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem;">${chapInfo.title}</h3>`;
-            
-            dataCap.videos.forEach(vid => {
-                html += `
+                const body = document.getElementById("teacher-questions-body");
+                body.innerHTML = "";
+
+                let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem;">${chapInfo.title}</h3>`;
+
+                dataCap.videos.forEach((vid) => {
+                    html += `
                     <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--panel-alt); border-radius: 8px;">
                         <h4 style="margin: 0 0 1rem 0; font-size:1rem; color:var(--accent-teacher);">Video: ${vid.titulo}</h4>
                         <div class="video-responsive" style="margin-bottom:1rem;">
@@ -505,138 +1524,192 @@
                         </div>
                 `;
 
-                vid.preguntas.forEach((q, qIdx) => {
-                    let ops = "";
-                    q.opciones.forEach((op, optIdx) => {
-                        let color = optIdx === q.correcta ? "background:#dcfce7; color:#166534; font-weight:bold;" : "";
-                        ops += `<div style="padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px; ${color}"><b>${String.fromCharCode(65+optIdx)})</b> ${op}</div>`;
-                    });
-                    
-                    let just = q.justificacion ? `<div style="margin-top:0.5rem; font-size:0.85rem; background:var(--panel-bg); padding:0.5rem; border-left:3px solid var(--accent-teacher);"><b>Sustentación:</b> ${q.justificacion}</div>` : "";
+                    vid.preguntas.forEach((q, qIdx) => {
+                        let ops = "";
+                        q.opciones.forEach((op, optIdx) => {
+                            let color =
+                                optIdx === q.correcta
+                                    ? "background:#dcfce7; color:#166534; font-weight:bold;"
+                                    : "";
+                            ops += `<div style="padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px; ${color}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}</div>`;
+                        });
 
-                    html += `<div style="margin-bottom:1rem; padding:1rem; border:1px solid var(--border-soft); border-radius:8px; background:var(--panel-bg);">
-                                <p style="margin:0 0 0.5rem 0;"><b>P${qIdx+1}:</b> ${q.pregunta}</p>
+                        let just = q.justificacion
+                            ? `<div style="margin-top:0.5rem; font-size:0.85rem; background:var(--panel-bg); padding:0.5rem; border-left:3px solid var(--accent-teacher);"><b>Sustentación:</b> ${q.justificacion}</div>`
+                            : "";
+
+                        html += `<div style="margin-bottom:1rem; padding:1rem; border:1px solid var(--border-soft); border-radius:8px; background:var(--panel-bg);">
+                                <p style="margin:0 0 0.5rem 0;"><b>P${qIdx + 1}:</b> ${q.pregunta}</p>
                                 ${ops}
                                 ${just}
                             </div>`;
+                    });
+                    html += `</div>`;
                 });
-                html += `</div>`;
-            });
-            body.innerHTML += html;
-            document.getElementById('teacher-questions-modal').style.display = 'flex';
-        }
+                body.innerHTML += html;
+                document.getElementById(
+                    "teacher-questions-modal",
+                ).style.display = "flex";
+            }
 
-        // ================= DOCENTE =================
-        function createClass() {
-            const name = document.getElementById('t-teachername').value.trim();
-            const cName = document.getElementById('t-classname').value.trim();
-            const pass = document.getElementById('t-pass').value.trim();
-            const time = parseInt(document.getElementById('t-time').value);
-            const selectedChaps = Array.from(document.querySelectorAll('.chapter-checkbox:checked')).map(cb => parseInt(cb.value));
+            // ================= DOCENTE =================
+            function createClass() {
+                const name = document
+                    .getElementById("t-teachername")
+                    .value.trim();
+                const cName = document
+                    .getElementById("t-classname")
+                    .value.trim();
+                const pass = document.getElementById("t-pass").value.trim();
+                const time = parseInt(document.getElementById("t-time").value);
+                const selectedChaps = Array.from(
+                    document.querySelectorAll(".chapter-checkbox:checked"),
+                ).map((cb) => parseInt(cb.value));
 
-            if (!name || !cName || !pass || selectedChaps.length === 0) return alert("Complete todos los campos y seleccione al menos un capítulo.");
+                if (!name || !cName || !pass || selectedChaps.length === 0)
+                    return alert(
+                        "Complete todos los campos y seleccione al menos un capítulo.",
+                    );
 
-            const classKey = cName.toLowerCase();
+                const classKey = cName.toLowerCase();
 
-            // VALIDACIÓN: VERIFICAR SI LA CLASE YA EXISTE
-            db.ref("clases/" + classKey).once("value").then(snap => {
-                if (snap.exists()) {
-                    const confirmOverwrite = confirm("⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" + cName + "'.\nSi continúas, se borrarán TODOS los datos (notas, alumnos y feedback) de la clase anterior.\n\n¿Estás seguro de que deseas sobrescribirla?");
-                    if (!confirmOverwrite) return; // Detener si el docente cancela
-                }
+                // VALIDACIÓN: VERIFICAR SI LA CLASE YA EXISTE
+                db.ref("clases/" + classKey)
+                    .once("value")
+                    .then((snap) => {
+                        if (snap.exists()) {
+                            const confirmOverwrite = confirm(
+                                "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" +
+                                    cName +
+                                    "'.\nSi continúas, se borrarán TODOS los datos (notas, alumnos y feedback) de la clase anterior.\n\n¿Estás seguro de que deseas sobrescribirla?",
+                            );
+                            if (!confirmOverwrite) return; // Detener si el docente cancela
+                        }
 
-                // Si no existe, o si el docente aceptó sobrescribir, procedemos
-                const classData = { teacherName: name, className: cName, pass, timeLimit: time, chapters: selectedChaps, status: "waiting", startTime: 0 };
+                        // Si no existe, o si el docente aceptó sobrescribir, procedemos
+                        const classData = {
+                            teacherName: name,
+                            className: cName,
+                            pass,
+                            timeLimit: time,
+                            chapters: selectedChaps,
+                            status: "waiting",
+                            startTime: 0,
+                        };
 
-                db.ref("clases/" + classKey).set(classData).then(() => {
-                    localStorage.setItem("docenteClase", classKey);
-                    enterTeacherDashboard(classKey, classData);
-                });
-            });
-        }
+                        db.ref("clases/" + classKey)
+                            .set(classData)
+                            .then(() => {
+                                localStorage.setItem("docenteClase", classKey);
+                                enterTeacherDashboard(classKey, classData);
+                            });
+                    });
+            }
 
-        function enterTeacherDashboard(classKey, data) {
-            classroomConfig = data;
-            document.getElementById('docente-text-info').innerHTML = `
+            function enterTeacherDashboard(classKey, data) {
+                classroomConfig = data;
+                document.getElementById("docente-text-info").innerHTML = `
                 <h3 style="margin:0; color:var(--accent-teacher);">Sala: <span style="text-transform:uppercase;">${data.className}</span></h3>
                 <p style="margin:0;">Docente: ${data.teacherName} | Capítulos: ${data.chapters.length} | Tiempo: ${data.timeLimit} min</p>
             `;
-            db.ref("clases/" + classKey).on("value", snap => { if(snap.val()) updateTeacherUI(snap.val()); });
-            switchView('view-teacher-dashboard', true);
-        }
-
-        function updateTeacherUI(data) {
-            const btnStart = document.getElementById('btn-start-exam');
-            const btnStop = document.getElementById('btn-stop-exam');
-            const btnSolutions = document.getElementById('btn-show-solutions');
-            const btnPrint = document.getElementById('btn-print-grades');
-            const teacherTimer = document.getElementById('teacher-timer');
-
-            if (data.status === 'waiting') {
-                btnStart.style.display = 'block'; btnStop.style.display = 'none'; btnSolutions.style.display = 'none'; btnPrint.style.display = 'none';
-                teacherTimer.style.display = 'none';
-                clearInterval(teacherTimerInterval);
-            } else if (data.status === 'active') {
-                btnStart.style.display = 'none'; btnStop.style.display = 'block'; btnSolutions.style.display = 'none'; btnPrint.style.display = 'none';
-                teacherTimer.style.display = 'block';
-                
-                const endTime = data.startTime + (data.timeLimit * 60000);
-                clearInterval(teacherTimerInterval);
-                teacherTimerInterval = setInterval(() => {
-                    const diff = endTime - Date.now();
-                    if (diff <= 0) {
-                        teacherTimer.innerText = "⏱️ 00:00 (Tiempo agotado)";
-                        clearInterval(teacherTimerInterval);
-                    } else {
-                        const m = Math.floor(diff / 60000);
-                        const s = Math.floor((diff % 60000) / 1000);
-                        teacherTimer.innerText = `⏱️ ${m}:${s < 10 ? '0' : ''}${s}`;
-                    }
-                }, 1000);
-
-            } else {
-                btnStart.style.display = 'none'; btnStop.style.display = 'none'; btnSolutions.style.display = 'block'; btnPrint.style.display = 'inline-flex';
-                teacherTimer.style.display = 'none';
-                clearInterval(teacherTimerInterval);
+                db.ref("clases/" + classKey).on("value", (snap) => {
+                    if (snap.val()) updateTeacherUI(snap.val());
+                });
+                switchView("view-teacher-dashboard", true);
             }
 
-            const tbody = document.getElementById('students-table-body');
-            tbody.innerHTML = '';
-            if (data.estudiantes) {
-                Object.values(data.estudiantes).forEach(st => {
-                    let estado = st.finished ? (st.feedbackEnviado ? '✅ Completado' : '⏳ Feedback Pendiente') : '📝 En examen';
-                    let nota = st.finished ? st.score : '-';
-                    
-                    tbody.innerHTML += `
+            function updateTeacherUI(data) {
+                const btnStart = document.getElementById("btn-start-exam");
+                const btnStop = document.getElementById("btn-stop-exam");
+                const btnSolutions =
+                    document.getElementById("btn-show-solutions");
+                const btnPrint = document.getElementById("btn-print-grades");
+                const teacherTimer = document.getElementById("teacher-timer");
+
+                if (data.status === "waiting") {
+                    btnStart.style.display = "block";
+                    btnStop.style.display = "none";
+                    btnSolutions.style.display = "none";
+                    btnPrint.style.display = "none";
+                    teacherTimer.style.display = "none";
+                    clearInterval(teacherTimerInterval);
+                } else if (data.status === "active") {
+                    btnStart.style.display = "none";
+                    btnStop.style.display = "block";
+                    btnSolutions.style.display = "none";
+                    btnPrint.style.display = "none";
+                    teacherTimer.style.display = "block";
+
+                    const endTime = data.startTime + data.timeLimit * 60000;
+                    clearInterval(teacherTimerInterval);
+                    teacherTimerInterval = setInterval(() => {
+                        const diff = endTime - Date.now();
+                        if (diff <= 0) {
+                            teacherTimer.innerText =
+                                "⏱️ 00:00 (Tiempo agotado)";
+                            clearInterval(teacherTimerInterval);
+                        } else {
+                            const m = Math.floor(diff / 60000);
+                            const s = Math.floor((diff % 60000) / 1000);
+                            teacherTimer.innerText = `⏱️ ${m}:${s < 10 ? "0" : ""}${s}`;
+                        }
+                    }, 1000);
+                } else {
+                    btnStart.style.display = "none";
+                    btnStop.style.display = "none";
+                    btnSolutions.style.display = "block";
+                    btnPrint.style.display = "inline-flex";
+                    teacherTimer.style.display = "none";
+                    clearInterval(teacherTimerInterval);
+                }
+
+                const tbody = document.getElementById("students-table-body");
+                tbody.innerHTML = "";
+                if (data.estudiantes) {
+                    Object.values(data.estudiantes).forEach((st) => {
+                        let estado = st.finished
+                            ? st.feedbackEnviado
+                                ? "✅ Completado"
+                                : "⏳ Feedback Pendiente"
+                            : "📝 En examen";
+                        let nota = st.finished ? st.score : "-";
+
+                        tbody.innerHTML += `
                         <tr>
                             <td>${st.name}</td><td>${st.code}</td><td>${st.group}</td>
                             <td style="font-weight:bold;">${estado}</td>
                             <td><b>${nota}</b></td>
-                            <td>${st.finished ? (st.correctas + '/' + st.totalQ) : '-'}</td>
+                            <td>${st.finished ? st.correctas + "/" + st.totalQ : "-"}</td>
                             <td><button class="btn-secondary" onclick="openStudentDetail('${st.code}')">Ver</button></td>
                         </tr>`;
-                });
+                    });
+                }
             }
-        }
 
-        // VER PREGUNTAS (BOTÓN EN DASHBOARD)
-        function openTeacherQuestions() {
-            const classKey = localStorage.getItem("docenteClase");
-            db.ref("clases/" + classKey).once("value").then(snap => {
-                const data = snap.val();
-                if(!data) return;
-                
-                const body = document.getElementById('teacher-questions-body');
-                body.innerHTML = "";
-                
-                data.chapters.forEach(chapId => {
-                    const dataCap = bancoPreguntas[chapId];
-                    const chapInfo = capitulosCatalog.find(c => c.id === chapId);
-                    
-                    let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem; margin-top:1rem;">${chapInfo.title}</h3>`;
-                    
-                    dataCap.videos.forEach(vid => {
-                        html += `
+            // VER PREGUNTAS (BOTÓN EN DASHBOARD)
+            function openTeacherQuestions() {
+                const classKey = localStorage.getItem("docenteClase");
+                db.ref("clases/" + classKey)
+                    .once("value")
+                    .then((snap) => {
+                        const data = snap.val();
+                        if (!data) return;
+
+                        const body = document.getElementById(
+                            "teacher-questions-body",
+                        );
+                        body.innerHTML = "";
+
+                        data.chapters.forEach((chapId) => {
+                            const dataCap = bancoPreguntas[chapId];
+                            const chapInfo = capitulosCatalog.find(
+                                (c) => c.id === chapId,
+                            );
+
+                            let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem; margin-top:1rem;">${chapInfo.title}</h3>`;
+
+                            dataCap.videos.forEach((vid) => {
+                                html += `
                             <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--panel-alt); border-radius: 8px;">
                                 <h4 style="margin: 0 0 1rem 0; font-size:1rem; color:var(--accent-teacher);">Video: ${vid.titulo}</h4>
                                 <div class="video-responsive" style="margin-bottom:1rem;">
@@ -645,64 +1718,81 @@
                                     </video>
                                 </div>
                         `;
-                        
-                        vid.preguntas.forEach((q, qIdx) => {
-                            let ops = "";
-                            q.opciones.forEach((op, optIdx) => {
-                                let color = optIdx === q.correcta ? "background:#dcfce7; color:#166534; font-weight:bold;" : "";
-                                ops += `<div style="padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px; ${color}"><b>${String.fromCharCode(65+optIdx)})</b> ${op}</div>`;
-                            });
-                            
-                            let just = q.justificacion ? `<div style="margin-top:0.5rem; font-size:0.85rem; background:var(--panel-bg); padding:0.5rem; border-left:3px solid var(--accent-teacher);"><b>Sustentación:</b> ${q.justificacion}</div>` : "";
 
-                            html += `<div style="margin-bottom:1rem; padding:1rem; border:1px solid var(--border-soft); border-radius:8px; background:var(--panel-bg);">
-                                        <p style="margin:0 0 0.5rem 0;"><b>P${qIdx+1}:</b> ${q.pregunta}</p>
+                                vid.preguntas.forEach((q, qIdx) => {
+                                    let ops = "";
+                                    q.opciones.forEach((op, optIdx) => {
+                                        let color =
+                                            optIdx === q.correcta
+                                                ? "background:#dcfce7; color:#166534; font-weight:bold;"
+                                                : "";
+                                        ops += `<div style="padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px; ${color}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}</div>`;
+                                    });
+
+                                    let just = q.justificacion
+                                        ? `<div style="margin-top:0.5rem; font-size:0.85rem; background:var(--panel-bg); padding:0.5rem; border-left:3px solid var(--accent-teacher);"><b>Sustentación:</b> ${q.justificacion}</div>`
+                                        : "";
+
+                                    html += `<div style="margin-bottom:1rem; padding:1rem; border:1px solid var(--border-soft); border-radius:8px; background:var(--panel-bg);">
+                                        <p style="margin:0 0 0.5rem 0;"><b>P${qIdx + 1}:</b> ${q.pregunta}</p>
                                         ${ops}
                                         ${just}
                                     </div>`;
+                                });
+                                html += `</div>`;
+                            });
+                            body.innerHTML += html;
                         });
-                        html += `</div>`;
+
+                        document.getElementById(
+                            "teacher-questions-modal",
+                        ).style.display = "flex";
                     });
-                    body.innerHTML += html;
-                });
-                
-                document.getElementById('teacher-questions-modal').style.display = 'flex';
-            });
-        }
+            }
 
-        // IMPRIMIR NOTAS CON FEEDBACK
-        function printGrades() {
-            const classKey = localStorage.getItem("docenteClase");
-            if (!classKey) return;
+            // IMPRIMIR NOTAS CON FEEDBACK
+            function printGrades() {
+                const classKey = localStorage.getItem("docenteClase");
+                if (!classKey) return;
 
-            db.ref("clases/" + classKey).once("value").then(snap => {
-                const data = snap.val();
-                if (!data || !data.estudiantes) return alert("No hay datos para imprimir.");
+                db.ref("clases/" + classKey)
+                    .once("value")
+                    .then((snap) => {
+                        const data = snap.val();
+                        if (!data || !data.estudiantes)
+                            return alert("No hay datos para imprimir.");
 
-                const printBody = document.getElementById('print-table-body');
-                printBody.innerHTML = ''; 
+                        const printBody =
+                            document.getElementById("print-table-body");
+                        printBody.innerHTML = "";
 
-                document.getElementById('print-class-info').innerText = `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName}`;
-                document.getElementById('print-date').innerText = new Date().toLocaleString();
+                        document.getElementById("print-class-info").innerText =
+                            `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName}`;
+                        document.getElementById("print-date").innerText =
+                            new Date().toLocaleString();
 
-                const studentsList = Object.values(data.estudiantes).sort((a, b) => (b.score || 0) - (a.score || 0));
+                        const studentsList = Object.values(
+                            data.estudiantes,
+                        ).sort((a, b) => (b.score || 0) - (a.score || 0));
 
-                let index = 1;
-                studentsList.forEach(st => {
-                    let nota = st.finished ? st.score : 'N/A';
-                    let aciertos = st.finished ? `${st.correctas} / ${st.totalQ}` : '-';
-                    
-                    let feedbackText = "-";
-                    if (st.feedback) {
-                        feedbackText = `
+                        let index = 1;
+                        studentsList.forEach((st) => {
+                            let nota = st.finished ? st.score : "N/A";
+                            let aciertos = st.finished
+                                ? `${st.correctas} / ${st.totalQ}`
+                                : "-";
+
+                            let feedbackText = "-";
+                            if (st.feedback) {
+                                feedbackText = `
                             <b>Estrellas:</b> ${st.feedback.estrellas}/6<br>
                             <b>Preguntas:</b> ${st.feedback.utilidad}<br>
                             <b>Interfaz:</b> ${st.feedback.intuitiva}<br>
-                            <b>Sugerencia:</b> ${st.feedback.texto || 'Ninguna'}
+                            <b>Sugerencia:</b> ${st.feedback.texto || "Ninguna"}
                         `;
-                    }
+                            }
 
-                    printBody.innerHTML += `
+                            printBody.innerHTML += `
                         <tr>
                             <td>${index}</td>
                             <td>${st.name}</td>
@@ -713,309 +1803,443 @@
                             <td style="font-size:10px; line-height:1.2;">${feedbackText}</td>
                         </tr>
                     `;
-                    index++;
-                });
+                            index++;
+                        });
 
-                window.print();
-            });
-        }
+                        window.print();
+                    });
+            }
 
-        function startExam() {
-            db.ref("clases/" + localStorage.getItem("docenteClase")).update({ status: "active", startTime: Date.now() });
-        }
-        function stopExam() {
-            db.ref("clases/" + localStorage.getItem("docenteClase")).update({ status: "finished" });
-        }
-        function toggleSolutions(show) {
-            db.ref("clases/" + localStorage.getItem("docenteClase")).update({ status: show ? "solutions" : "finished" });
-        }
+            function startExam() {
+                db.ref("clases/" + localStorage.getItem("docenteClase")).update(
+                    { status: "active", startTime: Date.now() },
+                );
+            }
+            function stopExam() {
+                db.ref("clases/" + localStorage.getItem("docenteClase")).update(
+                    { status: "finished" },
+                );
+            }
+            function toggleSolutions(show) {
+                db.ref("clases/" + localStorage.getItem("docenteClase")).update(
+                    { status: show ? "solutions" : "finished" },
+                );
+            }
 
-        function logoutTeacher() {
-            localStorage.removeItem("docenteClase");
-            clearInterval(teacherTimerInterval);
-            window.location.reload();
-        }
+            function logoutTeacher() {
+                localStorage.removeItem("docenteClase");
+                clearInterval(teacherTimerInterval);
+                window.location.reload();
+            }
 
-        // ================= ALUMNO =================
-        function studentEnter() {
-            const name = document.getElementById('s-name').value.trim();
-            const code = document.getElementById('s-code').value.trim();
-            const cName = document.getElementById('s-classname').value.trim();
-            const pass = document.getElementById('s-pass').value.trim();
-            const group = document.getElementById('s-group').value;
+            // ================= ALUMNO =================
+            function studentEnter() {
+                const name = document.getElementById("s-name").value.trim();
+                const code = document.getElementById("s-code").value.trim();
+                const cName = document
+                    .getElementById("s-classname")
+                    .value.trim();
+                const pass = document.getElementById("s-pass").value.trim();
+                const group = document.getElementById("s-group").value;
 
-            if (!name || !code || !cName || !pass) return alert("Complete todos los campos.");
-            if (code.length !== 8 || isNaN(code)) return alert("El código debe tener 8 dígitos.");
+                if (!name || !code || !cName || !pass)
+                    return alert("Complete todos los campos.");
+                if (code.length !== 8 || isNaN(code))
+                    return alert("El código debe tener 8 dígitos.");
 
-            const classKey = cName.toLowerCase();
-            db.ref("clases/" + classKey).once("value").then(snap => {
-                const cData = snap.val();
-                if (!cData) return alert("La sala no existe.");
-                if (cData.pass !== pass) return alert("Contraseña incorrecta.");
+                const classKey = cName.toLowerCase();
+                db.ref("clases/" + classKey)
+                    .once("value")
+                    .then((snap) => {
+                        const cData = snap.val();
+                        if (!cData) return alert("La sala no existe.");
+                        if (cData.pass !== pass)
+                            return alert("Contraseña incorrecta.");
 
-                classroomConfig = cData;
-                currentStudent = { name, code, group, finished: false, feedbackEnviado: false };
-                
-                db.ref(`clases/${classKey}/estudiantes/${code}`).update(currentStudent).then(() => {
-                    localStorage.setItem("alumnoSala", JSON.stringify({ classKey, student: currentStudent, tempAnswers: {} }));
-                    checkStudentStatus(classKey);
-                });
-            });
-        }
+                        classroomConfig = cData;
+                        currentStudent = {
+                            name,
+                            code,
+                            group,
+                            finished: false,
+                            feedbackEnviado: false,
+                        };
 
-        function checkStudentStatus(classKey) {
-            document.getElementById('lobby-name').innerText = currentStudent.name;
-            
-            db.ref("clases/" + classKey).on("value", snap => {
-                const data = snap.val();
-                if (!data) return;
-                classroomConfig = data;
+                        db.ref(`clases/${classKey}/estudiantes/${code}`)
+                            .update(currentStudent)
+                            .then(() => {
+                                localStorage.setItem(
+                                    "alumnoSala",
+                                    JSON.stringify({
+                                        classKey,
+                                        student: currentStudent,
+                                        tempAnswers: {},
+                                    }),
+                                );
+                                checkStudentStatus(classKey);
+                            });
+                    });
+            }
 
-                if (data.status === 'waiting') {
-                    switchView('view-student-lobby', true);
-                } 
-                else if (data.status === 'active') {
-                    if (!currentStudent.finished) startStudentExamUI(data);
-                } 
-                else if (data.status === 'finished') {
-                    if (!currentStudent.finished) {
-                        autoSubmitQuizAndShowFeedback(); 
-                    } else { 
-                        switchView('view-student-results', true); 
-                        if(currentStudent.feedbackEnviado) {
-                            document.getElementById('feedback-form-container').style.display = 'none';
-                            document.getElementById('results-container').style.display = 'block';
-                            document.getElementById('final-score-display').innerText = `${currentStudent.score} / 20`;
-                            document.getElementById('btn-exit-final').style.display = 'block';
+            function checkStudentStatus(classKey) {
+                document.getElementById("lobby-name").innerText =
+                    currentStudent.name;
+
+                db.ref("clases/" + classKey).on("value", (snap) => {
+                    const data = snap.val();
+                    if (!data) return;
+                    classroomConfig = data;
+
+                    if (data.status === "waiting") {
+                        switchView("view-student-lobby", true);
+                    } else if (data.status === "active") {
+                        if (!currentStudent.finished) startStudentExamUI(data);
+                    } else if (data.status === "finished") {
+                        if (!currentStudent.finished) {
+                            autoSubmitQuizAndShowFeedback();
                         } else {
-                            document.getElementById('feedback-form-container').style.display = 'block';
-                            document.getElementById('results-container').style.display = 'none';
+                            switchView("view-student-results", true);
+                            if (currentStudent.feedbackEnviado) {
+                                document.getElementById(
+                                    "feedback-form-container",
+                                ).style.display = "none";
+                                document.getElementById(
+                                    "results-container",
+                                ).style.display = "block";
+                                document.getElementById(
+                                    "final-score-display",
+                                ).innerText = `${currentStudent.score} / 20`;
+                                document.getElementById(
+                                    "btn-exit-final",
+                                ).style.display = "block";
+                            } else {
+                                document.getElementById(
+                                    "feedback-form-container",
+                                ).style.display = "block";
+                                document.getElementById(
+                                    "results-container",
+                                ).style.display = "none";
+                            }
                         }
+                    } else if (data.status === "solutions") {
+                        switchView("view-student-results", true);
+                        document.getElementById(
+                            "feedback-form-container",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "results-container",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "final-score-display",
+                        ).innerText = `${currentStudent.score} / 20`;
+                        document.getElementById(
+                            "solutions-container",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "btn-exit-final",
+                        ).style.display = "block";
+                        renderSolutions(data);
                     }
-                } 
-                else if (data.status === 'solutions') {
-                    switchView('view-student-results', true);
-                    document.getElementById('feedback-form-container').style.display = 'none';
-                    document.getElementById('results-container').style.display = 'block';
-                    document.getElementById('final-score-display').innerText = `${currentStudent.score} / 20`;
-                    document.getElementById('solutions-container').style.display = 'block';
-                    document.getElementById('btn-exit-final').style.display = 'block';
-                    renderSolutions(data);
-                }
-            });
-        }
+                });
+            }
 
-        function startStudentExamUI(data) {
-            if(document.getElementById('view-student-exam').classList.contains('active')) return;
-            
-            switchView('view-student-exam', true);
-            document.getElementById('exam-timer').style.display = 'flex'; 
-            document.getElementById('btn-exit-student').style.display = 'block';
-            
-            const endTime = data.startTime + (data.timeLimit * 60000);
-            if (examTimerInterval) clearInterval(examTimerInterval);
-            
-            examTimerInterval = setInterval(() => {
-                const diff = endTime - Date.now();
-                if (diff <= 0) {
-                    clearInterval(examTimerInterval);
-                    document.getElementById('timer-text').innerText = "00:00";
-                    autoSubmitQuizAndShowFeedback(); 
-                } else {
-                    const m = Math.floor(diff / 60000);
-                    const s = Math.floor((diff % 60000) / 1000);
-                    document.getElementById('timer-text').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-                }
-            }, 1000);
+            function startStudentExamUI(data) {
+                if (
+                    document
+                        .getElementById("view-student-exam")
+                        .classList.contains("active")
+                )
+                    return;
 
-            const saved = JSON.parse(localStorage.getItem("alumnoSala") || "{}");
-            currentChapterIndex = saved.currentChapterIndex || 0;
-            
-            loadChapterForStudent();
-        }
+                switchView("view-student-exam", true);
+                document.getElementById("exam-timer").style.display = "flex";
+                document.getElementById("btn-exit-student").style.display =
+                    "block";
 
-        function loadChapterForStudent() {
-            const chapId = classroomConfig.chapters[currentChapterIndex];
-            const chapInfo = capitulosCatalog.find(c => c.id === chapId);
-            const dataCap = bancoPreguntas[chapId];
-            
-            document.getElementById('workspace-chapter-banner').innerHTML = `<h3 style="margin:0;">Capítulo ${currentChapterIndex + 1} de ${classroomConfig.chapters.length}: ${chapInfo.title}</h3>`;
-            
-            const infoDiv = document.getElementById('lab-info-dynamic');
-            if (dataCap.introLab && dataCap.objGeneral) {
-                infoDiv.innerHTML = `
+                const endTime = data.startTime + data.timeLimit * 60000;
+                if (examTimerInterval) clearInterval(examTimerInterval);
+
+                examTimerInterval = setInterval(() => {
+                    const diff = endTime - Date.now();
+                    if (diff <= 0) {
+                        clearInterval(examTimerInterval);
+                        document.getElementById("timer-text").innerText =
+                            "00:00";
+                        autoSubmitQuizAndShowFeedback();
+                    } else {
+                        const m = Math.floor(diff / 60000);
+                        const s = Math.floor((diff % 60000) / 1000);
+                        document.getElementById("timer-text").innerText =
+                            `${m}:${s < 10 ? "0" : ""}${s}`;
+                    }
+                }, 1000);
+
+                const saved = JSON.parse(
+                    localStorage.getItem("alumnoSala") || "{}",
+                );
+                currentChapterIndex = saved.currentChapterIndex || 0;
+
+                loadChapterForStudent();
+            }
+
+            function loadChapterForStudent() {
+                const chapId = classroomConfig.chapters[currentChapterIndex];
+                const chapInfo = capitulosCatalog.find((c) => c.id === chapId);
+                const dataCap = bancoPreguntas[chapId];
+
+                document.getElementById("workspace-chapter-banner").innerHTML =
+                    `<h3 style="margin:0;">Capítulo ${currentChapterIndex + 1} de ${classroomConfig.chapters.length}: ${chapInfo.title}</h3>`;
+
+                const infoDiv = document.getElementById("lab-info-dynamic");
+                if (dataCap.introLab && dataCap.objGeneral) {
+                    infoDiv.innerHTML = `
                     <div style="background:var(--panel-alt); padding:1.5rem; border-radius:8px; margin-bottom:1.5rem; border-left:4px solid var(--accent-teacher);">
                         <p style="margin:0 0 0.5rem 0;"><b>Introducción:</b> ${dataCap.introLab}</p>
                         <p style="margin:0;"><b>Objetivo:</b> ${dataCap.objGeneral}</p>
                     </div>`;
-            } else { infoDiv.innerHTML = ''; }
+                } else {
+                    infoDiv.innerHTML = "";
+                }
 
-            const container = document.getElementById('workspace-videos-container');
-            container.innerHTML = "";
+                const container = document.getElementById(
+                    "workspace-videos-container",
+                );
+                container.innerHTML = "";
 
-            dataCap.videos.forEach((vid, vIdx) => {
-                let preguntasHtml = "";
-                vid.preguntas.forEach((q, qIdx) => {
-                    let ops = "";
-                    q.opciones.forEach((op, optIdx) => {
-                        const checked = (tempAnswers[vid.id] && tempAnswers[vid.id][qIdx] === optIdx) ? "checked" : "";
-                        ops += `<label><input type="radio" name="q-${vid.id}-${qIdx}" value="${optIdx}" ${checked} onchange="saveTempAnswer('${vid.id}', ${qIdx}, ${optIdx})"><span>${op}</span></label>`;
+                dataCap.videos.forEach((vid, vIdx) => {
+                    let preguntasHtml = "";
+                    vid.preguntas.forEach((q, qIdx) => {
+                        let ops = "";
+                        q.opciones.forEach((op, optIdx) => {
+                            const checked =
+                                tempAnswers[vid.id] &&
+                                tempAnswers[vid.id][qIdx] === optIdx
+                                    ? "checked"
+                                    : "";
+                            ops += `<label><input type="radio" name="q-${vid.id}-${qIdx}" value="${optIdx}" ${checked} onchange="saveTempAnswer('${vid.id}', ${qIdx}, ${optIdx})"><span>${op}</span></label>`;
+                        });
+                        preguntasHtml += `<div class="question-item"><p><b>Pregunta ${qIdx + 1}:</b> ${q.pregunta}</p><div class="options-list">${ops}</div></div>`;
                     });
-                    preguntasHtml += `<div class="question-item"><p><b>Pregunta ${qIdx + 1}:</b> ${q.pregunta}</p><div class="options-list">${ops}</div></div>`;
-                });
 
-                container.innerHTML += `
+                    container.innerHTML += `
                     <div class="video-card">
                         <h4>Video ${vIdx + 1}: ${vid.titulo}</h4>
                         <div class="video-responsive"><video controls preload="metadata"><source src="videos/${chapInfo.folder}/${vid.id}.mp4" type="video/mp4"></video></div>
                         <div class="quiz-box">${preguntasHtml}</div>
                     </div>`;
-            });
+                });
 
-            const btnNext = document.getElementById('btn-next-chapter');
-            const btnFinish = document.getElementById('btn-finish-exam');
-            
-            if (currentChapterIndex === classroomConfig.chapters.length - 1) {
-                btnNext.style.display = 'none';
-                btnFinish.style.display = 'block'; 
-            } else {
-                btnNext.style.display = 'block';
-                btnFinish.style.display = 'none';
+                const btnNext = document.getElementById("btn-next-chapter");
+                const btnFinish = document.getElementById("btn-finish-exam");
+
+                if (
+                    currentChapterIndex ===
+                    classroomConfig.chapters.length - 1
+                ) {
+                    btnNext.style.display = "none";
+                    btnFinish.style.display = "block";
+                } else {
+                    btnNext.style.display = "block";
+                    btnFinish.style.display = "none";
+                }
             }
-        }
 
-        function saveTempAnswer(vidId, qIdx, val) {
-            if (!tempAnswers[vidId]) tempAnswers[vidId] = {};
-            tempAnswers[vidId][qIdx] = val;
-            const saved = JSON.parse(localStorage.getItem("alumnoSala") || "{}");
-            saved.tempAnswers = tempAnswers;
-            saved.currentChapterIndex = currentChapterIndex;
-            localStorage.setItem("alumnoSala", JSON.stringify(saved));
-        }
-
-        function nextChapter() {
-            if (currentChapterIndex < classroomConfig.chapters.length - 1) {
-                currentChapterIndex++;
-                const saved = JSON.parse(localStorage.getItem("alumnoSala") || "{}");
+            function saveTempAnswer(vidId, qIdx, val) {
+                if (!tempAnswers[vidId]) tempAnswers[vidId] = {};
+                tempAnswers[vidId][qIdx] = val;
+                const saved = JSON.parse(
+                    localStorage.getItem("alumnoSala") || "{}",
+                );
+                saved.tempAnswers = tempAnswers;
                 saved.currentChapterIndex = currentChapterIndex;
                 localStorage.setItem("alumnoSala", JSON.stringify(saved));
-                
-                window.scrollTo(0,0);
-                loadChapterForStudent();
             }
-        }
 
-        function finishStudentExam(autoSubmit = false) {
-            if (!autoSubmit && !confirm("¿Estás seguro de terminar? Tus respuestas serán enviadas y no podrás cambiarlas.")) return;
-            autoSubmitQuizAndShowFeedback();
-        }
+            function nextChapter() {
+                if (currentChapterIndex < classroomConfig.chapters.length - 1) {
+                    currentChapterIndex++;
+                    const saved = JSON.parse(
+                        localStorage.getItem("alumnoSala") || "{}",
+                    );
+                    saved.currentChapterIndex = currentChapterIndex;
+                    localStorage.setItem("alumnoSala", JSON.stringify(saved));
 
-        function autoSubmitQuizAndShowFeedback() {
-            if (currentStudent.finished) return; 
+                    window.scrollTo(0, 0);
+                    loadChapterForStudent();
+                }
+            }
 
-            if (examTimerInterval) clearInterval(examTimerInterval);
-            document.getElementById('exam-timer').style.display = 'none'; 
-            
-            let totalCorrect = 0, totalQ = 0, detallesFinales = [];
+            function finishStudentExam(autoSubmit = false) {
+                if (
+                    !autoSubmit &&
+                    !confirm(
+                        "¿Estás seguro de terminar? Tus respuestas serán enviadas y no podrás cambiarlas.",
+                    )
+                )
+                    return;
+                autoSubmitQuizAndShowFeedback();
+            }
 
-            classroomConfig.chapters.forEach(chapId => {
-                const dataCap = bancoPreguntas[chapId];
-                dataCap.videos.forEach(vid => {
-                    vid.preguntas.forEach((q, qIdx) => {
-                        totalQ++;
-                        const elegida = (tempAnswers[vid.id] && tempAnswers[vid.id][qIdx] !== undefined) ? tempAnswers[vid.id][qIdx] : null;
-                        const isCorrect = elegida === q.correcta;
-                        if (isCorrect) totalCorrect++;
-                        detallesFinales.push({ videoTitulo: vid.titulo, preguntaTexto: q.pregunta, opciones: q.opciones, elegida, correcta: q.correcta, esCorrecta: isCorrect });
+            function autoSubmitQuizAndShowFeedback() {
+                if (currentStudent.finished) return;
+
+                if (examTimerInterval) clearInterval(examTimerInterval);
+                document.getElementById("exam-timer").style.display = "none";
+
+                let totalCorrect = 0,
+                    totalQ = 0,
+                    detallesFinales = [];
+
+                classroomConfig.chapters.forEach((chapId) => {
+                    const dataCap = bancoPreguntas[chapId];
+                    dataCap.videos.forEach((vid) => {
+                        vid.preguntas.forEach((q, qIdx) => {
+                            totalQ++;
+                            const elegida =
+                                tempAnswers[vid.id] &&
+                                tempAnswers[vid.id][qIdx] !== undefined
+                                    ? tempAnswers[vid.id][qIdx]
+                                    : null;
+                            const isCorrect = elegida === q.correcta;
+                            if (isCorrect) totalCorrect++;
+                            detallesFinales.push({
+                                videoTitulo: vid.titulo,
+                                preguntaTexto: q.pregunta,
+                                opciones: q.opciones,
+                                elegida,
+                                correcta: q.correcta,
+                                esCorrecta: isCorrect,
+                            });
+                        });
                     });
                 });
-            });
 
-            const nota20 = ((totalCorrect / totalQ) * 20).toFixed(1);
-            const classKey = classroomConfig.className.toLowerCase();
+                const nota20 = ((totalCorrect / totalQ) * 20).toFixed(1);
+                const classKey = classroomConfig.className.toLowerCase();
 
-            db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`).update({
-                finished: true, 
-                feedbackEnviado: false,
-                score: nota20, 
-                correctas: totalCorrect, 
-                totalQ: totalQ, 
-                detalles: JSON.stringify(detallesFinales)
-            }).then(() => {
-                currentStudent.finished = true;
-                currentStudent.score = nota20;
-                const saved = JSON.parse(localStorage.getItem("alumnoSala") || "{}");
-                saved.student = currentStudent;
-                localStorage.setItem("alumnoSala", JSON.stringify(saved));
-                
-                document.getElementById('feedback-form-container').style.display = 'block';
-                document.getElementById('results-container').style.display = 'none';
-                switchView('view-student-results', true);
-            });
-        }
+                db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`)
+                    .update({
+                        finished: true,
+                        feedbackEnviado: false,
+                        score: nota20,
+                        correctas: totalCorrect,
+                        totalQ: totalQ,
+                        detalles: JSON.stringify(detallesFinales),
+                    })
+                    .then(() => {
+                        currentStudent.finished = true;
+                        currentStudent.score = nota20;
+                        const saved = JSON.parse(
+                            localStorage.getItem("alumnoSala") || "{}",
+                        );
+                        saved.student = currentStudent;
+                        localStorage.setItem(
+                            "alumnoSala",
+                            JSON.stringify(saved),
+                        );
 
-        // VALIDACIÓN ESTRICTA DE FEEDBACK
-        function submitFeedbackSeparately() {
-            const utilidad = document.getElementById('feedback-utilidad').value;
-            const intuitiva = document.getElementById('feedback-intuitiva').value;
-            const texto = document.getElementById('feedback-texto').value.trim();
-
-            if (studentRating === 0) {
-                return alert("⚠️ Es obligatorio calificar la página con las estrellas (1 a 6) antes de enviar.");
-            }
-            if (!utilidad || !intuitiva) {
-                return alert("⚠️ Por favor, responda todas las preguntas de selección antes de enviar.");
+                        document.getElementById(
+                            "feedback-form-container",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "results-container",
+                        ).style.display = "none";
+                        switchView("view-student-results", true);
+                    });
             }
 
-            const classKey = classroomConfig.className.toLowerCase();
+            // VALIDACIÓN ESTRICTA DE FEEDBACK
+            function submitFeedbackSeparately() {
+                const utilidad =
+                    document.getElementById("feedback-utilidad").value;
+                const intuitiva =
+                    document.getElementById("feedback-intuitiva").value;
+                const texto = document
+                    .getElementById("feedback-texto")
+                    .value.trim();
 
-            db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`).update({
-                feedbackEnviado: true,
-                feedback: {
-                    estrellas: studentRating,
-                    utilidad: utilidad,
-                    intuitiva: intuitiva,
-                    texto: texto
+                if (studentRating === 0) {
+                    return alert(
+                        "⚠️ Es obligatorio calificar la página con las estrellas (1 a 6) antes de enviar.",
+                    );
                 }
-            }).then(() => {
-                currentStudent.feedbackEnviado = true;
-                const saved = JSON.parse(localStorage.getItem("alumnoSala") || "{}");
-                saved.student = currentStudent;
-                localStorage.setItem("alumnoSala", JSON.stringify(saved));
-                
-                document.getElementById('feedback-form-container').style.display = 'none';
-                document.getElementById('results-container').style.display = 'block';
-                document.getElementById('final-score-display').innerText = `${currentStudent.score} / 20`;
-                document.getElementById('btn-exit-final').style.display = 'block'; 
-            });
-        }
-
-        function handleStarClick(e) {
-            const span = e.target.closest('span');
-            if (!span) return;
-            studentRating = parseInt(span.getAttribute('data-val'));
-            
-            const stars = document.querySelectorAll('#rating-stars-ui span');
-            stars.forEach((s, idx) => {
-                if (idx < studentRating) {
-                    s.classList.add('filled');
-                } else {
-                    s.classList.remove('filled');
+                if (!utilidad || !intuitiva) {
+                    return alert(
+                        "⚠️ Por favor, responda todas las preguntas de selección antes de enviar.",
+                    );
                 }
-            });
-        }
 
-        function renderSolutions(data) {
-            const container = document.getElementById('solutions-container');
-            container.innerHTML = "<h3 style='text-align:center;'>Solucionario y Videos</h3>";
-            
-            data.chapters.forEach(chapId => {
-                const dataCap = bancoPreguntas[chapId];
-                const chapInfo = capitulosCatalog.find(c => c.id === chapId);
-                
-                let html = `<div class="video-card"><h4>${chapInfo.title}</h4>`;
-                dataCap.videos.forEach(vid => {
-                    html += `
+                const classKey = classroomConfig.className.toLowerCase();
+
+                db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`)
+                    .update({
+                        feedbackEnviado: true,
+                        feedback: {
+                            estrellas: studentRating,
+                            utilidad: utilidad,
+                            intuitiva: intuitiva,
+                            texto: texto,
+                        },
+                    })
+                    .then(() => {
+                        currentStudent.feedbackEnviado = true;
+                        const saved = JSON.parse(
+                            localStorage.getItem("alumnoSala") || "{}",
+                        );
+                        saved.student = currentStudent;
+                        localStorage.setItem(
+                            "alumnoSala",
+                            JSON.stringify(saved),
+                        );
+
+                        document.getElementById(
+                            "feedback-form-container",
+                        ).style.display = "none";
+                        document.getElementById(
+                            "results-container",
+                        ).style.display = "block";
+                        document.getElementById(
+                            "final-score-display",
+                        ).innerText = `${currentStudent.score} / 20`;
+                        document.getElementById(
+                            "btn-exit-final",
+                        ).style.display = "block";
+                    });
+            }
+
+            function handleStarClick(e) {
+                const span = e.target.closest("span");
+                if (!span) return;
+                studentRating = parseInt(span.getAttribute("data-val"));
+
+                const stars = document.querySelectorAll(
+                    "#rating-stars-ui span",
+                );
+                stars.forEach((s, idx) => {
+                    if (idx < studentRating) {
+                        s.classList.add("filled");
+                    } else {
+                        s.classList.remove("filled");
+                    }
+                });
+            }
+
+            function renderSolutions(data) {
+                const container = document.getElementById(
+                    "solutions-container",
+                );
+                container.innerHTML =
+                    "<h3 style='text-align:center;'>Solucionario y Videos</h3>";
+
+                data.chapters.forEach((chapId) => {
+                    const dataCap = bancoPreguntas[chapId];
+                    const chapInfo = capitulosCatalog.find(
+                        (c) => c.id === chapId,
+                    );
+
+                    let html = `<div class="video-card"><h4>${chapInfo.title}</h4>`;
+                    dataCap.videos.forEach((vid) => {
+                        html += `
                         <div style="margin-bottom: 1.5rem;">
                             <p style="font-weight:bold; font-size:1.1rem; margin-bottom:0.5rem;">Video: ${vid.titulo}</p>
                             <div class="video-responsive" style="margin-bottom:1rem;">
@@ -1025,100 +2249,134 @@
                             </div>
                     `;
 
-                    vid.preguntas.forEach((q, qIdx) => {
-                        let ops = "";
-                        q.opciones.forEach((op, optIdx) => {
-                            let color = optIdx === q.correcta ? "background:#dcfce7; color:#166534; font-weight:bold;" : "";
-                            ops += `<div style="padding:0.5rem; margin:0.2rem 0; border-radius:5px; ${color}"><b>${String.fromCharCode(65+optIdx)})</b> ${op}</div>`;
-                        });
-                        
-                        let justificacionHtml = q.justificacion ? 
-                            `<div style="margin-top: 0.8rem; padding: 0.8rem; background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px; font-size: 0.85rem; color: #1e3a8a;">
-                                <b>💡 Sustentación:</b> ${q.justificacion}
-                            </div>` : "";
+                        vid.preguntas.forEach((q, qIdx) => {
+                            let ops = "";
+                            q.opciones.forEach((op, optIdx) => {
+                                let color =
+                                    optIdx === q.correcta
+                                        ? "background:#dcfce7; color:#166534; font-weight:bold;"
+                                        : "";
+                                ops += `<div style="padding:0.5rem; margin:0.2rem 0; border-radius:5px; ${color}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}</div>`;
+                            });
 
-                        html += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
-                                    <p><b>P${qIdx+1}:</b> ${q.pregunta}</p>
+                            let justificacionHtml = q.justificacion
+                                ? `<div style="margin-top: 0.8rem; padding: 0.8rem; background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px; font-size: 0.85rem; color: #1e3a8a;">
+                                <b>💡 Sustentación:</b> ${q.justificacion}
+                            </div>`
+                                : "";
+
+                            html += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
+                                    <p><b>P${qIdx + 1}:</b> ${q.pregunta}</p>
                                     ${ops}
                                     ${justificacionHtml}
                                 </div>`;
+                        });
+                        html += `</div>`;
                     });
-                    html += `</div>`; 
+                    container.innerHTML += html + "</div>";
                 });
-                container.innerHTML += html + "</div>";
-            });
-        }
+            }
 
-        function salirSalaAlumno() {
-            localStorage.removeItem("alumnoSala");
-            if(examTimerInterval) clearInterval(examTimerInterval);
-            window.location.href = window.location.pathname;
-        }
+            function salirSalaAlumno() {
+                localStorage.removeItem("alumnoSala");
+                if (examTimerInterval) clearInterval(examTimerInterval);
+                window.location.href = window.location.pathname;
+            }
 
-        function openStudentDetail(code) {
-            db.ref(`clases/${localStorage.getItem("docenteClase")}/estudiantes/${code}`).once('value').then(snap => {
-                const st = snap.val();
-                if(!st) return;
-                document.getElementById('modal-student-title').innerText = `Detalle: ${st.name}`;
-                const body = document.getElementById('modal-student-body');
-                
-                let feedbackHtml = "";
-                if(st.feedback) {
-                    feedbackHtml = `
+            function openStudentDetail(code) {
+                db.ref(
+                    `clases/${localStorage.getItem("docenteClase")}/estudiantes/${code}`,
+                )
+                    .once("value")
+                    .then((snap) => {
+                        const st = snap.val();
+                        if (!st) return;
+                        document.getElementById(
+                            "modal-student-title",
+                        ).innerText = `Detalle: ${st.name}`;
+                        const body =
+                            document.getElementById("modal-student-body");
+
+                        let feedbackHtml = "";
+                        if (st.feedback) {
+                            feedbackHtml = `
                         <div style="background: var(--panel-alt); border-left: 4px solid var(--accent-teacher); padding:1rem; border-radius:8px; margin-bottom:1rem; color: var(--text-main);">
                             <h4 style="margin-top:0; color: var(--accent-teacher);">Feedback del Alumno</h4>
                             <p style="margin: 0.3rem 0;"><b>Estrellas:</b> <span style="color: var(--highlight);">${st.feedback.estrellas} / 6</span></p>
                             <p style="margin: 0.3rem 0;"><b>Preguntas:</b> ${st.feedback.utilidad}</p>
                             <p style="margin: 0.3rem 0;"><b>Interfaz:</b> ${st.feedback.intuitiva}</p>
-                            <p style="margin: 0.3rem 0;"><b>Sugerencias:</b> ${st.feedback.texto || 'Ninguna'}</p>
+                            <p style="margin: 0.3rem 0;"><b>Sugerencias:</b> ${st.feedback.texto || "Ninguna"}</p>
                         </div>
                     `;
-                }
-
-                body.innerHTML = feedbackHtml;
-                if(!st.detalles) {
-                    body.innerHTML += `<p>No hay respuestas de examen guardadas.</p>`;
-                } else {
-                    JSON.parse(st.detalles).forEach((d, idx) => {
-                        let ops = "";
-                        d.opciones.forEach((op, optIdx) => {
-                            let style = "";
-                            if (optIdx === d.correcta) style = "background: #dcfce7; color: #166534; font-weight:bold;";
-                            else if (optIdx === d.elegida && !d.esCorrecta) style = "background: #fee2e2; color: #991b1b; text-decoration:line-through;";
-                            ops += `<div style="padding:0.2rem 0.5rem; margin:0.1rem 0; border-radius:4px; ${style}">${String.fromCharCode(65+optIdx)}) ${op}</div>`;
-                        });
-                        
-                        let just = "";
-                        if (d.justificacion) {
-                            just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
-                                        <b>Sustentación:</b> ${d.justificacion}
-                                    </div>`;
-                        } else {
-                            const chapId = classroomConfig.chapters.find(cId => bancoPreguntas[cId].videos.some(v => v.titulo === d.videoTitulo));
-                            if (chapId) {
-                                const vid = bancoPreguntas[chapId].videos.find(v => v.titulo === d.videoTitulo);
-                                if (vid) {
-                                    const q = vid.preguntas.find(q => q.pregunta === d.preguntaTexto);
-                                    if (q && q.justificacion) {
-                                        just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
-                                                    <b>Sustentación:</b> ${q.justificacion}
-                                                </div>`;
-                                    }
-                                }
-                            }
                         }
 
-                        body.innerHTML += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
-                            <span class="${d.esCorrecta ? 'badge-correct' : 'badge-incorrect'}">${d.esCorrecta ? '✓ Correcta' : '✕ Incorrecta'}</span>
-                            <p style="margin:0.5rem 0;"><b>P${idx+1}:</b> ${d.preguntaTexto}</p>
+                        body.innerHTML = feedbackHtml;
+                        if (!st.detalles) {
+                            body.innerHTML += `<p>No hay respuestas de examen guardadas.</p>`;
+                        } else {
+                            JSON.parse(st.detalles).forEach((d, idx) => {
+                                let ops = "";
+                                d.opciones.forEach((op, optIdx) => {
+                                    let style = "";
+                                    if (optIdx === d.correcta)
+                                        style =
+                                            "background: #dcfce7; color: #166534; font-weight:bold;";
+                                    else if (
+                                        optIdx === d.elegida &&
+                                        !d.esCorrecta
+                                    )
+                                        style =
+                                            "background: #fee2e2; color: #991b1b; text-decoration:line-through;";
+                                    ops += `<div style="padding:0.2rem 0.5rem; margin:0.1rem 0; border-radius:4px; ${style}">${String.fromCharCode(65 + optIdx)}) ${op}</div>`;
+                                });
+
+                                let just = "";
+                                if (d.justificacion) {
+                                    just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
+                                        <b>Sustentación:</b> ${d.justificacion}
+                                    </div>`;
+                                } else {
+                                    const chapId =
+                                        classroomConfig.chapters.find((cId) =>
+                                            bancoPreguntas[cId].videos.some(
+                                                (v) =>
+                                                    v.titulo === d.videoTitulo,
+                                            ),
+                                        );
+                                    if (chapId) {
+                                        const vid = bancoPreguntas[
+                                            chapId
+                                        ].videos.find(
+                                            (v) => v.titulo === d.videoTitulo,
+                                        );
+                                        if (vid) {
+                                            const q = vid.preguntas.find(
+                                                (q) =>
+                                                    q.pregunta ===
+                                                    d.preguntaTexto,
+                                            );
+                                            if (q && q.justificacion) {
+                                                just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
+                                                    <b>Sustentación:</b> ${q.justificacion}
+                                                </div>`;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                body.innerHTML += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
+                            <span class="${d.esCorrecta ? "badge-correct" : "badge-incorrect"}">${d.esCorrecta ? "✓ Correcta" : "✕ Incorrecta"}</span>
+                            <p style="margin:0.5rem 0;"><b>P${idx + 1}:</b> ${d.preguntaTexto}</p>
                             ${ops}
                             ${just}
                         </div>`;
+                            });
+                        }
+                        document.getElementById(
+                            "student-detail-modal",
+                        ).style.display = "flex";
                     });
-                }
-                document.getElementById('student-detail-modal').style.display = 'flex';
-            });
-        }
-    </script>
-</body>
+            }
+        </script>
+    </body>
 </html>
