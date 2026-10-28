@@ -394,8 +394,8 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // CLAVE MAESTRA PARA DOCENTES (Puedes cambiarla por la que prefieras)
-        const TEACHER_MASTER_KEY = "uNmSmz026";
+        // CLAVE MAESTRA PARA DOCENTES
+        const TEACHER_MASTER_KEY = "unmsm2026";
 
         let currentStudent = null;
         let classroomConfig = null;
@@ -495,7 +495,6 @@
             let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem;">${chapInfo.title}</h3>`;
             
             dataCap.videos.forEach(vid => {
-                // AQUI SE AGREGA EL VIDEO AL MODAL DEL DOCENTE
                 html += `
                     <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--panel-alt); border-radius: 8px;">
                         <h4 style="margin: 0 0 1rem 0; font-size:1rem; color:var(--accent-teacher);">Video: ${vid.titulo}</h4>
@@ -521,7 +520,7 @@
                                 ${just}
                             </div>`;
                 });
-                html += `</div>`; // Cerrar el contenedor del video
+                html += `</div>`;
             });
             body.innerHTML += html;
             document.getElementById('teacher-questions-modal').style.display = 'flex';
@@ -538,11 +537,21 @@
             if (!name || !cName || !pass || selectedChaps.length === 0) return alert("Complete todos los campos y seleccione al menos un capítulo.");
 
             const classKey = cName.toLowerCase();
-            const classData = { teacherName: name, className: cName, pass, timeLimit: time, chapters: selectedChaps, status: "waiting", startTime: 0 };
 
-            db.ref("clases/" + classKey).set(classData).then(() => {
-                localStorage.setItem("docenteClase", classKey);
-                enterTeacherDashboard(classKey, classData);
+            // VALIDACIÓN: VERIFICAR SI LA CLASE YA EXISTE
+            db.ref("clases/" + classKey).once("value").then(snap => {
+                if (snap.exists()) {
+                    const confirmOverwrite = confirm("⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" + cName + "'.\nSi continúas, se borrarán TODOS los datos (notas, alumnos y feedback) de la clase anterior.\n\n¿Estás seguro de que deseas sobrescribirla?");
+                    if (!confirmOverwrite) return; // Detener si el docente cancela
+                }
+
+                // Si no existe, o si el docente aceptó sobrescribir, procedemos
+                const classData = { teacherName: name, className: cName, pass, timeLimit: time, chapters: selectedChaps, status: "waiting", startTime: 0 };
+
+                db.ref("clases/" + classKey).set(classData).then(() => {
+                    localStorage.setItem("docenteClase", classKey);
+                    enterTeacherDashboard(classKey, classData);
+                });
             });
         }
 
@@ -627,7 +636,6 @@
                     let html = `<h3 style="color:var(--accent-teacher); border-bottom:2px solid var(--border-soft); padding-bottom:0.5rem; margin-top:1rem;">${chapInfo.title}</h3>`;
                     
                     dataCap.videos.forEach(vid => {
-                        // AQUI SE AGREGA EL VIDEO AL MODAL DEL DOCENTE
                         html += `
                             <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--panel-alt); border-radius: 8px;">
                                 <h4 style="margin: 0 0 1rem 0; font-size:1rem; color:var(--accent-teacher);">Video: ${vid.titulo}</h4>
@@ -653,7 +661,7 @@
                                         ${just}
                                     </div>`;
                         });
-                        html += `</div>`; // Cerrar el contenedor del video
+                        html += `</div>`;
                     });
                     body.innerHTML += html;
                 });
