@@ -4,6 +4,25 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Enciclopedia en Videos de Demostración de Física - UNMSM</title>
+
+        <meta
+            name="description"
+            content="Plataforma interactiva de evaluación en vivo para el curso de Física de la Facultad de Ciencias Físicas de la UNMSM. Videos demostrativos y cuestionarios."
+        />
+        <link rel="canonical" href="https://project01-24faf.web.app/" />
+        <meta
+            property="og:title"
+            content="Sistema de Evaluación en Vivo - Física UNMSM"
+        />
+        <meta
+            property="og:description"
+            content="Accede a los videos demostrativos y evaluaciones interactivas."
+        />
+        <meta
+            property="og:image"
+            content="https://project01-24faf.web.app/physics-logo.jpg"
+        />
+        <meta property="og:url" content="https://project01-24faf.web.app/" />
         <style>
             :root {
                 --bg-main: #f8fafc;
@@ -418,6 +437,62 @@
                 padding: 1rem;
                 border-bottom: 1px solid var(--border-soft);
                 color: var(--text-main);
+            }
+
+            /* NUEVOS ESTILOS PARA ESTADÍSTICAS DEL DOCENTE */
+            .teacher-stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            @media (max-width: 750px) {
+                .teacher-stats-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .stat-card {
+                background: var(--panel-bg);
+                border-radius: 12px;
+                padding: 1.2rem;
+                border: 1.5px solid var(--border-soft);
+                box-shadow: var(--shadow-sm);
+                border-left: 5px solid var(--accent-teacher);
+            }
+            .stat-card.success {
+                border-left-color: #059669;
+            }
+            .stat-card.danger {
+                border-left-color: #ef4444;
+            }
+            .stat-card-title {
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-bottom: 0.4rem;
+            }
+            .stat-card-body {
+                font-size: 0.92rem;
+                font-weight: 600;
+                color: var(--text-main);
+            }
+
+            .comment-box-list {
+                background: var(--panel-bg);
+                border: 1px solid var(--border-soft);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .comment-item {
+                padding: 0.8rem 0;
+                border-bottom: 1px solid var(--border-soft);
+                font-size: 0.9rem;
+            }
+            .comment-item:last-child {
+                border-bottom: none;
             }
 
             /* CONTENIDO ALUMNO */
@@ -856,7 +931,7 @@
                 </div>
             </div>
 
-            <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN -->
+            <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN Y CONFIGURACIÓN -->
             <div id="view-teacher-register" class="view">
                 <div class="form-card">
                     <button
@@ -913,12 +988,69 @@
                             ></div>
                         </div>
                     </div>
+
+                    <!-- BOTONES DE ACCIÓN (MODIFICADO) -->
+                    <div
+                        style="
+                            display: flex;
+                            gap: 1rem;
+                            margin-top: 1.5rem;
+                            flex-wrap: wrap;
+                        "
+                    >
+                        <button
+                            class="btn btn-teacher"
+                            onclick="goToTeacherConfig()"
+                            style="flex: 1; min-width: 200px"
+                        >
+                            CONFIGURAR PREGUNTAS ADICIONALES
+                        </button>
+                        <button
+                            class="btn btn-teacher"
+                            onclick="createClass()"
+                            style="
+                                flex: 1;
+                                min-width: 200px;
+                                background: #059669;
+                            "
+                        >
+                            CREAR SALA Y COMENZAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVA VISTA: CONFIGURACIÓN DE PREGUNTAS PERSONALIZADAS (DOCENTE) -->
+            <div id="view-teacher-config" class="view">
+                <div class="form-card" style="max-width: 950px">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-teacher-register', true)"
+                        style="margin-bottom: 1rem"
+                    >
+                        ← Volver al Registro
+                    </button>
+                    <h3>Configurar Preguntas Adicionales</h3>
+                    <p
+                        style="
+                            font-size: 0.9rem;
+                            color: var(--text-muted);
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        Puede agregar sus propias preguntas a los videos
+                        seleccionados. Estas se sumarán a las oficiales para el
+                        examen de esta sala.
+                    </p>
+
+                    <div id="teacher-config-videos-container"></div>
+
                     <button
                         class="btn btn-teacher"
-                        onclick="createClass()"
-                        style="margin-top: 1.5rem"
+                        onclick="saveCustomQuestionsAndCreate()"
+                        style="margin-top: 1.5rem; background: #059669"
                     >
-                        CREAR SALA Y COMENZAR
+                        GUARDAR PREGUNTAS Y CREAR SALA
                     </button>
                 </div>
             </div>
@@ -1008,6 +1140,61 @@
                     <button class="btn-secondary" onclick="logoutTeacher()">
                         Cerrar Sesión
                     </button>
+                </div>
+                <!-- NUEVO PANEL DE ESTADÍSTICAS (PASO 4) -->
+                <div class="teacher-stats-grid">
+                    <div class="stat-card success">
+                        <div class="stat-card-title">
+                            ⭐ Pregunta más acertada por el aula
+                        </div>
+                        <div class="stat-card-body" id="stat-most-correct">
+                            Calculando datos...
+                        </div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-card-title">
+                            ⚠️ Pregunta con mayor dificultad
+                        </div>
+                        <div class="stat-card-body" id="stat-least-correct">
+                            Calculando datos...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="teacher-stats-grid" style="margin-bottom: 1.5rem">
+                    <div class="stat-card" style="border-left-color: #f59e0b">
+                        <div class="stat-card-title">
+                            📊 Evaluaciones de la Página (Promedios)
+                        </div>
+                        <div class="stat-card-body" id="stat-page-ratings">
+                            Calculando calificaciones...
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #059669">
+                        <div class="stat-card-title">
+                            💬 Comentarios y Sugerencias de Alumnos
+                        </div>
+                        <div class="stat-card-body" id="stat-comments-count">
+                            0 comentarios registrados
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-box-list" style="margin-bottom: 1.5rem">
+                    <h4
+                        style="
+                            margin: 0 0 1rem 0;
+                            color: var(--text-main);
+                            font-family: Georgia, serif;
+                        "
+                    >
+                        Comentarios Recibidos de los Alumnos
+                    </h4>
+                    <div id="teacher-comments-container">
+                        <p style="color: var(--text-muted); font-size: 0.9rem">
+                            Aún no hay comentarios registrados.
+                        </p>
+                    </div>
                 </div>
                 <div class="dashboard-table-container">
                     <table>
@@ -1353,7 +1540,12 @@
                         margin-bottom: 1rem;
                     "
                 >
-                    <h3 id="modal-student-title" style="margin: 0">Detalle</h3>
+                    <h2
+                        id="modal-student-title"
+                        style="margin: 0; font-size: 1.2rem"
+                    >
+                        Detalle
+                    </h2>
                     <button
                         onclick="
                             document.getElementById(
@@ -1437,6 +1629,8 @@
             let examTimerInterval = null;
             let teacherTimerInterval = null;
             let studentRating = 0;
+
+            let teacherCustomQuestions = {}; // Almacenará las preguntas creadas por el docente antes de guardar en Firebase
 
             // ========================================================
             // VARIABLES PARA LA UI DE LOS CAPÍTULOS (INTEGRADO)
@@ -1693,7 +1887,152 @@
                     );
                 }
             }
+            // ================= LÓGICA DE PREGUNTAS PERSONALIZADAS =================
 
+            // Paso 1: Abrir la vista y pintar los formularios
+            function goToTeacherConfig() {
+                const name = document
+                    .getElementById("t-teachername")
+                    .value.trim();
+                const cName = document
+                    .getElementById("t-classname")
+                    .value.trim();
+                const pass = document.getElementById("t-pass").value.trim();
+
+                if (!name || !cName || !pass) {
+                    return alert(
+                        "Por favor, complete el Nombre del Docente, Nombre de la Sala y Contraseña antes de configurar preguntas.",
+                    );
+                }
+
+                // Limpiamos las preguntas que hubiera de una sesión anterior
+                teacherCustomQuestions = {};
+
+                const container = document.getElementById(
+                    "teacher-config-videos-container",
+                );
+                container.innerHTML = "";
+
+                // Obtenemos los capítulos seleccionados de las tarjetas
+                const selectedCards = document.querySelectorAll(
+                    ".chapter-select-card.selected",
+                );
+                const selectedChaps = Array.from(selectedCards).map((card) => {
+                    const titleText = card.querySelector(
+                        ".chapter-card-title",
+                    ).innerText;
+                    return parseInt(
+                        titleText.replace("Capítulo ", "").split(":")[0],
+                    );
+                });
+
+                if (selectedChaps.length === 0) {
+                    return alert(
+                        "Primero seleccione al menos un capítulo en la lista.",
+                    );
+                }
+
+                // Recorremos los capítulos y videos para pintar los formularios
+                selectedChaps.forEach((capId) => {
+                    const dataCap = bancoPreguntas[capId];
+                    if (!dataCap) return;
+
+                    dataCap.videos.forEach((vid) => {
+                        let vidBox = document.createElement("div");
+                        vidBox.style.cssText =
+                            "background: var(--panel-alt); border: 1px solid var(--border-soft); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;";
+
+                        vidBox.innerHTML = `
+                            <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: var(--accent-teacher);">Video: ${vid.titulo} (Cap. ${capId})</h4>
+                            <div style="background: var(--panel-bg); padding: 1rem; border-radius: 6px; border: 1px solid var(--border-strong);">
+                                <h5 style="margin: 0 0 0.5rem 0; font-size: 0.9rem;">➕ Proponer Nueva Pregunta</h5>
+                                <div class="form-field" style="margin-bottom: 0.5rem;">
+                                    <input type="text" id="cq-text-${vid.id}" placeholder="Enunciado de la pregunta" style="width: 100%; padding: 0.5rem;">
+                                </div>
+                                <div class="form-grid" style="gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <input type="text" id="cq-a-${vid.id}" placeholder="Opción A" style="padding: 0.5rem;">
+                                    <input type="text" id="cq-b-${vid.id}" placeholder="Opción B" style="padding: 0.5rem;">
+                                    <input type="text" id="cq-c-${vid.id}" placeholder="Opción C" style="padding: 0.5rem;">
+                                    <input type="text" id="cq-d-${vid.id}" placeholder="Opción D" style="padding: 0.5rem;">
+                                </div>
+                                <div class="form-grid" style="gap: 0.5rem;">
+                                    <select id="cq-correct-${vid.id}" style="padding: 0.5rem;">
+                                        <option value="0">Correcta: Opción A</option>
+                                        <option value="1">Correcta: Opción B</option>
+                                        <option value="2">Correcta: Opción C</option>
+                                        <option value="3">Correcta: Opción D</option>
+                                    </select>
+                                    <input type="text" id="cq-just-${vid.id}" placeholder="Explicación / Justificación" style="padding: 0.5rem;">
+                                </div>
+                                <button type="button" class="btn-secondary" onclick="addCustomQuestion('${vid.id}')" style="margin-top: 0.5rem; font-size: 0.8rem;">+ Agregar</button>
+                                <div id="cq-msg-${vid.id}" style="font-size: 0.8rem; color: #059669; margin-top: 0.5rem; font-weight: bold;"></div>
+                            </div>
+                        `;
+                        container.appendChild(vidBox);
+                    });
+                });
+
+                switchView("view-teacher-config");
+            }
+
+            // Paso 2: Agregar una pregunta a la memoria temporal
+            function addCustomQuestion(vidId) {
+                const qText = document
+                    .getElementById(`cq-text-${vidId}`)
+                    .value.trim();
+                const optA = document
+                    .getElementById(`cq-a-${vidId}`)
+                    .value.trim();
+                const optB = document
+                    .getElementById(`cq-b-${vidId}`)
+                    .value.trim();
+                const optC = document
+                    .getElementById(`cq-c-${vidId}`)
+                    .value.trim();
+                const optD = document
+                    .getElementById(`cq-d-${vidId}`)
+                    .value.trim();
+                const correctIdx = parseInt(
+                    document.getElementById(`cq-correct-${vidId}`).value,
+                );
+                const just = document
+                    .getElementById(`cq-just-${vidId}`)
+                    .value.trim();
+
+                if (!qText || !optA || !optB || !optC || !optD || !just) {
+                    return alert(
+                        "Por favor, complete todos los campos de la pregunta antes de agregarla.",
+                    );
+                }
+
+                // AHORA USAMOS UN ARRAY EN LUGAR DE UN OBJETO CON PUNTOS
+                if (!teacherCustomQuestions[vidId])
+                    teacherCustomQuestions[vidId] = [];
+
+                teacherCustomQuestions[vidId].push({
+                    pregunta: qText,
+                    opciones: [optA, optB, optC, optD],
+                    correcta: correctIdx,
+                    justificacion: just,
+                });
+
+                document.getElementById(`cq-msg-${vidId}`).textContent =
+                    `✔ Pregunta agregada (${teacherCustomQuestions[vidId].length} en este video)`;
+
+                // Limpiar inputs
+                document.getElementById(`cq-text-${vidId}`).value = "";
+                document.getElementById(`cq-a-${vidId}`).value = "";
+                document.getElementById(`cq-b-${vidId}`).value = "";
+                document.getElementById(`cq-c-${vidId}`).value = "";
+                document.getElementById(`cq-d-${vidId}`).value = "";
+                document.getElementById(`cq-just-${vidId}`).value = "";
+            }
+
+            // Paso 3: Guardar en Firebase y crear la clase
+            function saveCustomQuestionsAndCreate() {
+                // Llamamos a una versión modificada de createClass que incluye las preguntas
+                createClass();
+            }
             // ================= DOCENTE =================
             function createClass() {
                 const name = document
@@ -1705,10 +2044,17 @@
                 const pass = document.getElementById("t-pass").value.trim();
                 const time = parseInt(document.getElementById("t-time").value);
 
-                // LA LECTURA DE CHECKBOXES SIGUE FUNCIONANDO GRACIAS A LOS INPUTS OCULTOS
-                const selectedChaps = Array.from(
-                    document.querySelectorAll(".chapter-checkbox:checked"),
-                ).map((cb) => parseInt(cb.value));
+                const selectedCards = document.querySelectorAll(
+                    ".chapter-select-card.selected",
+                );
+                const selectedChaps = Array.from(selectedCards).map((card) => {
+                    const titleText = card.querySelector(
+                        ".chapter-card-title",
+                    ).innerText;
+                    return parseInt(
+                        titleText.replace("Capítulo ", "").split(":")[0],
+                    );
+                });
 
                 if (!name || !cName || !pass || selectedChaps.length === 0) {
                     return alert(
@@ -1718,7 +2064,6 @@
 
                 const classKey = cName.toLowerCase();
 
-                // VALIDACIÓN: VERIFICAR SI LA CLASE YA EXISTE
                 db.ref("clases/" + classKey)
                     .once("value")
                     .then((snap) => {
@@ -1726,7 +2071,7 @@
                             const confirmOverwrite = confirm(
                                 "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" +
                                     cName +
-                                    "'.\nSi continúas, se borrarán TODOS los datos (notas, alumnos y feedback) de la clase anterior.\n\n¿Estás seguro de que deseas sobrescribirla?",
+                                    "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?",
                             );
                             if (!confirmOverwrite) return;
                         }
@@ -1739,12 +2084,14 @@
                             chapters: selectedChaps,
                             status: "waiting",
                             startTime: 0,
+                            customQuestions: teacherCustomQuestions,
                         };
 
                         db.ref("clases/" + classKey)
                             .set(classData)
                             .then(() => {
                                 localStorage.setItem("docenteClase", classKey);
+                                teacherCustomQuestions = {};
                                 enterTeacherDashboard(classKey, classData);
                             });
                     });
@@ -1770,6 +2117,7 @@
                 const btnPrint = document.getElementById("btn-print-grades");
                 const teacherTimer = document.getElementById("teacher-timer");
 
+                // --- CONTROL DE BOTONES Y TEMPORIZADOR ---
                 if (data.status === "waiting") {
                     btnStart.style.display = "block";
                     btnStop.style.display = "none";
@@ -1807,6 +2155,7 @@
                     clearInterval(teacherTimerInterval);
                 }
 
+                // --- RENDERIZADO DE LA TABLA DE ALUMNOS ---
                 const tbody = document.getElementById("students-table-body");
                 tbody.innerHTML = "";
                 if (data.estudiantes) {
@@ -1827,6 +2176,128 @@
                             <td><button class="btn-secondary" onclick="openStudentDetail('${st.code}')">Ver</button></td>
                         </tr>`;
                     });
+                }
+
+                // =========================================================
+                // CÁLCULO DE ESTADÍSTICAS (PASO 4) - ESTO ES LO QUE FALTABA
+                // =========================================================
+                let studentsList = Object.values(data.estudiantes || {});
+                let finishedStudents = studentsList.filter(
+                    (st) => st.finished && st.detalles,
+                );
+
+                // 1. Preguntas más y menos acertadas
+                if (finishedStudents.length === 0) {
+                    document.getElementById("stat-most-correct").textContent =
+                        "Sin datos suficientes";
+                    document.getElementById("stat-least-correct").textContent =
+                        "Sin datos suficientes";
+                } else {
+                    let questionStats = {};
+                    finishedStudents.forEach((st) => {
+                        try {
+                            let detalles =
+                                typeof st.detalles === "string"
+                                    ? JSON.parse(st.detalles)
+                                    : st.detalles;
+                            detalles.forEach((d) => {
+                                let qKey = d.preguntaTexto;
+                                if (!questionStats[qKey])
+                                    questionStats[qKey] = {
+                                        correct: 0,
+                                        total: 0,
+                                    };
+                                questionStats[qKey].total++;
+                                if (d.esCorrecta) questionStats[qKey].correct++;
+                            });
+                        } catch (e) {
+                            console.error("Error parseando detalles", e);
+                        }
+                    });
+
+                    let bestQ = "N/A",
+                        worstQ = "N/A";
+                    let maxRatio = -1,
+                        minRatio = 2;
+
+                    for (let qText in questionStats) {
+                        let ratio =
+                            questionStats[qText].correct /
+                            questionStats[qText].total;
+                        if (ratio > maxRatio) {
+                            maxRatio = ratio;
+                            bestQ = `${qText.substring(0, 60)}... (${Math.round(ratio * 100)}% aciertos)`;
+                        }
+                        if (ratio < minRatio) {
+                            minRatio = ratio;
+                            worstQ = `${qText.substring(0, 60)}... (${Math.round((1 - ratio) * 100)}% errores)`;
+                        }
+                    }
+
+                    document.getElementById("stat-most-correct").textContent =
+                        bestQ !== "N/A" ? bestQ : "Sin datos";
+                    document.getElementById("stat-least-correct").textContent =
+                        worstQ !== "N/A" ? worstQ : "Sin datos";
+                }
+
+                // 2. Promedios del Feedback y Comentarios
+                let evals = studentsList.filter((st) => st.feedback);
+                const commentsContainer = document.getElementById(
+                    "teacher-comments-container",
+                );
+                commentsContainer.innerHTML = "";
+
+                if (evals.length === 0) {
+                    document.getElementById("stat-page-ratings").textContent =
+                        "Sin calificaciones aún";
+                    document.getElementById("stat-comments-count").textContent =
+                        "0 comentarios registrados";
+                    commentsContainer.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">Aún no hay comentarios registrados.</p>`;
+                } else {
+                    let sumStars = 0;
+                    let sumUtilidad = 0;
+                    let sumIntuitiva = 0;
+
+                    evals.forEach((ev) => {
+                        sumStars += Number(ev.feedback.estrellas || 0);
+                        // Convertimos los textos a números para promediar
+                        let utilVal =
+                            ev.feedback.utilidad === "Muy buenas"
+                                ? 5
+                                : ev.feedback.utilidad === "Adecuadas"
+                                  ? 4
+                                  : ev.feedback.utilidad === "Regulares"
+                                    ? 3
+                                    : 2;
+                        let intVal =
+                            ev.feedback.intuitiva === "Muy intuitiva"
+                                ? 5
+                                : ev.feedback.intuitiva === "Normal"
+                                  ? 3
+                                  : 1;
+                        sumUtilidad += utilVal;
+                        sumIntuitiva += intVal;
+
+                        // Agregar comentario a la lista
+                        let cDiv = document.createElement("div");
+                        cDiv.className = "comment-item";
+                        cDiv.innerHTML = `<strong>${ev.name}</strong> (Grupo ${ev.group}) - <span style="color:var(--highlight); font-weight:bold;">${ev.feedback.estrellas}/6 ★</span><br>
+                                          <span style="color:var(--text-muted);">Preguntas: ${ev.feedback.utilidad} | Interfaz: ${ev.feedback.intuitiva}</span><br>
+                                          "${ev.feedback.texto || "Sin comentario de texto"}"`;
+                        commentsContainer.appendChild(cDiv);
+                    });
+
+                    let avgStars = (sumStars / evals.length).toFixed(1);
+                    let avgUtilidad = (sumUtilidad / evals.length).toFixed(1);
+                    let avgIntuitiva = (sumIntuitiva / evals.length).toFixed(1);
+
+                    document.getElementById("stat-page-ratings").innerHTML = `
+                        <div><b>Estrellas:</b> ${avgStars} / 6</div>
+                        <div><b>Preguntas:</b> ${avgUtilidad} / 5</div>
+                        <div><b>Interfaz:</b> ${avgIntuitiva} / 5</div>
+                    `;
+                    document.getElementById("stat-comments-count").textContent =
+                        `${evals.length} comentarios registrados`;
                 }
             }
 
@@ -1850,7 +2321,6 @@
                             const dataCap = bancoPreguntas[chapId];
                             if (!dataCap) return;
 
-                            // Usamos las nuevas variables globales
                             const chapTitle =
                                 chapterNames[chapId] || `Capítulo ${chapId}`;
                             const folderName = chapterFolders[chapId];
@@ -1868,7 +2338,18 @@
                                         </div>
                                 `;
 
-                                vid.preguntas.forEach((q, qIdx) => {
+                                // MEZCLA DE PREGUNTAS
+                                let customQs =
+                                    data.customQuestions &&
+                                    data.customQuestions[vid.id]
+                                        ? data.customQuestions[vid.id]
+                                        : [];
+                                let videoQuestionsToRender = [
+                                    ...vid.preguntas,
+                                    ...customQs,
+                                ];
+
+                                videoQuestionsToRender.forEach((q, qIdx) => {
                                     let ops = "";
                                     q.opciones.forEach((op, optIdx) => {
                                         let color =
@@ -1916,13 +2397,49 @@
                         printBody.innerHTML = "";
 
                         document.getElementById("print-class-info").innerText =
-                            `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName}`;
-                        document.getElementById("print-date").innerText =
-                            new Date().toLocaleString();
+                            `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName} | Fecha: ${new Date().toLocaleString()}`;
 
                         const studentsList = Object.values(
                             data.estudiantes,
                         ).sort((a, b) => (b.score || 0) - (a.score || 0));
+
+                        // Calcular estadísticas para el reporte
+                        let totalAlumnos = studentsList.length;
+                        let alumnosTerminados = studentsList.filter(
+                            (s) => s.finished,
+                        );
+                        let sumaNotas = 0;
+                        alumnosTerminados.forEach((s) => {
+                            sumaNotas += parseFloat(s.score) || 0;
+                        });
+                        let promedio =
+                            alumnosTerminados.length > 0
+                                ? (
+                                      sumaNotas / alumnosTerminados.length
+                                  ).toFixed(2)
+                                : "0.00";
+
+                        let mejorNota =
+                            alumnosTerminados.length > 0
+                                ? alumnosTerminados[0].score
+                                : "0.0";
+                        let peorNota =
+                            alumnosTerminados.length > 0
+                                ? alumnosTerminados[
+                                      alumnosTerminados.length - 1
+                                  ].score
+                                : "0.0";
+
+                        // Insertar resumen antes de la tabla
+                        let statsHtml = `
+                            <div style="border: 1px solid #000; padding: 1rem; margin-bottom: 1rem; font-size: 11px;">
+                                <h3 style="margin: 0 0 0.5rem 0; font-size: 14px; text-align: center;">Resumen Estadístico del Aula</h3>
+                                <p style="margin: 0.2rem 0;"><b>Total de Alumnos Registrados:</b> ${totalAlumnos}</p>
+                                <p style="margin: 0.2rem 0;"><b>Alumnos que completaron el examen:</b> ${alumnosTerminados.length}</p>
+                                <p style="margin: 0.2rem 0;"><b>Promedio de Notas:</b> ${promedio} / 20</p>
+                                <p style="margin: 0.2rem 0;"><b>Nota Más Alta:</b> ${mejorNota} | <b>Nota Más Baja:</b> ${peorNota}</p>
+                            </div>
+                        `;
 
                         let index = 1;
                         studentsList.forEach((st) => {
@@ -1947,13 +2464,18 @@
                             <td>${st.name}</td>
                             <td>${st.code}</td>
                             <td>${st.group}</td>
-                            <td style="text-align:center; font-weight:bold; font-size:14px;">${nota}</td>
+                            <td style="text-align:center; font-weight:bold; font-size:12px;">${nota}</td>
                             <td style="text-align:center;">${aciertos}</td>
                             <td style="font-size:10px; line-height:1.2;">${feedbackText}</td>
                         </tr>
                     `;
                             index++;
                         });
+
+                        // Insertar el bloque de estadísticas justo antes de la tabla existente
+                        document
+                            .querySelector("#print-section")
+                            .insertAdjacentHTML("beforeend", statsHtml);
 
                         window.print();
                     });
@@ -1991,6 +2513,13 @@
                 const pass = document.getElementById("s-pass").value.trim();
                 const group = document.getElementById("s-group").value;
 
+                // VALIDACIÓN CONTRA XSS BÁSICO
+                const regexHTML = /<[^>]*>?/gm;
+                if (regexHTML.test(name)) {
+                    return alert(
+                        "El nombre no puede contener etiquetas HTML o caracteres especiales.",
+                    );
+                }
                 if (!name || !code || !cName || !pass)
                     return alert("Complete todos los campos.");
                 if (code.length !== 8 || isNaN(code))
@@ -2133,8 +2662,6 @@
 
             function loadChapterForStudent() {
                 const chapId = classroomConfig.chapters[currentChapterIndex];
-
-                // Usamos las variables globales correctas en lugar de capitulosCatalog
                 const chapTitle = chapterNames[chapId] || `Capítulo ${chapId}`;
                 const folderName = chapterFolders[chapId];
                 const dataCap = bancoPreguntas[chapId];
@@ -2143,7 +2670,7 @@
                     document.getElementById(
                         "workspace-videos-container",
                     ).innerHTML =
-                        `<p style="padding:2rem; text-align:center;">Error: No se encontraron preguntas para el Capítulo ${chapId} en el archivo pregunta.js</p>`;
+                        `<p style="padding:2rem; text-align:center;">Error: No hay preguntas para el Capítulo ${chapId}</p>`;
                     return;
                 }
 
@@ -2168,7 +2695,19 @@
 
                 dataCap.videos.forEach((vid, vIdx) => {
                     let preguntasHtml = "";
-                    vid.preguntas.forEach((q, qIdx) => {
+
+                    // MEZCLA DE PREGUNTAS
+                    let customQs =
+                        classroomConfig.customQuestions &&
+                        classroomConfig.customQuestions[vid.id]
+                            ? classroomConfig.customQuestions[vid.id]
+                            : [];
+                    let videoQuestionsToRender = [
+                        ...vid.preguntas,
+                        ...customQs,
+                    ];
+
+                    videoQuestionsToRender.forEach((q, qIdx) => {
                         let ops = "";
                         q.opciones.forEach((op, optIdx) => {
                             const checked =
@@ -2181,7 +2720,6 @@
                         preguntasHtml += `<div class="question-item"><p><b>Pregunta ${qIdx + 1}:</b> ${q.pregunta}</p><div class="options-list">${ops}</div></div>`;
                     });
 
-                    // Aquí usamos folderName en lugar de chapInfo.folder
                     container.innerHTML += `
                     <div class="video-card">
                         <h4>Video ${vIdx + 1}: ${vid.titulo}</h4>
@@ -2254,7 +2792,17 @@
                 classroomConfig.chapters.forEach((chapId) => {
                     const dataCap = bancoPreguntas[chapId];
                     dataCap.videos.forEach((vid) => {
-                        vid.preguntas.forEach((q, qIdx) => {
+                        let customQs =
+                            classroomConfig.customQuestions &&
+                            classroomConfig.customQuestions[vid.id]
+                                ? classroomConfig.customQuestions[vid.id]
+                                : [];
+                        let videoQuestionsToRender = [
+                            ...vid.preguntas,
+                            ...customQs,
+                        ];
+
+                        videoQuestionsToRender.forEach((q, qIdx) => {
                             totalQ++;
                             const elegida =
                                 tempAnswers[vid.id] &&
@@ -2263,6 +2811,7 @@
                                     : null;
                             const isCorrect = elegida === q.correcta;
                             if (isCorrect) totalCorrect++;
+
                             detallesFinales.push({
                                 videoTitulo: vid.titulo,
                                 preguntaTexto: q.pregunta,
@@ -2270,12 +2819,17 @@
                                 elegida,
                                 correcta: q.correcta,
                                 esCorrecta: isCorrect,
+                                justificacion:
+                                    q.justificacion || "Sin justificación.",
                             });
                         });
                     });
                 });
 
-                const nota20 = ((totalCorrect / totalQ) * 20).toFixed(1);
+                const nota20 =
+                    totalQ > 0
+                        ? ((totalCorrect / totalQ) * 20).toFixed(1)
+                        : "0.0";
                 const classKey = classroomConfig.className.toLowerCase();
 
                 db.ref(`clases/${classKey}/estudiantes/${currentStudent.code}`)
@@ -2290,10 +2844,13 @@
                     .then(() => {
                         currentStudent.finished = true;
                         currentStudent.score = nota20;
+                        currentStudent.detalles = detallesFinales; // <-- GUARDAMOS EN MEMORIA
+
                         const saved = JSON.parse(
                             localStorage.getItem("alumnoSala") || "{}",
                         );
                         saved.student = currentStudent;
+                        saved.detalles = detallesFinales; // <-- GUARDAMOS EN LOCALSTORAGE PARA EL SOLUCIONARIO
                         localStorage.setItem(
                             "alumnoSala",
                             JSON.stringify(saved),
@@ -2308,7 +2865,6 @@
                         switchView("view-student-results", true);
                     });
             }
-
             // VALIDACIÓN ESTRICTA DE FEEDBACK
             function submitFeedbackSeparately() {
                 const utilidad =
@@ -2392,11 +2948,38 @@
                 container.innerHTML =
                     "<h3 style='text-align:center;'>Solucionario y Videos</h3>";
 
+                // 1. RECUPERAR LAS RESPUESTAS DEL ALUMNO (desde memoria o localStorage)
+                let studentAnswers = [];
+                if (currentStudent && currentStudent.detalles) {
+                    try {
+                        studentAnswers =
+                            typeof currentStudent.detalles === "string"
+                                ? JSON.parse(currentStudent.detalles)
+                                : currentStudent.detalles;
+                    } catch (e) {}
+                }
+
+                if (studentAnswers.length === 0) {
+                    // Si no están en memoria, buscarlas en localStorage
+                    const saved = JSON.parse(
+                        localStorage.getItem("alumnoSala") || "{}",
+                    );
+                    if (saved.detalles) {
+                        studentAnswers = saved.detalles;
+                    } else if (saved.student && saved.student.detalles) {
+                        try {
+                            studentAnswers =
+                                typeof saved.student.detalles === "string"
+                                    ? JSON.parse(saved.student.detalles)
+                                    : saved.student.detalles;
+                        } catch (e) {}
+                    }
+                }
+
                 data.chapters.forEach((chapId) => {
                     const dataCap = bancoPreguntas[chapId];
                     if (!dataCap) return;
 
-                    // Usamos las nuevas variables globales
                     const chapTitle =
                         chapterNames[chapId] || `Capítulo ${chapId}`;
                     const folderName = chapterFolders[chapId];
@@ -2414,14 +2997,53 @@
                             </div>
                     `;
 
-                        vid.preguntas.forEach((q, qIdx) => {
+                        let customQs =
+                            data.customQuestions && data.customQuestions[vid.id]
+                                ? data.customQuestions[vid.id]
+                                : [];
+                        let videoQuestionsToRender = [
+                            ...vid.preguntas,
+                            ...customQs,
+                        ];
+
+                        videoQuestionsToRender.forEach((q, qIdx) => {
+                            // 2. BUSCAR LA RESPUESTA DEL ALUMNO PARA ESTA PREGUNTA
+                            let ans = studentAnswers.find(
+                                (a) => a.preguntaTexto === q.pregunta,
+                            );
+                            let elegida = ans ? ans.elegida : null;
+
                             let ops = "";
                             q.opciones.forEach((op, optIdx) => {
-                                let color =
-                                    optIdx === q.correcta
-                                        ? "background:#dcfce7; color:#166534; font-weight:bold;"
-                                        : "";
-                                ops += `<div style="padding:0.5rem; margin:0.2rem 0; border-radius:5px; ${color}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}</div>`;
+                                let style =
+                                    "padding:0.5rem; margin:0.2rem 0; border-radius:5px;";
+                                let badge = "";
+
+                                if (optIdx === q.correcta) {
+                                    style +=
+                                        " background:#dcfce7; color:#166534; font-weight:bold; border: 1px solid #86efac;";
+                                    badge =
+                                        " <span style='font-size:0.75rem; color:#059669;'>✓ Correcta</span>";
+                                } else if (
+                                    optIdx === elegida &&
+                                    elegida !== q.correcta
+                                ) {
+                                    style +=
+                                        " background:#fee2e2; color:#991b1b; text-decoration:line-through; border: 1px solid #fca5a5;";
+                                    badge =
+                                        " <span style='font-size:0.75rem; color:#ef4444;'>✕ Tu respuesta</span>";
+                                } else if (
+                                    optIdx === elegida &&
+                                    elegida === q.correcta
+                                ) {
+                                    // Si el alumno eligió la correcta, mostramos el badge verde de "Tu respuesta"
+                                    style +=
+                                        " background:#dcfce7; color:#166534; font-weight:bold; border: 1px solid #86efac;";
+                                    badge =
+                                        " <span style='font-size:0.75rem; color:#059669;'>✓ Tu respuesta (Correcta)</span>";
+                                }
+
+                                ops += `<div style="${style}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}${badge}</div>`;
                             });
 
                             let justificacionHtml = q.justificacion
@@ -2430,7 +3052,15 @@
                             </div>`
                                 : "";
 
-                            html += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
+                            // Color del borde izquierdo según si acertó o falló
+                            let borderColor = "#64748b"; // Gris por defecto (sin respuesta)
+                            if (ans) {
+                                borderColor = ans.esCorrecta
+                                    ? "#059669"
+                                    : "#ef4444";
+                            }
+
+                            html += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px; border-left: 4px solid ${borderColor};">
                                     <p><b>P${qIdx + 1}:</b> ${q.pregunta}</p>
                                     ${ops}
                                     ${justificacionHtml}
@@ -2465,78 +3095,117 @@
                         let feedbackHtml = "";
                         if (st.feedback) {
                             feedbackHtml = `
-                        <div style="background: var(--panel-alt); border-left: 4px solid var(--accent-teacher); padding:1rem; border-radius:8px; margin-bottom:1rem; color: var(--text-main);">
-                            <h4 style="margin-top:0; color: var(--accent-teacher);">Feedback del Alumno</h4>
+                        <div style="background: #f8fafc; border-left: 4px solid var(--accent-teacher); padding:1rem; border-radius:8px; margin-bottom:1.5rem; color: var(--text-main);">
+                            <h4 style="margin-top:0; color: var(--accent-teacher); font-size: 1rem;">Feedback del Alumno</h4>
                             <p style="margin: 0.3rem 0;"><b>Estrellas:</b> <span style="color: var(--highlight);">${st.feedback.estrellas} / 6</span></p>
                             <p style="margin: 0.3rem 0;"><b>Preguntas:</b> ${st.feedback.utilidad}</p>
                             <p style="margin: 0.3rem 0;"><b>Interfaz:</b> ${st.feedback.intuitiva}</p>
-                            <p style="margin: 0.3rem 0;"><b>Sugerencias:</b> ${st.feedback.texto || "Ninguna"}</p>
+                            <p style="margin: 0.3rem 0; font-style: italic;">"${st.feedback.texto || "Ninguna sugerencia."}"</p>
                         </div>
                     `;
                         }
 
                         body.innerHTML = feedbackHtml;
+
                         if (!st.detalles) {
                             body.innerHTML += `<p>No hay respuestas de examen guardadas.</p>`;
-                        } else {
-                            JSON.parse(st.detalles).forEach((d, idx) => {
+                            document.getElementById(
+                                "student-detail-modal",
+                            ).style.display = "flex";
+                            return;
+                        }
+
+                        let detalles = [];
+                        try {
+                            detalles =
+                                typeof st.detalles === "string"
+                                    ? JSON.parse(st.detalles)
+                                    : st.detalles;
+                        } catch (e) {}
+
+                        // Clasificar preguntas
+                        let correctas = detalles.filter((d) => d.esCorrecta);
+                        let incorrectas = detalles.filter(
+                            (d) =>
+                                !d.esCorrecta &&
+                                d.elegida !== null &&
+                                d.elegida !== undefined,
+                        );
+                        let enBlanco = detalles.filter(
+                            (d) =>
+                                d.elegida === null || d.elegida === undefined,
+                        );
+
+                        // Función auxiliar para renderizar un grupo de preguntas
+                        function renderGroup(
+                            title,
+                            color,
+                            icon,
+                            list,
+                            showCorrect,
+                        ) {
+                            if (list.length === 0) return "";
+                            let html = `<h4 style="color:${color}; margin: 1.5rem 0 0.8rem 0; font-size: 1rem; display:flex; align-items:center; gap:0.5rem;">${icon} ${title} (${list.length})</h4>`;
+
+                            list.forEach((d, idx) => {
                                 let ops = "";
                                 d.opciones.forEach((op, optIdx) => {
-                                    let style = "";
+                                    let style =
+                                        "padding:0.4rem 0.6rem; margin:0.2rem 0; border-radius:4px;";
                                     if (optIdx === d.correcta)
-                                        style =
-                                            "background: #dcfce7; color: #166534; font-weight:bold;";
+                                        style +=
+                                            " background:#dcfce7; color:#166534; font-weight:bold; border: 1px solid #86efac;";
                                     else if (
                                         optIdx === d.elegida &&
                                         !d.esCorrecta
                                     )
-                                        style =
-                                            "background: #fee2e2; color: #991b1b; text-decoration:line-through;";
-                                    ops += `<div style="padding:0.2rem 0.5rem; margin:0.1rem 0; border-radius:4px; ${style}">${String.fromCharCode(65 + optIdx)}) ${op}</div>`;
+                                        style +=
+                                            " background:#fee2e2; color:#991b1b; text-decoration:line-through; border: 1px solid #fca5a5;";
+                                    ops += `<div style="${style}"><b>${String.fromCharCode(65 + optIdx)})</b> ${op}</div>`;
                                 });
 
-                                let just = "";
-                                if (d.justificacion) {
-                                    just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
-                                        <b>Sustentación:</b> ${d.justificacion}
-                                    </div>`;
-                                } else {
-                                    const chapId =
-                                        classroomConfig.chapters.find((cId) =>
-                                            bancoPreguntas[cId].videos.some(
-                                                (v) =>
-                                                    v.titulo === d.videoTitulo,
-                                            ),
-                                        );
-                                    if (chapId) {
-                                        const vid = bancoPreguntas[
-                                            chapId
-                                        ].videos.find(
-                                            (v) => v.titulo === d.videoTitulo,
-                                        );
-                                        if (vid) {
-                                            const q = vid.preguntas.find(
-                                                (q) =>
-                                                    q.pregunta ===
-                                                    d.preguntaTexto,
-                                            );
-                                            if (q && q.justificacion) {
-                                                just = `<div style="margin-top:0.8rem; font-size:0.85rem; color: var(--text-main); background: var(--panel-bg); padding:0.8rem; border-radius:4px; border-left: 3px solid var(--accent-teacher);">
-                                                    <b>Sustentación:</b> ${q.justificacion}
-                                                </div>`;
-                                            }
-                                        }
-                                    }
-                                }
+                                let just = d.justificacion
+                                    ? `<div style="margin-top:0.5rem; font-size:0.8rem; color:#1e3a8a; background:#eff6ff; padding:0.5rem; border-radius:4px;"><b>Justificación:</b> ${d.justificacion}</div>`
+                                    : "";
 
-                                body.innerHTML += `<div style="margin-bottom:1rem; padding:1rem; background:var(--panel-alt); border-radius:8px;">
-                            <span class="${d.esCorrecta ? "badge-correct" : "badge-incorrect"}">${d.esCorrecta ? "✓ Correcta" : "✕ Incorrecta"}</span>
-                            <p style="margin:0.5rem 0;"><b>P${idx + 1}:</b> ${d.preguntaTexto}</p>
-                            ${ops}
-                            ${just}
-                        </div>`;
+                                html += `<div style="margin-bottom:0.8rem; padding:1rem; background:#fff; border:1px solid var(--border-soft); border-radius:8px;">
+                                            <p style="margin:0 0 0.5rem 0; font-weight:600; font-size:0.9rem;">${d.preguntaTexto}</p>
+                                            ${ops}
+                                            ${just}
+                                        </div>`;
                             });
+                            return html;
                         }
+
+                        body.innerHTML += `
+                            <div style="margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; text-align: center;">
+                                <strong style="font-size: 1.2rem; color: #1e3a8a;">Nota Final: ${st.score} / 20</strong><br>
+                                <span style="font-size: 0.9rem; color: var(--text-muted);">Aciertos: ${st.correctas} de ${st.totalQ}</span>
+                            </div>
+                        `;
+
+                        body.innerHTML += renderGroup(
+                            "Preguntas Correctas",
+                            "#059669",
+                            "✅",
+                            correctas,
+                            true,
+                        );
+                        body.innerHTML += renderGroup(
+                            "Preguntas Incorrectas",
+                            "#ef4444",
+                            "❌",
+                            incorrectas,
+                            false,
+                        );
+                        body.innerHTML += renderGroup(
+                            "Preguntas en Blanco",
+                            "#64748b",
+                            "⚪",
+                            enBlanco,
+                            false,
+                        );
+
                         document.getElementById(
                             "student-detail-modal",
                         ).style.display = "flex";
