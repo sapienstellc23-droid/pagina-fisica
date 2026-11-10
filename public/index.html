@@ -801,6 +801,8 @@
 
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     </head>
     <body>
         <!-- SECCIÓN OCULTA QUE SE MUESTRA AL IMPRIMIR -->
@@ -1110,6 +1112,19 @@
                     </button>
 
                     <button
+                        class="btn btn-secondary"
+                        onclick="openHistorialView()"
+                        style="
+                            width: auto;
+                            background: #7c3aed;
+                            color: #fff;
+                            border: none;
+                        "
+                    >
+                        📊 Historial y Análisis
+                    </button>
+
+                    <button
                         class="btn btn-teacher"
                         id="btn-show-solutions"
                         onclick="toggleSolutions(true)"
@@ -1211,6 +1226,181 @@
                         </thead>
                         <tbody id="students-table-body"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- NUEVA VISTA: HISTORIAL ACUMULATIVO Y ANÁLISIS -->
+            <div id="view-historial" class="view">
+                <button
+                    class="btn-secondary"
+                    onclick="switchView('view-teacher-dashboard', true)"
+                    style="margin-bottom: 1rem"
+                >
+                    ← Volver al Panel
+                </button>
+
+                <div class="form-card" style="max-width: 100%">
+                    <h3 style="color: #7c3aed">
+                        📊 Historial Acumulativo de Evaluaciones
+                    </h3>
+                    <p
+                        style="
+                            font-size: 0.9rem;
+                            color: var(--text-muted);
+                            margin-bottom: 1.5rem;
+                        "
+                    >
+                        Aquí se muestran TODAS las evaluaciones realizadas en
+                        todas las clases. Puedes filtrar por clase y exportar en
+                        formato tabular (CSV/Excel) para análisis de validez y
+                        confiabilidad.
+                    </p>
+
+                    <!-- Filtros -->
+                    <div
+                        style="
+                            display: flex;
+                            gap: 1rem;
+                            flex-wrap: wrap;
+                            margin-bottom: 1.5rem;
+                            padding: 1rem;
+                            background: var(--panel-alt);
+                            border-radius: 8px;
+                        "
+                    >
+                        <div style="flex: 1; min-width: 200px">
+                            <label
+                                style="
+                                    font-size: 0.8rem;
+                                    font-weight: 700;
+                                    text-transform: uppercase;
+                                    display: block;
+                                    margin-bottom: 0.3rem;
+                                "
+                                >Filtrar por Clase:</label
+                            >
+                            <select
+                                id="historial-filtro-clase"
+                                onchange="renderHistorialTable()"
+                                style="
+                                    width: 100%;
+                                    padding: 0.6rem;
+                                    border-radius: 8px;
+                                    border: 1.5px solid var(--border-strong);
+                                    background: var(--panel-bg);
+                                    color: var(--text-main);
+                                "
+                            >
+                                <option value="">Todas las clases</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 200px">
+                            <label
+                                style="
+                                    font-size: 0.8rem;
+                                    font-weight: 700;
+                                    text-transform: uppercase;
+                                    display: block;
+                                    margin-bottom: 0.3rem;
+                                "
+                                >Filtrar por Capítulo:</label
+                            >
+                            <select
+                                id="historial-filtro-capitulo"
+                                onchange="renderHistorialTable()"
+                                style="
+                                    width: 100%;
+                                    padding: 0.6rem;
+                                    border-radius: 8px;
+                                    border: 1.5px solid var(--border-strong);
+                                    background: var(--panel-bg);
+                                    color: var(--text-main);
+                                "
+                            >
+                                <option value="">Todos los capítulos</option>
+                                <option value="1">Capítulo 1</option>
+                                <option value="2">Capítulo 2</option>
+                                <option value="3">Capítulo 3</option>
+                                <option value="4">Capítulo 4</option>
+                                <option value="5">Capítulo 5</option>
+                                <option value="6">Capítulo 6</option>
+                                <option value="7">Capítulo 7</option>
+                                <option value="8">Capítulo 8</option>
+                                <option value="9">Capítulo 9</option>
+                            </select>
+                        </div>
+                        <div
+                            style="
+                                display: flex;
+                                align-items: flex-end;
+                                gap: 0.5rem;
+                            "
+                        >
+                            <button
+                                class="btn btn-secondary"
+                                onclick="exportarHistorialCSV()"
+                                style="
+                                    background: #059669;
+                                    color: #fff;
+                                    border: none;
+                                "
+                            >
+                                📥 CSV
+                            </button>
+                            <button
+                                class="btn btn-secondary"
+                                onclick="exportarHistorialExcel()"
+                                style="
+                                    background: #16a34a;
+                                    color: #fff;
+                                    border: none;
+                                "
+                            >
+                                📊 Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div
+                        id="historial-resumen"
+                        style="
+                            display: grid;
+                            grid-template-columns: repeat(
+                                auto-fit,
+                                minmax(150px, 1fr)
+                            );
+                            gap: 1rem;
+                            margin-bottom: 1.5rem;
+                        "
+                    ></div>
+
+                    <!-- Tabla de datos -->
+                    <div
+                        style="
+                            overflow-x: auto;
+                            max-height: 500px;
+                            border: 1px solid var(--border-soft);
+                            border-radius: 8px;
+                        "
+                    >
+                        <table style="font-size: 0.78rem">
+                            <thead
+                                id="historial-table-head"
+                                style="position: sticky; top: 0; z-index: 10"
+                            ></thead>
+                            <tbody id="historial-table-body"></tbody>
+                        </table>
+                    </div>
+                    <p
+                        id="historial-count"
+                        style="
+                            text-align: center;
+                            margin-top: 1rem;
+                            color: var(--text-muted);
+                            font-size: 0.85rem;
+                        "
+                    ></p>
                 </div>
             </div>
 
@@ -2844,13 +3034,18 @@
                     .then(() => {
                         currentStudent.finished = true;
                         currentStudent.score = nota20;
-                        currentStudent.detalles = detallesFinales; // <-- GUARDAMOS EN MEMORIA
+                        currentStudent.detalles = detallesFinales;
+
+                        // ==============================================
+                        // NUEVO: GUARDAR HISTORIAL ACUMULATIVO
+                        // ==============================================
+                        guardarEnHistorialAcumulativo(detallesFinales, nota20);
 
                         const saved = JSON.parse(
                             localStorage.getItem("alumnoSala") || "{}",
                         );
                         saved.student = currentStudent;
-                        saved.detalles = detallesFinales; // <-- GUARDAMOS EN LOCALSTORAGE PARA EL SOLUCIONARIO
+                        saved.detalles = detallesFinales;
                         localStorage.setItem(
                             "alumnoSala",
                             JSON.stringify(saved),
@@ -2864,6 +3059,71 @@
                         ).style.display = "none";
                         switchView("view-student-results", true);
                     });
+            }
+
+            // ============================================================
+            // HISTORIAL ACUMULATIVO: Guarda cada respuesta individual
+            // en un nodo global que nunca se sobrescribe.
+            // ============================================================
+            function guardarEnHistorialAcumulativo(detallesFinales, nota20) {
+                if (!currentStudent || !classroomConfig) return;
+
+                const idEval = Date.now() + "_" + currentStudent.code;
+                const timestamp = new Date().toISOString();
+
+                // Metadatos generales de la evaluación
+                const metaEval = {
+                    id_evaluacion: idEval,
+                    timestamp: timestamp,
+                    clase: classroomConfig.className,
+                    docente: classroomConfig.teacherName,
+                    capitulos_evaluados: classroomConfig.chapters.join(","),
+                    codigo_alumno: currentStudent.code,
+                    nombre_alumno: currentStudent.name,
+                    grupo: currentStudent.group,
+                    nota_final: parseFloat(nota20),
+                    total_preguntas: detallesFinales.length,
+                    correctas: detallesFinales.filter((d) => d.esCorrecta)
+                        .length,
+                };
+
+                // Guardar metadatos (una fila por evaluación)
+                db.ref("historial_evaluaciones/" + idEval + "/meta").set(
+                    metaEval,
+                );
+
+                // Guardar todas las respuestas individuales
+                detallesFinales.forEach((d, idx) => {
+                    const respuesta = {
+                        id_video: d.videoTitulo
+                            ? d.videoTitulo.split(" ")[0]
+                            : "N/A",
+                        titulo_video: d.videoTitulo || "N/A",
+                        indice_pregunta: idx + 1,
+                        pregunta: d.preguntaTexto,
+                        opcion_a: d.opciones[0] || "",
+                        opcion_b: d.opciones[1] || "",
+                        opcion_c: d.opciones[2] || "",
+                        opcion_d: d.opciones[3] || "",
+                        respuesta_correcta: String.fromCharCode(
+                            65 + d.correcta,
+                        ),
+                        respuesta_alumno:
+                            d.elegida === null || d.elegida === undefined
+                                ? "BLANCO"
+                                : String.fromCharCode(65 + d.elegida),
+                        es_correcta: d.esCorrecta ? 1 : 0,
+                        justificacion: d.justificacion || "",
+                    };
+                    db.ref(
+                        "historial_evaluaciones/" +
+                            idEval +
+                            "/respuestas/" +
+                            idx,
+                    ).set(respuesta);
+                });
+
+                console.log("Historial guardado con ID:", idEval);
             }
             // VALIDACIÓN ESTRICTA DE FEEDBACK
             function submitFeedbackSeparately() {
@@ -3210,6 +3470,332 @@
                             "student-detail-modal",
                         ).style.display = "flex";
                     });
+            }
+            // ============================================================
+            // HISTORIAL: Carga, filtrado, renderizado y exportación
+            // ============================================================
+            let historialData = []; // Almacena todas las filas (una por respuesta)
+
+            function openHistorialView() {
+                db.ref("historial_evaluaciones")
+                    .once("value")
+                    .then((snap) => {
+                        const data = snap.val() || {};
+                        historialData = [];
+
+                        // Normalizar: unir meta + respuestas en filas planas
+                        Object.values(data).forEach((evalObj) => {
+                            const meta = evalObj.meta || {};
+                            const respuestas = evalObj.respuestas
+                                ? Object.values(evalObj.respuestas)
+                                : [];
+
+                            respuestas.forEach((r) => {
+                                historialData.push({
+                                    ...meta,
+                                    ...r,
+                                });
+                            });
+                        });
+
+                        // Llenar el selector de clases
+                        const clasesSet = new Set(
+                            historialData.map((h) => h.clase).filter(Boolean),
+                        );
+                        const selectorClase = document.getElementById(
+                            "historial-filtro-clase",
+                        );
+                        selectorClase.innerHTML =
+                            '<option value="">Todas las clases</option>';
+                        clasesSet.forEach((c) => {
+                            selectorClase.innerHTML += `<option value="${c}">${c}</option>`;
+                        });
+
+                        renderHistorialTable();
+                        switchView("view-historial", true);
+                    });
+            }
+
+            function renderHistorialTable() {
+                const filtroClase = document.getElementById(
+                    "historial-filtro-clase",
+                ).value;
+                const filtroCapitulo = document.getElementById(
+                    "historial-filtro-capitulo",
+                ).value;
+
+                let filtrados = historialData.filter((h) => {
+                    if (filtroClase && h.clase !== filtroClase) return false;
+                    if (
+                        filtroCapitulo &&
+                        !String(h.capitulos_evaluados || "").includes(
+                            filtroCapitulo,
+                        )
+                    )
+                        return false;
+                    return true;
+                });
+
+                // Resumen
+                const evaluacionesUnicas = new Set(
+                    filtrados.map((h) => h.id_evaluacion),
+                ).size;
+                const alumnosUnicos = new Set(
+                    filtrados.map((h) => h.codigo_alumno),
+                ).size;
+                const notas = [
+                    ...new Set(filtrados.map((h) => h.id_evaluacion)),
+                ]
+                    .map(
+                        (id) =>
+                            filtrados.find((h) => h.id_evaluacion === id)
+                                ?.nota_final,
+                    )
+                    .filter((n) => !isNaN(n));
+                const promedio =
+                    notas.length > 0
+                        ? (
+                              notas.reduce((a, b) => a + b, 0) / notas.length
+                          ).toFixed(2)
+                        : "—";
+
+                document.getElementById("historial-resumen").innerHTML = `
+                    <div class="stat-card"><div class="stat-card-title">Evaluaciones</div><div class="stat-card-body">${evaluacionesUnicas}</div></div>
+                    <div class="stat-card"><div class="stat-card-title">Alumnos únicos</div><div class="stat-card-body">${alumnosUnicos}</div></div>
+                    <div class="stat-card"><div class="stat-card-title">Promedio general</div><div class="stat-card-body">${promedio} / 20</div></div>
+                    <div class="stat-card"><div class="stat-card-title">Respuestas registradas</div><div class="stat-card-body">${filtrados.length}</div></div>
+                `;
+
+                // Cabeceras de la tabla
+                const columnas = [
+                    "id_evaluacion",
+                    "timestamp",
+                    "clase",
+                    "docente",
+                    "capitulos_evaluados",
+                    "codigo_alumno",
+                    "nombre_alumno",
+                    "grupo",
+                    "nota_final",
+                    "id_video",
+                    "titulo_video",
+                    "indice_pregunta",
+                    "pregunta",
+                    "opcion_a",
+                    "opcion_b",
+                    "opcion_c",
+                    "opcion_d",
+                    "respuesta_correcta",
+                    "respuesta_alumno",
+                    "es_correcta",
+                    "justificacion",
+                ];
+
+                const thead = document.getElementById("historial-table-head");
+                thead.innerHTML =
+                    "<tr>" +
+                    columnas
+                        .map(
+                            (c) => `<th style="white-space: nowrap;">${c}</th>`,
+                        )
+                        .join("") +
+                    "</tr>";
+
+                const tbody = document.getElementById("historial-table-body");
+                tbody.innerHTML = filtrados
+                    .slice(0, 200)
+                    .map((fila) => {
+                        return (
+                            "<tr>" +
+                            columnas
+                                .map((c) => {
+                                    let val =
+                                        fila[c] !== undefined ? fila[c] : "";
+                                    // Acortar campos largos
+                                    if (String(val).length > 50)
+                                        val =
+                                            String(val).substring(0, 50) + "…";
+                                    return `<td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${val}</td>`;
+                                })
+                                .join("") +
+                            "</tr>"
+                        );
+                    })
+                    .join("");
+
+                document.getElementById("historial-count").textContent =
+                    `Mostrando ${Math.min(200, filtrados.length)} de ${filtrados.length} filas. Usa "Exportar" para obtener todos los datos.`;
+            }
+
+            function exportarHistorialCSV() {
+                if (historialData.length === 0)
+                    return alert("No hay datos para exportar.");
+
+                const filtroClase = document.getElementById(
+                    "historial-filtro-clase",
+                ).value;
+                const filtroCapitulo = document.getElementById(
+                    "historial-filtro-capitulo",
+                ).value;
+
+                let filtrados = historialData.filter((h) => {
+                    if (filtroClase && h.clase !== filtroClase) return false;
+                    if (
+                        filtroCapitulo &&
+                        !String(h.capitulos_evaluados || "").includes(
+                            filtroCapitulo,
+                        )
+                    )
+                        return false;
+                    return true;
+                });
+
+                const columnas = [
+                    "id_evaluacion",
+                    "timestamp",
+                    "clase",
+                    "docente",
+                    "capitulos_evaluados",
+                    "codigo_alumno",
+                    "nombre_alumno",
+                    "grupo",
+                    "nota_final",
+                    "total_preguntas",
+                    "correctas",
+                    "id_video",
+                    "titulo_video",
+                    "indice_pregunta",
+                    "pregunta",
+                    "opcion_a",
+                    "opcion_b",
+                    "opcion_c",
+                    "opcion_d",
+                    "respuesta_correcta",
+                    "respuesta_alumno",
+                    "es_correcta",
+                    "justificacion",
+                ];
+
+                const escapeCSV = (val) => {
+                    const str = String(
+                        val === undefined || val === null ? "" : val,
+                    );
+                    if (
+                        str.includes(",") ||
+                        str.includes('"') ||
+                        str.includes("\n")
+                    ) {
+                        return '"' + str.replace(/"/g, '""') + '"';
+                    }
+                    return str;
+                };
+
+                const BOM = "\uFEFF";
+                const contenido =
+                    BOM +
+                    columnas.join(",") +
+                    "\n" +
+                    filtrados
+                        .map((fila) =>
+                            columnas.map((c) => escapeCSV(fila[c])).join(","),
+                        )
+                        .join("\n");
+
+                const blob = new Blob([contenido], {
+                    type: "text/csv;charset=utf-8;",
+                });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `historial_evaluaciones_${new Date().toISOString().slice(0, 10)}.csv`;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            function exportarHistorialExcel() {
+                if (historialData.length === 0)
+                    return alert("No hay datos para exportar.");
+                if (typeof XLSX === "undefined")
+                    return alert(
+                        "La librería SheetJS no está cargada. Verifica tu conexión.",
+                    );
+
+                const filtroClase = document.getElementById(
+                    "historial-filtro-clase",
+                ).value;
+                const filtroCapitulo = document.getElementById(
+                    "historial-filtro-capitulo",
+                ).value;
+
+                let filtrados = historialData.filter((h) => {
+                    if (filtroClase && h.clase !== filtroClase) return false;
+                    if (
+                        filtroCapitulo &&
+                        !String(h.capitulos_evaluados || "").includes(
+                            filtroCapitulo,
+                        )
+                    )
+                        return false;
+                    return true;
+                });
+
+                const columnas = [
+                    "id_evaluacion",
+                    "timestamp",
+                    "clase",
+                    "docente",
+                    "capitulos_evaluados",
+                    "codigo_alumno",
+                    "nombre_alumno",
+                    "grupo",
+                    "nota_final",
+                    "total_preguntas",
+                    "correctas",
+                    "id_video",
+                    "titulo_video",
+                    "indice_pregunta",
+                    "pregunta",
+                    "opcion_a",
+                    "opcion_b",
+                    "opcion_c",
+                    "opcion_d",
+                    "respuesta_correcta",
+                    "respuesta_alumno",
+                    "es_correcta",
+                    "justificacion",
+                ];
+
+                // Crear worksheet con datos tabulares
+                const datos = [columnas];
+                filtrados.forEach((fila) => {
+                    datos.push(
+                        columnas.map((c) =>
+                            fila[c] !== undefined ? fila[c] : "",
+                        ),
+                    );
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(datos);
+
+                // Auto-ajustar ancho de columnas (aproximado)
+                const wscols = columnas.map((c, i) => {
+                    const maxLen = Math.min(
+                        40,
+                        Math.max(
+                            c.length,
+                            ...datos.map((r) => String(r[i]).length),
+                        ),
+                    );
+                    return { wch: maxLen };
+                });
+                ws["!cols"] = wscols;
+
+                XLSX.utils.book_append_sheet(wb, ws, "Historial");
+                XLSX.writeFile(
+                    wb,
+                    `historial_evaluaciones_${new Date().toISOString().slice(0, 10)}.xlsx`,
+                );
             }
         </script>
     </body>
