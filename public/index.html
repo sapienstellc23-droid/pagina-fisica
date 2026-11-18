@@ -801,7 +801,7 @@
 
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>   <!-- NUEVO -->
         <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     </head>
     <body>
@@ -933,6 +933,62 @@
                 </div>
             </div>
 
+            <!-- LOGIN DOCENTE -->
+            <div id="view-teacher-login" class="view">
+                <div class="form-card" style="max-width: 500px">
+                    <button class="btn-secondary"
+                            onclick="switchView('view-role-selection', true)"
+                            style="margin-bottom: 1rem">
+                        ← Volver
+                    </button>
+                    <h3>Acceso Docente</h3>
+                    <p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">
+                        Ingrese con su cuenta institucional registrada.
+                    </p>
+            
+                    <div class="form-field full">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="t-login-email" placeholder="docente@unmsm.edu.pe" autocomplete="username">
+                    </div>
+                    <div class="form-field full" style="margin-top:1rem;">
+                        <label>Contraseña</label>
+                        <input type="password" id="t-login-pass" placeholder="******" autocomplete="current-password">
+                    </div>
+            
+                    <button class="btn btn-teacher" onclick="loginTeacher()" style="margin-top:1.5rem">
+                        INGRESAR
+                    </button>
+                    <button class="btn-secondary" onclick="switchView('view-teacher-recover', true)"
+                            style="margin-top:1rem; width:100%; justify-content:center;">
+                        ¿Olvidó su contraseña?
+                    </button>
+                    <p id="t-login-msg" style="text-align:center; font-size:0.85rem; color:var(--error); margin-top:1rem; min-height:1.2em;"></p>
+                </div>
+            </div>
+            
+            <!-- RECUPERAR CONTRASEÑA -->
+            <div id="view-teacher-recover" class="view">
+                <div class="form-card" style="max-width: 500px">
+                    <button class="btn-secondary"
+                            onclick="switchView('view-teacher-login', true)"
+                            style="margin-bottom: 1rem">
+                        ← Volver
+                    </button>
+                    <h3>Recuperar Contraseña</h3>
+                    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+                        Le enviaremos un enlace para restablecer su contraseña.
+                    </p>
+                    <div class="form-field full">
+                        <label>Correo registrado</label>
+                        <input type="email" id="t-recover-email" placeholder="docente@unmsm.edu.pe">
+                    </div>
+                    <button class="btn btn-teacher" onclick="sendPasswordReset()" style="margin-top:1.5rem">
+                        ENVIAR ENLACE
+                    </button>
+                    <p id="t-recover-msg" style="text-align:center; font-size:0.9rem; margin-top:1rem; min-height:1.2em;"></p>
+                </div>
+            </div>
+            
             <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN Y CONFIGURACIÓN -->
             <div id="view-teacher-register" class="view">
                 <div class="form-card">
@@ -1152,9 +1208,9 @@
                         🖨️ Imprimir Notas Finales
                     </button>
 
-                    <button class="btn-secondary" onclick="logoutTeacher()">
-                        Cerrar Sesión
-                    </button>
+                    <span id="teacher-email-badge"
+                          style="font-size:0.85rem; color:var(--text-muted); align-self:center;"></span>
+                    <button class="btn-secondary" onclick="logoutTeacher()">Cerrar Sesión</button>
                 </div>
                 <!-- NUEVO PANEL DE ESTADÍSTICAS (PASO 4) -->
                 <div class="teacher-stats-grid">
@@ -1807,10 +1863,12 @@
                 appId: "1:764949303228:web:68152ed98479bc5550a5b9",
             };
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            const db = firebase.database();
-
-            // CLAVE MAESTRA PARA DOCENTES
-            const TEACHER_MASTER_KEY = "unmsm2026";
+            const db   = firebase.database();
+            const auth = firebase.auth();                 // NUEVO
+            
+            // ⚠️ La clave maestra se elimina: ahora todo pasa por Firebase Auth.
+            // Si necesitas un fallback temporal mientras migras, déjalo vacío:
+            const TEACHER_MASTER_KEY = ""; // deshabilitado
 
             let currentStudent = null;
             let classroomConfig = null;
@@ -1871,15 +1929,84 @@
             };
 
             // VALIDACIÓN DE CLAVE DOCENTE
+            // ANTES: pedía la clave maestra con prompt()
+            // AHORA: redirige a la vista de login real
             function requestTeacherAccess() {
-                const pass = prompt(
-                    "🔒 Acceso Restringido. Por favor, ingrese la clave de docente:",
-                );
-                if (pass === TEACHER_MASTER_KEY) {
+                if (auth.currentUser) {
+                    // Ya autenticado → ir directo al registro de sala
                     switchView("view-teacher-register", true);
-                } else if (pass !== null) {
-                    alert("❌ Clave incorrecta. Acceso denegado.");
+                } else {
+                    switchView("view-teacher-login", true);
                 }
+            }
+
+            // ================= AUTENTICACIÓN DOCENTE =================
+            function loginTeacher() {
+                const email = document.getElementById("t-login-email").value.trim();
+                const pass  = document.getElementById("t-login-pass").value;
+                const msg   = document.getElementById("t-login-msg");
+                msg.textContent = "";
+            
+                if (!email || !pass) {
+                    msg.textContent = "Complete correo y contraseña.";
+                    return;
+                }
+            
+                auth.signInWithEmailAndPassword(email, pass)
+                    .then(cred => {
+                        // Verificar que el UID esté registrado como docente
+                        return db.ref("docentes/" + cred.user.uid).once("value");
+                    })
+                    .then(snap => {
+                        if (!snap.exists() || snap.val().activo === false) {
+                            return auth.signOut().then(() => {
+                                throw new Error("Esta cuenta no está habilitada como docente.");
+                            });
+                        }
+                        const data = snap.val();
+                        document.getElementById("teacher-email-badge").textContent =
+                            "👤 " + (data.nombre || auth.currentUser.email);
+                        switchView("view-teacher-register", true);
+                    })
+                    .catch(err => {
+                        msg.textContent = "❌ " + (err.message || err);
+                    });
+            }
+            
+            function sendPasswordReset() {
+                const email = document.getElementById("t-recover-email").value.trim();
+                const msg   = document.getElementById("t-recover-msg");
+                msg.style.color = "var(--text-muted)";
+                msg.textContent = "";
+                if (!email) {
+                    msg.style.color = "var(--error)";
+                    msg.textContent = "Ingrese su correo.";
+                    return;
+                }
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        msg.style.color = "var(--success)";
+                        msg.textContent = "✔ Enlace enviado. Revise su bandeja.";
+                    })
+                    .catch(err => {
+                        msg.style.color = "var(--error)";
+                        msg.textContent = "❌ " + err.message;
+                    });
+            }
+            
+            function logoutTeacher() {
+                if (!confirm("¿Cerrar sesión de docente?")) return;
+                const classKey = localStorage.getItem("docenteClase");
+                if (classKey) {
+                    // Desconectar listener en tiempo real de la sala
+                    db.ref("clases/" + classKey).off();
+                }
+                localStorage.removeItem("docenteClase");
+                clearInterval(teacherTimerInterval);
+                auth.signOut().then(() => {
+                    window.location.hash = "";
+                    window.location.reload();
+                });
             }
 
             // BLOQUEO DE BOTONES DEL NAVEGADOR EN EXAMEN
@@ -1954,15 +2081,27 @@
                     }
                 }
 
-                const savedClass = localStorage.getItem("docenteClase");
-                if (savedClass) {
-                    db.ref("clases/" + savedClass)
-                        .once("value")
-                        .then((snap) => {
-                            if (snap.exists())
-                                enterTeacherDashboard(savedClass, snap.val());
-                        });
-                }
+                // Restaurar sesión de docente solo si Firebase Auth confirma al usuario
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        const badge = document.getElementById("teacher-email-badge");
+                        if (badge) badge.textContent = "👤 " + (user.email || "");
+                
+                        const savedClass = localStorage.getItem("docenteClase");
+                        if (savedClass) {
+                            db.ref("clases/" + savedClass).once("value").then(snap => {
+                                if (snap.exists()) {
+                                    enterTeacherDashboard(savedClass, snap.val());
+                                } else {
+                                    localStorage.removeItem("docenteClase");
+                                }
+                            });
+                        }
+                    } else {
+                        // Sin sesión: limpiar rastro docente
+                        localStorage.removeItem("docenteClase");
+                    }
+                });
 
                 const savedStudent = localStorage.getItem("alumnoSala");
                 if (savedStudent) {
@@ -2225,77 +2364,85 @@
             }
             // ================= DOCENTE =================
             function createClass() {
-                const name = document
-                    .getElementById("t-teachername")
-                    .value.trim();
-                const cName = document
-                    .getElementById("t-classname")
-                    .value.trim();
-                const pass = document.getElementById("t-pass").value.trim();
-                const time = parseInt(document.getElementById("t-time").value);
-
-                const selectedCards = document.querySelectorAll(
-                    ".chapter-select-card.selected",
-                );
-                const selectedChaps = Array.from(selectedCards).map((card) => {
-                    const titleText = card.querySelector(
-                        ".chapter-card-title",
-                    ).innerText;
-                    return parseInt(
-                        titleText.replace("Capítulo ", "").split(":")[0],
-                    );
-                });
-
-                if (!name || !cName || !pass || selectedChaps.length === 0) {
-                    return alert(
-                        "Complete todos los campos y seleccione al menos un capítulo.",
-                    );
+                if (!auth.currentUser) {
+                    alert("Debe iniciar sesión como docente.");
+                    return switchView("view-teacher-login", true);
                 }
-
+            
+                const name  = document.getElementById("t-teachername").value.trim();
+                const cName = document.getElementById("t-classname").value.trim();
+                const pass  = document.getElementById("t-pass").value.trim();
+                const time  = parseInt(document.getElementById("t-time").value);
+            
+                const selectedCards = document.querySelectorAll(".chapter-select-card.selected");
+                const selectedChaps = Array.from(selectedCards).map(card => {
+                    const titleText = card.querySelector(".chapter-card-title").innerText;
+                    return parseInt(titleText.replace("Capítulo ", "").split(":")[0]);
+                });
+            
+                if (!name || !cName || !pass || selectedChaps.length === 0) {
+                    return alert("Complete todos los campos y seleccione al menos un capítulo.");
+                }
+            
                 const classKey = cName.toLowerCase();
-
-                db.ref("clases/" + classKey)
-                    .once("value")
-                    .then((snap) => {
-                        if (snap.exists()) {
-                            const confirmOverwrite = confirm(
-                                "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" +
-                                    cName +
-                                    "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?",
-                            );
-                            if (!confirmOverwrite) return;
+            
+                db.ref("clases/" + classKey).once("value").then(snap => {
+                    if (snap.exists()) {
+                        // Si la sala es de otro docente, no permitir sobrescribir
+                        const currentOwner = snap.val().ownerUid;
+                        if (currentOwner && currentOwner !== auth.currentUser.uid) {
+                            return alert("❌ Ya existe una sala con ese nombre creada por otro docente. Elija otro nombre.");
                         }
-
-                        const classData = {
-                            teacherName: name,
-                            className: cName,
-                            pass,
-                            timeLimit: time,
-                            chapters: selectedChaps,
-                            status: "waiting",
-                            startTime: 0,
-                            customQuestions: teacherCustomQuestions,
-                        };
-
-                        db.ref("clases/" + classKey)
-                            .set(classData)
-                            .then(() => {
-                                localStorage.setItem("docenteClase", classKey);
-                                teacherCustomQuestions = {};
-                                enterTeacherDashboard(classKey, classData);
-                            });
+                        if (!confirm(
+                            "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" + cName +
+                            "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?"
+                        )) return;
+                    }
+            
+                    const classData = {
+                        teacherName: name,
+                        className:   cName,
+                        pass,
+                        timeLimit:   time,
+                        chapters:    selectedChaps,
+                        status:      "waiting",
+                        startTime:   0,
+                        customQuestions: teacherCustomQuestions,
+                        ownerUid:    auth.currentUser.uid,       // 🔑 NUEVO
+                        ownerEmail:  auth.currentUser.email,     // 🔑 NUEVO
+                        createdAt:   Date.now()                  // 🔑 útil para auditoría
+                    };
+            
+                    db.ref("clases/" + classKey).set(classData).then(() => {
+                        localStorage.setItem("docenteClase", classKey);
+                        teacherCustomQuestions = {};
+                        enterTeacherDashboard(classKey, classData);
                     });
+                });
             }
 
             function enterTeacherDashboard(classKey, data) {
+                // 🔒 Verificar que la sala pertenezca al docente autenticado
+                if (!auth.currentUser) {
+                    localStorage.removeItem("docenteClase");
+                    return switchView("view-role-selection", false);
+                }
+                if (data.ownerUid && data.ownerUid !== auth.currentUser.uid) {
+                    localStorage.removeItem("docenteClase");
+                    alert("❌ Esta sala pertenece a otro docente. No puede administrarla.");
+                    return switchView("view-role-selection", false);
+                }
+            
                 classroomConfig = data;
                 document.getElementById("docente-text-info").innerHTML = `
-                <h3 style="margin:0; color:var(--accent-teacher);">Sala: <span style="text-transform:uppercase;">${data.className}</span></h3>
-                <p style="margin:0;">Docente: ${data.teacherName} | Capítulos: ${data.chapters.length} | Tiempo: ${data.timeLimit} min</p>
-            `;
-                db.ref("clases/" + classKey).on("value", (snap) => {
+                    <h3 style="margin:0; color:var(--accent-teacher);">Sala: <span style="text-transform:uppercase;">${data.className}</span></h3>
+                    <p style="margin:0;">Docente: ${data.teacherName} | Capítulos: ${data.chapters.length} | Tiempo: ${data.timeLimit} min</p>
+                `;
+            
+                db.ref("clases/" + classKey).on("value", snap => {
                     if (snap.val()) updateTeacherUI(snap.val());
                 });
+            
                 switchView("view-teacher-dashboard", true);
             }
 
@@ -2697,43 +2844,65 @@
             function studentEnter() {
                 const name = document.getElementById("s-name").value.trim();
                 const code = document.getElementById("s-code").value.trim();
-                const cName = document
-                    .getElementById("s-classname")
-                    .value.trim();
+                const cName = document.getElementById("s-classname").value.trim();
                 const pass = document.getElementById("s-pass").value.trim();
                 const group = document.getElementById("s-group").value;
-
-                // VALIDACIÓN CONTRA XSS BÁSICO
+            
+                // VALIDACIÓN CONTRA XSS BÁSICO (sin cambios)
                 const regexHTML = /<[^>]*>?/gm;
                 if (regexHTML.test(name)) {
-                    return alert(
-                        "El nombre no puede contener etiquetas HTML o caracteres especiales.",
-                    );
+                    return alert("El nombre no puede contener etiquetas HTML o caracteres especiales.");
                 }
                 if (!name || !code || !cName || !pass)
                     return alert("Complete todos los campos.");
                 if (code.length !== 8 || isNaN(code))
                     return alert("El código debe tener 8 dígitos.");
-
+            
                 const classKey = cName.toLowerCase();
-                db.ref("clases/" + classKey)
-                    .once("value")
-                    .then((snap) => {
-                        const cData = snap.val();
-                        if (!cData) return alert("La sala no existe.");
-                        if (cData.pass !== pass)
-                            return alert("Contraseña incorrecta.");
-
+            
+                // 🔑 PASO 1: Garantizar sesión anónima ANTES de tocar la BD
+                // Si ya hay un usuario (anónimo o no) reutilizamos su uid.
+                // Si no, signInAnonymously() lo crea silenciosamente.
+                const ensureAuth = auth.currentUser
+                    ? Promise.resolve(auth.currentUser)
+                    : auth.signInAnonymously().then(cred => cred.user);
+            
+                ensureAuth
+                    .then(user => {
+                        const uid = user.uid;
+            
+                        // 🔑 PASO 2: Verificar sala y contraseña (igual que antes)
+                        return db.ref("clases/" + classKey).once("value").then(snap => {
+                            const cData = snap.val();
+                            if (!cData) throw new Error("La sala no existe.");
+                            if (cData.pass !== pass) throw new Error("Contraseña incorrecta.");
+            
+                            // 🔑 PASO 3: Comprobar que este código no esté ya ocupado por OTRO uid
+                            const existente = cData.estudiantes && cData.estudiantes[code];
+                            if (existente && existente.uid && existente.uid !== uid) {
+                                throw new Error(
+                                    "El código " + code + " ya está en uso en esta sala. " +
+                                    "Si es tuyo, usa el mismo dispositivo/navegador con el que ingresaste antes."
+                                );
+                            }
+            
+                            return { cData, uid };
+                        });
+                    })
+                    .then(({ cData, uid }) => {
                         classroomConfig = cData;
+            
+                        // 🔑 PASO 4: currentStudent ahora incluye uid
                         currentStudent = {
                             name,
                             code,
                             group,
+                            uid,                              // NUEVO
                             finished: false,
                             feedbackEnviado: false,
                         };
-
-                        db.ref(`clases/${classKey}/estudiantes/${code}`)
+            
+                        return db.ref(`clases/${classKey}/estudiantes/${code}`)
                             .update(currentStudent)
                             .then(() => {
                                 localStorage.setItem(
@@ -2746,6 +2915,16 @@
                                 );
                                 checkStudentStatus(classKey);
                             });
+                    })
+                    .catch(err => {
+                        // Mensajes amigables según el tipo de error
+                        const msg = err.message || "";
+                        if (msg.includes("permiso") || msg.includes("permission") || err.code === "PERMISSION_DENIED") {
+                            alert("❌ No se pudo acceder a la sala. Verifique la contraseña o intente más tarde.");
+                        } else {
+                            alert("❌ " + msg);
+                        }
+                        console.error("studentEnter error:", err);
                     });
             }
 
