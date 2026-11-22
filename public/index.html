@@ -801,7 +801,8 @@
 
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>   <!-- NUEVO -->
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+        <!-- NUEVO -->
         <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     </head>
     <body>
@@ -930,65 +931,233 @@
                             </div>
                         </button>
                     </div>
+                    <div
+                        id="admin-access-button"
+                        style="display: none; margin-top: 2rem"
+                    >
+                        <button
+                            class="btn btn-secondary"
+                            onclick="
+                                switchView('view-admin-dashboard', true);
+                                __initAdminPanel();
+                            "
+                            style="
+                                background: #1e3a8a;
+                                color: #fff;
+                                border: none;
+                            "
+                        >
+                            🛡️ Panel de Administrador
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- LOGIN DOCENTE -->
             <div id="view-teacher-login" class="view">
                 <div class="form-card" style="max-width: 500px">
-                    <button class="btn-secondary"
-                            onclick="switchView('view-role-selection', true)"
-                            style="margin-bottom: 1rem">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-role-selection', true)"
+                        style="margin-bottom: 1rem"
+                    >
                         ← Volver
                     </button>
                     <h3>Acceso Docente</h3>
-                    <p style="text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom:1.2rem;">
+                    <p
+                        style="
+                            text-align: center;
+                            font-size: 0.85rem;
+                            color: var(--text-muted);
+                            margin-bottom: 1.2rem;
+                        "
+                    >
                         Ingrese con su cuenta institucional registrada.
                     </p>
-            
+
                     <div class="form-field full">
                         <label>Correo electrónico</label>
-                        <input type="email" id="t-login-email" placeholder="docente@unmsm.edu.pe" autocomplete="username">
+                        <input
+                            type="email"
+                            id="t-login-email"
+                            placeholder="docente@unmsm.edu.pe"
+                            autocomplete="username"
+                        />
                     </div>
-                    <div class="form-field full" style="margin-top:1rem;">
+                    <div class="form-field full" style="margin-top: 1rem">
                         <label>Contraseña</label>
-                        <input type="password" id="t-login-pass" placeholder="******" autocomplete="current-password">
+                        <input
+                            type="password"
+                            id="t-login-pass"
+                            placeholder="******"
+                            autocomplete="current-password"
+                        />
                     </div>
-            
-                    <button class="btn btn-teacher" onclick="loginTeacher()" style="margin-top:1.5rem">
+
+                    <button
+                        class="btn btn-teacher"
+                        onclick="loginTeacher()"
+                        style="margin-top: 1.5rem"
+                    >
                         INGRESAR
                     </button>
-                    <button class="btn-secondary" onclick="switchView('view-teacher-recover', true)"
-                            style="margin-top:1rem; width:100%; justify-content:center;">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-teacher-recover', true)"
+                        style="
+                            margin-top: 1rem;
+                            width: 100%;
+                            justify-content: center;
+                        "
+                    >
                         ¿Olvidó su contraseña?
                     </button>
-                    <p id="t-login-msg" style="text-align:center; font-size:0.85rem; color:var(--error); margin-top:1rem; min-height:1.2em;"></p>
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-teacher-signup', true)"
+                        style="
+                            margin-top: 0.6rem;
+                            width: 100%;
+                            justify-content: center;
+                        "
+                    >
+                        ¿No tiene cuenta? Solicitar registro
+                    </button>
+                    <p
+                        id="t-login-msg"
+                        style="
+                            text-align: center;
+                            font-size: 0.85rem;
+                            color: var(--error);
+                            margin-top: 1rem;
+                            min-height: 1.2em;
+                        "
+                    ></p>
                 </div>
             </div>
-            
+
             <!-- RECUPERAR CONTRASEÑA -->
             <div id="view-teacher-recover" class="view">
                 <div class="form-card" style="max-width: 500px">
-                    <button class="btn-secondary"
-                            onclick="switchView('view-teacher-login', true)"
-                            style="margin-bottom: 1rem">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-teacher-login', true)"
+                        style="margin-bottom: 1rem"
+                    >
                         ← Volver
                     </button>
                     <h3>Recuperar Contraseña</h3>
-                    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+                    <p
+                        style="
+                            font-size: 0.9rem;
+                            color: var(--text-muted);
+                            margin-bottom: 1rem;
+                        "
+                    >
                         Le enviaremos un enlace para restablecer su contraseña.
                     </p>
                     <div class="form-field full">
                         <label>Correo registrado</label>
-                        <input type="email" id="t-recover-email" placeholder="docente@unmsm.edu.pe">
+                        <input
+                            type="email"
+                            id="t-recover-email"
+                            placeholder="docente@unmsm.edu.pe"
+                        />
                     </div>
-                    <button class="btn btn-teacher" onclick="sendPasswordReset()" style="margin-top:1.5rem">
+                    <button
+                        class="btn btn-teacher"
+                        onclick="sendPasswordReset()"
+                        style="margin-top: 1.5rem"
+                    >
                         ENVIAR ENLACE
                     </button>
-                    <p id="t-recover-msg" style="text-align:center; font-size:0.9rem; margin-top:1rem; min-height:1.2em;"></p>
+                    <p
+                        id="t-recover-msg"
+                        style="
+                            text-align: center;
+                            font-size: 0.9rem;
+                            margin-top: 1rem;
+                            min-height: 1.2em;
+                        "
+                    ></p>
                 </div>
             </div>
-            
+
+            <!-- REGISTRO DE CUENTA DOCENTE (pendiente de aprobación) -->
+            <div id="view-teacher-signup" class="view">
+                <div class="form-card" style="max-width: 520px">
+                    <button
+                        class="btn-secondary"
+                        onclick="switchView('view-teacher-login', true)"
+                        style="margin-bottom: 1rem"
+                    >
+                        ← Volver al Login
+                    </button>
+                    <h3>Solicitar Cuenta Docente</h3>
+                    <p
+                        style="
+                            font-size: 0.85rem;
+                            color: var(--text-muted);
+                            margin-bottom: 1.2rem;
+                            text-align: center;
+                        "
+                    >
+                        Su cuenta quedará <b>pendiente de aprobación</b> por el
+                        administrador.
+                    </p>
+
+                    <div class="form-field full">
+                        <label>Nombre completo</label>
+                        <input
+                            type="text"
+                            id="signup-name"
+                            placeholder="Dr. Juan Pérez"
+                        />
+                    </div>
+                    <div class="form-field full" style="margin-top: 1rem">
+                        <label>Correo institucional</label>
+                        <input
+                            type="email"
+                            id="signup-email"
+                            placeholder="docente@unmsm.edu.pe"
+                        />
+                    </div>
+                    <div class="form-field full" style="margin-top: 1rem">
+                        <label>Contraseña (mín. 6 caracteres)</label>
+                        <input
+                            type="password"
+                            id="signup-pass"
+                            placeholder="******"
+                        />
+                    </div>
+                    <div class="form-field full" style="margin-top: 1rem">
+                        <label>Confirmar contraseña</label>
+                        <input
+                            type="password"
+                            id="signup-pass2"
+                            placeholder="******"
+                        />
+                    </div>
+
+                    <button
+                        class="btn btn-teacher"
+                        onclick="registerTeacherAccount()"
+                        style="margin-top: 1.5rem"
+                    >
+                        SOLICITAR REGISTRO
+                    </button>
+                    <p
+                        id="signup-msg"
+                        style="
+                            text-align: center;
+                            font-size: 0.85rem;
+                            margin-top: 1rem;
+                            min-height: 1.2em;
+                        "
+                    ></p>
+                </div>
+            </div>
+
             <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN Y CONFIGURACIÓN -->
             <div id="view-teacher-register" class="view">
                 <div class="form-card">
@@ -1208,9 +1377,17 @@
                         🖨️ Imprimir Notas Finales
                     </button>
 
-                    <span id="teacher-email-badge"
-                          style="font-size:0.85rem; color:var(--text-muted); align-self:center;"></span>
-                    <button class="btn-secondary" onclick="logoutTeacher()">Cerrar Sesión</button>
+                    <span
+                        id="teacher-email-badge"
+                        style="
+                            font-size: 0.85rem;
+                            color: var(--text-muted);
+                            align-self: center;
+                        "
+                    ></span>
+                    <button class="btn-secondary" onclick="logoutTeacher()">
+                        Cerrar Sesión
+                    </button>
                 </div>
                 <!-- NUEVO PANEL DE ESTADÍSTICAS (PASO 4) -->
                 <div class="teacher-stats-grid">
@@ -1767,6 +1944,510 @@
                     style="display: none; margin-top: 2rem"
                 ></div>
             </div>
+
+            <!-- PANEL DE ADMINISTRADOR (oculto, acceso solo por UID autorizado) -->
+            <div id="view-admin-dashboard" class="view">
+                <div
+                    class="banner-info"
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 1rem;
+                    "
+                >
+                    <div>
+                        <h2
+                            style="
+                                margin: 0;
+                                color: var(--accent-teacher);
+                                font-family: Georgia, serif;
+                            "
+                        >
+                            🛡️ Panel de Administrador
+                        </h2>
+                        <p
+                            style="
+                                margin: 0;
+                                color: var(--text-muted);
+                                font-size: 0.9rem;
+                            "
+                        >
+                            Gestión global de docentes, salas e historial.
+                        </p>
+                    </div>
+                    <div
+                        style="display: flex; gap: 0.6rem; align-items: center"
+                    >
+                        <span
+                            id="admin-email-badge"
+                            style="font-size: 0.85rem; color: var(--text-muted)"
+                        ></span>
+                        <button class="btn-secondary" onclick="adminLogout()">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div
+                    style="
+                        display: flex;
+                        gap: 0.5rem;
+                        margin-bottom: 1rem;
+                        flex-wrap: wrap;
+                    "
+                >
+                    <button
+                        class="btn btn-teacher admin-tab active"
+                        data-tab="solicitudes"
+                        onclick="adminSwitchTab('solicitudes')"
+                    >
+                        📥 Solicitudes Pendientes
+                    </button>
+                    <button
+                        class="btn btn-teacher admin-tab"
+                        data-tab="docentes"
+                        onclick="adminSwitchTab('docentes')"
+                    >
+                        👥 Docentes Autorizados
+                    </button>
+                    <button
+                        class="btn btn-teacher admin-tab"
+                        data-tab="salas"
+                        onclick="adminSwitchTab('salas')"
+                    >
+                        🏫 Salas Activas
+                    </button>
+                    <button
+                        class="btn btn-teacher admin-tab"
+                        data-tab="historial"
+                        onclick="adminSwitchTab('historial')"
+                    >
+                        📊 Historial Global
+                    </button>
+                    <button
+                        class="btn btn-teacher admin-tab"
+                        data-tab="usuarios"
+                        onclick="adminSwitchTab('usuarios')"
+                    >
+                        🔑 Cuentas Auth
+                    </button>
+                </div>
+
+                <!-- Tab: Solicitudes -->
+                <div id="admin-tab-solicitudes" class="admin-tab-content">
+                    <div class="form-card" style="max-width: 100%">
+                        <h3 style="text-align: left; font-size: 1.1rem">
+                            Solicitudes Pendientes de Aprobación
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted)">
+                            Los usuarios que se registraron desde la web
+                            aparecerán aquí. Al aprobarlos, se crea su entrada
+                            en <code>/docentes_autorizados</code>.
+                        </p>
+                        <div class="dashboard-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th>UID</th>
+                                        <th>Correo verificado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-solicitudes-body">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            style="
+                                                text-align: center;
+                                                color: var(--text-muted);
+                                            "
+                                        >
+                                            Cargando…
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Docentes autorizados -->
+                <div
+                    id="admin-tab-docentes"
+                    class="admin-tab-content"
+                    style="display: none"
+                >
+                    <div class="form-card" style="max-width: 100%">
+                        <h3 style="text-align: left; font-size: 1.1rem">
+                            Docentes con Acceso
+                        </h3>
+                        <div
+                            style="
+                                display: flex;
+                                gap: 0.5rem;
+                                margin-bottom: 1rem;
+                                flex-wrap: wrap;
+                            "
+                        >
+                            <input
+                                type="email"
+                                id="admin-add-docente-email"
+                                placeholder="nuevo.docente@unmsm.edu.pe"
+                                style="
+                                    flex: 1;
+                                    padding: 0.7rem;
+                                    border-radius: 8px;
+                                    border: 1.5px solid var(--border-strong);
+                                    background: var(--panel-bg);
+                                    color: var(--text-main);
+                                "
+                            />
+                            <input
+                                type="text"
+                                id="admin-add-docente-nombre"
+                                placeholder="Nombre completo"
+                                style="
+                                    flex: 1;
+                                    padding: 0.7rem;
+                                    border-radius: 8px;
+                                    border: 1.5px solid var(--border-strong);
+                                    background: var(--panel-bg);
+                                    color: var(--text-main);
+                                "
+                            />
+                            <button
+                                class="btn btn-teacher"
+                                onclick="adminAddDocenteManual()"
+                                style="width: auto"
+                            >
+                                ➕ Añadir
+                            </button>
+                        </div>
+                        <div class="dashboard-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Correo</th>
+                                        <th>Nombre</th>
+                                        <th>UID</th>
+                                        <th>Fecha autorización</th>
+                                        <th>Activo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-docentes-body">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            style="
+                                                text-align: center;
+                                                color: var(--text-muted);
+                                            "
+                                        >
+                                            Cargando…
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Salas -->
+                <div
+                    id="admin-tab-salas"
+                    class="admin-tab-content"
+                    style="display: none"
+                >
+                    <div class="form-card" style="max-width: 100%">
+                        <h3 style="text-align: left; font-size: 1.1rem">
+                            Salas Registradas
+                        </h3>
+                        <div class="dashboard-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Sala</th>
+                                        <th>Docente</th>
+                                        <th>Estado</th>
+                                        <th>Alumnos</th>
+                                        <th>Capítulos</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-salas-body">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            style="
+                                                text-align: center;
+                                                color: var(--text-muted);
+                                            "
+                                        >
+                                            Cargando…
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Historial global -->
+                <div
+                    id="admin-tab-historial"
+                    class="admin-tab-content"
+                    style="display: none"
+                >
+                    <div class="form-card" style="max-width: 100%">
+                        <h3 style="text-align: left; font-size: 1.1rem">
+                            Historial Global de Evaluaciones
+                        </h3>
+                        <div
+                            style="
+                                display: flex;
+                                gap: 0.6rem;
+                                flex-wrap: wrap;
+                                margin-bottom: 1rem;
+                                align-items: flex-end;
+                            "
+                        >
+                            <div style="flex: 1; min-width: 180px">
+                                <label
+                                    style="
+                                        font-size: 0.75rem;
+                                        font-weight: 700;
+                                        text-transform: uppercase;
+                                        display: block;
+                                        margin-bottom: 0.3rem;
+                                    "
+                                    >Clase</label
+                                >
+                                <select
+                                    id="admin-hist-filtro-clase"
+                                    onchange="renderAdminHistorial()"
+                                    style="
+                                        width: 100%;
+                                        padding: 0.6rem;
+                                        border-radius: 8px;
+                                        border: 1.5px solid var(--border-strong);
+                                        background: var(--panel-bg);
+                                        color: var(--text-main);
+                                    "
+                                >
+                                    <option value="">Todas</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 180px">
+                                <label
+                                    style="
+                                        font-size: 0.75rem;
+                                        font-weight: 700;
+                                        text-transform: uppercase;
+                                        display: block;
+                                        margin-bottom: 0.3rem;
+                                    "
+                                    >Alumno (código)</label
+                                >
+                                <input
+                                    type="text"
+                                    id="admin-hist-filtro-code"
+                                    oninput="renderAdminHistorial()"
+                                    placeholder="20130026"
+                                    style="
+                                        width: 100%;
+                                        padding: 0.6rem;
+                                        border-radius: 8px;
+                                        border: 1.5px solid var(--border-strong);
+                                        background: var(--panel-bg);
+                                        color: var(--text-main);
+                                    "
+                                />
+                            </div>
+                            <div style="flex: 1; min-width: 180px">
+                                <label
+                                    style="
+                                        font-size: 0.75rem;
+                                        font-weight: 700;
+                                        text-transform: uppercase;
+                                        display: block;
+                                        margin-bottom: 0.3rem;
+                                    "
+                                    >Capítulo</label
+                                >
+                                <select
+                                    id="admin-hist-filtro-cap"
+                                    onchange="renderAdminHistorial()"
+                                    style="
+                                        width: 100%;
+                                        padding: 0.6rem;
+                                        border-radius: 8px;
+                                        border: 1.5px solid var(--border-strong);
+                                        background: var(--panel-bg);
+                                        color: var(--text-main);
+                                    "
+                                >
+                                    <option value="">Todos</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
+                            <button
+                                class="btn btn-secondary"
+                                onclick="exportAdminHistorialCSV()"
+                                style="
+                                    background: #059669;
+                                    color: #fff;
+                                    border: none;
+                                "
+                            >
+                                📥 CSV Completo
+                            </button>
+                            <button
+                                class="btn btn-secondary"
+                                onclick="exportAdminHistorialExcel()"
+                                style="
+                                    background: #16a34a;
+                                    color: #fff;
+                                    border: none;
+                                "
+                            >
+                                📊 Excel Completo
+                            </button>
+                        </div>
+
+                        <div
+                            id="admin-hist-resumen"
+                            style="
+                                display: grid;
+                                grid-template-columns: repeat(
+                                    auto-fit,
+                                    minmax(150px, 1fr)
+                                );
+                                gap: 1rem;
+                                margin-bottom: 1rem;
+                            "
+                        ></div>
+
+                        <!-- Vista resumida de evaluaciones (una fila por evaluación) -->
+                        <h4 style="margin: 1rem 0 0.5rem 0">
+                            Resumen por Evaluación
+                        </h4>
+                        <div
+                            style="
+                                overflow-x: auto;
+                                max-height: 400px;
+                                border: 1px solid var(--border-soft);
+                                border-radius: 8px;
+                                margin-bottom: 1.5rem;
+                            "
+                        >
+                            <table style="font-size: 0.8rem">
+                                <thead
+                                    id="admin-hist-eval-head"
+                                    style="
+                                        position: sticky;
+                                        top: 0;
+                                        z-index: 10;
+                                    "
+                                ></thead>
+                                <tbody id="admin-hist-eval-body"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Detalle por pregunta (solo admin) -->
+                        <h4 style="margin: 1rem 0 0.5rem 0">
+                            Detalle por Pregunta
+                        </h4>
+                        <div
+                            style="
+                                overflow-x: auto;
+                                max-height: 400px;
+                                border: 1px solid var(--border-soft);
+                                border-radius: 8px;
+                            "
+                        >
+                            <table style="font-size: 0.75rem">
+                                <thead
+                                    id="admin-hist-resp-head"
+                                    style="
+                                        position: sticky;
+                                        top: 0;
+                                        z-index: 10;
+                                    "
+                                ></thead>
+                                <tbody id="admin-hist-resp-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Cuentas Auth -->
+                <div
+                    id="admin-tab-usuarios"
+                    class="admin-tab-content"
+                    style="display: none"
+                >
+                    <div class="form-card" style="max-width: 100%">
+                        <h3 style="text-align: left; font-size: 1.1rem">
+                            Autorizaciones vigentes (docentes con acceso)
+                        </h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted)">
+                            Firebase Auth no permite listar usuarios desde el
+                            SDK del cliente. Para gestionar cuentas (eliminar,
+                            resetear contraseña), hazlo desde la
+                            <a
+                                href="https://console.firebase.google.com/project/project01-24faf/authentication/users"
+                                target="_blank"
+                                style="color: var(--accent-teacher)"
+                                >consola de Firebase</a
+                            >. <br />Desde aquí puedes eliminar el registro del
+                            nodo <code>/docentes_autorizados</code>, lo cual
+                            revoca el acceso inmediatamente aunque la cuenta de
+                            Auth siga existiendo.
+                        </p>
+                        <div class="dashboard-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Correo</th>
+                                        <th>UID</th>
+                                        <th>Nombre</th>
+                                        <th>Activo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-auth-body">
+                                    <tr>
+                                        <td
+                                            colspan="5"
+                                            style="
+                                                text-align: center;
+                                                color: var(--text-muted);
+                                            "
+                                        >
+                                            Cargando…
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- CRONÓMETRO FLOTANTE ALUMNO -->
@@ -1863,9 +2544,9 @@
                 appId: "1:764949303228:web:68152ed98479bc5550a5b9",
             };
             if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            const db   = firebase.database();
-            const auth = firebase.auth();                 // NUEVO
-            
+            const db = firebase.database();
+            const auth = firebase.auth(); // NUEVO
+
             // ⚠️ La clave maestra se elimina: ahora todo pasa por Firebase Auth.
             // Si necesitas un fallback temporal mientras migras, déjalo vacío:
             const TEACHER_MASTER_KEY = ""; // deshabilitado
@@ -1940,42 +2621,168 @@
                 }
             }
 
+            // ================= REGISTRO DOCENTE CON APROBACIÓN =================
+            function registerTeacherAccount() {
+                const name = document
+                    .getElementById("signup-name")
+                    .value.trim();
+                const email = document
+                    .getElementById("signup-email")
+                    .value.trim();
+                const pass = document.getElementById("signup-pass").value;
+                const pass2 = document.getElementById("signup-pass2").value;
+                const msg = document.getElementById("signup-msg");
+                msg.textContent = "";
+
+                if (!name || !email || !pass) {
+                    msg.style.color = "var(--error)";
+                    msg.textContent = "Complete todos los campos.";
+                    return;
+                }
+                if (pass.length < 6) {
+                    msg.style.color = "var(--error)";
+                    msg.textContent =
+                        "La contraseña debe tener al menos 6 caracteres.";
+                    return;
+                }
+                if (pass !== pass2) {
+                    msg.style.color = "var(--error)";
+                    msg.textContent = "Las contraseñas no coinciden.";
+                    return;
+                }
+
+                auth.createUserWithEmailAndPassword(email, pass)
+                    .then((cred) => {
+                        // Guardar solicitud en la BD (pendiente de aprobación)
+                        return db
+                            .ref("solicitudes_docentes/" + cred.user.uid)
+                            .set({
+                                nombre: name,
+                                email: email,
+                                uid: cred.user.uid,
+                                fecha: Date.now(),
+                                estado: "pendiente",
+                            })
+                            .then(() => cred.user.sendEmailVerification());
+                    })
+                    .then(() => {
+                        msg.style.color = "var(--success)";
+                        msg.textContent =
+                            "✔ Solicitud enviada. Revise su correo para verificarlo y espere la aprobación del administrador.";
+                        // Cerrar la sesión recién creada para no dejar al usuario a medias
+                        auth.signOut();
+                        setTimeout(
+                            () => switchView("view-teacher-login", true),
+                            5000,
+                        );
+                    })
+                    .catch((err) => {
+                        msg.style.color = "var(--error)";
+                        if (err.code === "auth/email-already-in-use") {
+                            msg.textContent = "Este correo ya está registrado.";
+                        } else {
+                            msg.textContent = "❌ " + err.message;
+                        }
+                    });
+            }
+
             // ================= AUTENTICACIÓN DOCENTE =================
             function loginTeacher() {
-                const email = document.getElementById("t-login-email").value.trim();
-                const pass  = document.getElementById("t-login-pass").value;
-                const msg   = document.getElementById("t-login-msg");
+                const email = document
+                    .getElementById("t-login-email")
+                    .value.trim();
+                const pass = document.getElementById("t-login-pass").value;
+                const msg = document.getElementById("t-login-msg");
                 msg.textContent = "";
-            
                 if (!email || !pass) {
                     msg.textContent = "Complete correo y contraseña.";
                     return;
                 }
-            
+
+                const emailKey = email.replace(/\./g, "_");
+
                 auth.signInWithEmailAndPassword(email, pass)
-                    .then(cred => {
-                        // Verificar que el UID esté registrado como docente
-                        return db.ref("docentes/" + cred.user.uid).once("value");
-                    })
-                    .then(snap => {
-                        if (!snap.exists() || snap.val().activo === false) {
-                            return auth.signOut().then(() => {
-                                throw new Error("Esta cuenta no está habilitada como docente.");
-                            });
+                    .then((cred) => {
+                        if (!cred.user.emailVerified) {
+                            auth.signOut();
+                            throw new Error(
+                                "Debe verificar su correo electrónico. Revise su bandeja de entrada.",
+                            );
                         }
-                        const data = snap.val();
-                        document.getElementById("teacher-email-badge").textContent =
-                            "👤 " + (data.nombre || auth.currentUser.email);
-                        switchView("view-teacher-register", true);
+
+                        // 1. Verificamos si está en docentes_autorizados
+                        return db
+                            .ref("docentes_autorizados/" + emailKey)
+                            .once("value")
+                            .then((snap) => {
+                                if (snap.exists()) {
+                                    const data = snap.val();
+                                    if (data.activo === false) {
+                                        auth.signOut();
+                                        throw new Error(
+                                            "Su cuenta ha sido desactivada. Contacte al administrador.",
+                                        );
+                                    }
+                                    // Vincular UID automáticamente si no lo tiene
+                                    if (!data.uid || data.uid === "") {
+                                        db.ref(
+                                            "docentes_autorizados/" + emailKey,
+                                        )
+                                            .update({
+                                                uid: auth.currentUser.uid,
+                                            })
+                                            .catch((err) =>
+                                                console.warn(
+                                                    "No se pudo vincular UID:",
+                                                    err.message,
+                                                ),
+                                            );
+                                    }
+                                    document.getElementById(
+                                        "teacher-email-badge",
+                                    ).textContent =
+                                        "👤 " + (data.nombre || email);
+                                    return switchView(
+                                        "view-teacher-register",
+                                        true,
+                                    );
+                                }
+
+                                // 2. Si NO está en docentes_autorizados, verificamos si es ADMIN
+                                return db
+                                    .ref("admins/" + auth.currentUser.uid)
+                                    .once("value")
+                                    .then((adminSnap) => {
+                                        if (adminSnap.exists()) {
+                                            // Es admin, le damos pase directo como docente
+                                            document.getElementById(
+                                                "teacher-email-badge",
+                                            ).textContent =
+                                                "👤 Admin: " + email;
+                                            switchView(
+                                                "view-teacher-register",
+                                                true,
+                                            );
+                                        } else {
+                                            // No es docente ni admin
+                                            auth.signOut();
+                                            throw new Error(
+                                                "Su cuenta aún no ha sido aprobada por el administrador. Contacte al coordinador.",
+                                            );
+                                        }
+                                    });
+                            });
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         msg.textContent = "❌ " + (err.message || err);
                     });
             }
-            
+
             function sendPasswordReset() {
-                const email = document.getElementById("t-recover-email").value.trim();
-                const msg   = document.getElementById("t-recover-msg");
+                const email = document
+                    .getElementById("t-recover-email")
+                    .value.trim();
+                const msg = document.getElementById("t-recover-msg");
                 msg.style.color = "var(--text-muted)";
                 msg.textContent = "";
                 if (!email) {
@@ -1986,14 +2793,15 @@
                 auth.sendPasswordResetEmail(email)
                     .then(() => {
                         msg.style.color = "var(--success)";
-                        msg.textContent = "✔ Enlace enviado. Revise su bandeja.";
+                        msg.textContent =
+                            "✔ Enlace enviado. Revise su bandeja.";
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         msg.style.color = "var(--error)";
                         msg.textContent = "❌ " + err.message;
                     });
             }
-            
+
             function logoutTeacher() {
                 if (!confirm("¿Cerrar sesión de docente?")) return;
                 const classKey = localStorage.getItem("docenteClase");
@@ -2009,28 +2817,47 @@
                 });
             }
 
-            // BLOQUEO DE BOTONES DEL NAVEGADOR EN EXAMEN
+            // BLOQUEO DE BOTONES DEL NAVEGADOR EN EXAMEN, LOBBY Y RESULTADOS
             window.addEventListener("popstate", function (event) {
-                if (
-                    document
-                        .getElementById("view-student-exam")
-                        .classList.contains("active") ||
-                    document
-                        .getElementById("view-student-lobby")
-                        .classList.contains("active")
-                ) {
-                    const confirmExit = confirm(
-                        "⚠️ ¡Atención! Si retrocedes, saldrás de la sala de examen y se perderá tu progreso actual. ¿Seguro que deseas salir?",
+                const examActive = document
+                    .getElementById("view-student-exam")
+                    .classList.contains("active");
+                const lobbyActive = document
+                    .getElementById("view-student-lobby")
+                    .classList.contains("active");
+                const resultsActive = document
+                    .getElementById("view-student-results")
+                    .classList.contains("active");
+
+                // Si no está en ninguna vista crítica del alumno, dejamos pasar atrás normalmente
+                if (!examActive && !lobbyActive && !resultsActive) return;
+
+                let msg, targetView;
+
+                if (examActive || lobbyActive) {
+                    // Examen o lobby: perder progreso actual
+                    msg =
+                        "⚠️ ¡Atención! Si retrocedes, saldrás de la sala de examen y se perderá tu progreso actual. ¿Seguro que deseas salir?";
+                    targetView = "view-student-exam";
+                } else {
+                    // Resultados: puede perder la vista del feedback
+                    msg =
+                        "⚠️ Si retrocedes, saldrás de la pantalla de resultados. " +
+                        "Si aún no enviaste tu feedback, deberás hacerlo la próxima vez que ingreses. ¿Seguro que deseas salir?";
+                    targetView = "view-student-results";
+                }
+
+                const confirmExit = confirm(msg);
+
+                if (confirmExit) {
+                    salirSalaAlumno();
+                } else {
+                    // Reempujar el estado para cancelar el "atrás"
+                    history.pushState(
+                        { view: targetView },
+                        "",
+                        "#" + targetView,
                     );
-                    if (confirmExit) {
-                        salirSalaAlumno();
-                    } else {
-                        history.pushState(
-                            { view: "view-student-exam" },
-                            "",
-                            "#view-student-exam",
-                        );
-                    }
                 }
             });
 
@@ -2082,14 +2909,14 @@
                 }
 
                 // Restaurar sesión de docente solo si Firebase Auth confirma al usuario
-                auth.onAuthStateChanged(user => {
+                auth.onAuthStateChanged((user) => {
                     if (user) {
                         const badge = document.getElementById("teacher-email-badge");
                         if (badge) badge.textContent = "👤 " + (user.email || "");
                 
                         const savedClass = localStorage.getItem("docenteClase");
                         if (savedClass) {
-                            db.ref("clases/" + savedClass).once("value").then(snap => {
+                            db.ref("clases/" + savedClass).once("value").then((snap) => {
                                 if (snap.exists()) {
                                     enterTeacherDashboard(savedClass, snap.val());
                                 } else {
@@ -2098,9 +2925,13 @@
                             });
                         }
                     } else {
-                        // Sin sesión: limpiar rastro docente
                         localStorage.removeItem("docenteClase");
                     }
+                    
+                    // 🔑 Damos un pequeño respiro de 100ms para que Firebase cargue y luego actualizamos el botón
+                    setTimeout(() => {
+                        actualizarBotonAdmin();
+                    }, 100);
                 });
 
                 const savedStudent = localStorage.getItem("alumnoSala");
@@ -2121,16 +2952,46 @@
             });
 
             function switchView(viewId, push = true) {
-                document
-                    .querySelectorAll(".view")
-                    .forEach((v) => v.classList.remove("active"));
+                document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
                 document.getElementById(viewId).classList.add("active");
                 if (push) history.pushState({ view: viewId }, "", `#${viewId}`);
+            
+                // 🔑 Cada vez que entramos a CUALQUIER vista, revisamos el estado del botón
+                actualizarBotonAdmin();
             }
+            
+            // ================= GUARDIÁN DEL BOTÓN ADMIN =================
+            function actualizarBotonAdmin() {
+                const adminBtn = document.getElementById("admin-access-button");
+                if (!adminBtn) return;
+            
+                // Si no hay usuario, lo ocultamos inmediatamente
+                if (!auth.currentUser) {
+                    adminBtn.style.display = "none";
+                    return;
+                }
+            
+                // Verificamos contra la base de datos
+                db.ref("admins/" + auth.currentUser.uid)
+                    .once("value")
+                    .then((snap) => {
+                        if (snap.exists()) {
+                            adminBtn.style.display = "block"; // Mostrar
+                        } else {
+                            adminBtn.style.display = "none"; // Ocultar
+                        }
+                    })
+                    .catch((err) => {
+                        console.error("Error comprobando admin:", err);
+                        adminBtn.style.display = "none";
+                    });
+            }
+
             function setTheme(t) {
                 document.body.className = "theme-" + t;
                 localStorage.setItem("theme", t);
             }
+
 
             function previewChapter(chapId) {
                 try {
@@ -2368,81 +3229,109 @@
                     alert("Debe iniciar sesión como docente.");
                     return switchView("view-teacher-login", true);
                 }
-            
-                const name  = document.getElementById("t-teachername").value.trim();
-                const cName = document.getElementById("t-classname").value.trim();
-                const pass  = document.getElementById("t-pass").value.trim();
-                const time  = parseInt(document.getElementById("t-time").value);
-            
-                const selectedCards = document.querySelectorAll(".chapter-select-card.selected");
-                const selectedChaps = Array.from(selectedCards).map(card => {
-                    const titleText = card.querySelector(".chapter-card-title").innerText;
-                    return parseInt(titleText.replace("Capítulo ", "").split(":")[0]);
+
+                const name = document
+                    .getElementById("t-teachername")
+                    .value.trim();
+                const cName = document
+                    .getElementById("t-classname")
+                    .value.trim();
+                const pass = document.getElementById("t-pass").value.trim();
+                const time = parseInt(document.getElementById("t-time").value);
+
+                const selectedCards = document.querySelectorAll(
+                    ".chapter-select-card.selected",
+                );
+                const selectedChaps = Array.from(selectedCards).map((card) => {
+                    const titleText = card.querySelector(
+                        ".chapter-card-title",
+                    ).innerText;
+                    return parseInt(
+                        titleText.replace("Capítulo ", "").split(":")[0],
+                    );
                 });
-            
+
                 if (!name || !cName || !pass || selectedChaps.length === 0) {
-                    return alert("Complete todos los campos y seleccione al menos un capítulo.");
+                    return alert(
+                        "Complete todos los campos y seleccione al menos un capítulo.",
+                    );
                 }
-            
+
                 const classKey = cName.toLowerCase();
-            
-                db.ref("clases/" + classKey).once("value").then(snap => {
-                    if (snap.exists()) {
-                        // Si la sala es de otro docente, no permitir sobrescribir
-                        const currentOwner = snap.val().ownerUid;
-                        if (currentOwner && currentOwner !== auth.currentUser.uid) {
-                            return alert("❌ Ya existe una sala con ese nombre creada por otro docente. Elija otro nombre.");
+
+                db.ref("clases/" + classKey)
+                    .once("value")
+                    .then((snap) => {
+                        if (snap.exists()) {
+                            // Si la sala es de otro docente, no permitir sobrescribir
+                            const currentOwner = snap.val().ownerUid;
+                            if (
+                                currentOwner &&
+                                currentOwner !== auth.currentUser.uid
+                            ) {
+                                return alert(
+                                    "❌ Ya existe una sala con ese nombre creada por otro docente. Elija otro nombre.",
+                                );
+                            }
+                            if (
+                                !confirm(
+                                    "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" +
+                                        cName +
+                                        "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?",
+                                )
+                            )
+                                return;
                         }
-                        if (!confirm(
-                            "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" + cName +
-                            "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?"
-                        )) return;
-                    }
-            
-                    const classData = {
-                        teacherName: name,
-                        className:   cName,
-                        pass,
-                        timeLimit:   time,
-                        chapters:    selectedChaps,
-                        status:      "waiting",
-                        startTime:   0,
-                        customQuestions: teacherCustomQuestions,
-                        ownerUid:    auth.currentUser.uid,       // 🔑 NUEVO
-                        ownerEmail:  auth.currentUser.email,     // 🔑 NUEVO
-                        createdAt:   Date.now()                  // 🔑 útil para auditoría
-                    };
-            
-                    db.ref("clases/" + classKey).set(classData).then(() => {
-                        localStorage.setItem("docenteClase", classKey);
-                        teacherCustomQuestions = {};
-                        enterTeacherDashboard(classKey, classData);
+
+                        const classData = {
+                            teacherName: name,
+                            className: cName,
+                            pass,
+                            timeLimit: time,
+                            chapters: selectedChaps,
+                            status: "waiting",
+                            startTime: 0,
+                            customQuestions: teacherCustomQuestions,
+                            ownerUid: auth.currentUser.uid, // 🔑 NUEVO
+                            ownerEmail: auth.currentUser.email, // 🔑 NUEVO
+                            createdAt: Date.now(), // 🔑 útil para auditoría
+                        };
+
+                        db.ref("clases/" + classKey)
+                            .set(classData)
+                            .then(() => {
+                                localStorage.setItem("docenteClase", classKey);
+                                teacherCustomQuestions = {};
+                                enterTeacherDashboard(classKey, classData);
+                            });
                     });
-                });
             }
 
             function enterTeacherDashboard(classKey, data) {
-                // 🔒 Verificar que la sala pertenezca al docente autenticado
                 if (!auth.currentUser) {
                     localStorage.removeItem("docenteClase");
                     return switchView("view-role-selection", false);
                 }
                 if (data.ownerUid && data.ownerUid !== auth.currentUser.uid) {
                     localStorage.removeItem("docenteClase");
-                    alert("❌ Esta sala pertenece a otro docente. No puede administrarla.");
+                    alert(
+                        "❌ Esta sala pertenece a otro docente. No puede administrarla.",
+                    );
                     return switchView("view-role-selection", false);
                 }
-            
+
                 classroomConfig = data;
                 document.getElementById("docente-text-info").innerHTML = `
                     <h3 style="margin:0; color:var(--accent-teacher);">Sala: <span style="text-transform:uppercase;">${data.className}</span></h3>
                     <p style="margin:0;">Docente: ${data.teacherName} | Capítulos: ${data.chapters.length} | Tiempo: ${data.timeLimit} min</p>
                 `;
-            
-                db.ref("clases/" + classKey).on("value", snap => {
+
+                // 🔑 Limpiar listener previo antes de añadir uno nuevo
+                db.ref("clases/" + classKey).off();
+                db.ref("clases/" + classKey).on("value", (snap) => {
                     if (snap.val()) updateTeacherUI(snap.val());
                 });
-            
+
                 switchView("view-teacher-dashboard", true);
             }
 
@@ -2718,6 +3607,7 @@
             }
 
             // IMPRIMIR NOTAS CON FEEDBACK
+            // ================= IMPRIMIR NOTAS CON FEEDBACK =================
             function printGrades() {
                 const classKey = localStorage.getItem("docenteClase");
                 if (!classKey) return;
@@ -2729,6 +3619,15 @@
                         if (!data || !data.estudiantes)
                             return alert("No hay datos para imprimir.");
 
+                        // 🔑 Limpiar bloque previo de resumen (evita duplicados al imprimir varias veces)
+                        const oldStats =
+                            document.getElementById("print-stats-block");
+                        if (oldStats) oldStats.remove();
+
+                        // 🔑 Rellenar fecha del footer
+                        document.getElementById("print-date").innerText =
+                            new Date().toLocaleString();
+
                         const printBody =
                             document.getElementById("print-table-body");
                         printBody.innerHTML = "";
@@ -2736,40 +3635,44 @@
                         document.getElementById("print-class-info").innerText =
                             `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName} | Fecha: ${new Date().toLocaleString()}`;
 
+                        // Ordenar alumnos por nota descendente (los no terminados van al final)
                         const studentsList = Object.values(
                             data.estudiantes,
                         ).sort((a, b) => (b.score || 0) - (a.score || 0));
 
-                        // Calcular estadísticas para el reporte
-                        let totalAlumnos = studentsList.length;
-                        let alumnosTerminados = studentsList.filter(
+                        // --- Estadísticas del aula ---
+                        const totalAlumnos = studentsList.length;
+                        const alumnosTerminados = studentsList.filter(
                             (s) => s.finished,
                         );
+
                         let sumaNotas = 0;
                         alumnosTerminados.forEach((s) => {
                             sumaNotas += parseFloat(s.score) || 0;
                         });
-                        let promedio =
+
+                        const promedio =
                             alumnosTerminados.length > 0
                                 ? (
                                       sumaNotas / alumnosTerminados.length
                                   ).toFixed(2)
                                 : "0.00";
 
-                        let mejorNota =
+                        const mejorNota =
                             alumnosTerminados.length > 0
                                 ? alumnosTerminados[0].score
                                 : "0.0";
-                        let peorNota =
+
+                        const peorNota =
                             alumnosTerminados.length > 0
                                 ? alumnosTerminados[
                                       alumnosTerminados.length - 1
                                   ].score
                                 : "0.0";
 
-                        // Insertar resumen antes de la tabla
-                        let statsHtml = `
-                            <div style="border: 1px solid #000; padding: 1rem; margin-bottom: 1rem; font-size: 11px;">
+                        // --- Bloque de resumen (con id para poder limpiarlo en la siguiente impresión) ---
+                        const statsHtml = `
+                            <div id="print-stats-block" style="border: 1px solid #000; padding: 1rem; margin-bottom: 1rem; font-size: 11px;">
                                 <h3 style="margin: 0 0 0.5rem 0; font-size: 14px; text-align: center;">Resumen Estadístico del Aula</h3>
                                 <p style="margin: 0.2rem 0;"><b>Total de Alumnos Registrados:</b> ${totalAlumnos}</p>
                                 <p style="margin: 0.2rem 0;"><b>Alumnos que completaron el examen:</b> ${alumnosTerminados.length}</p>
@@ -2778,46 +3681,47 @@
                             </div>
                         `;
 
+                        // --- Filas de alumnos ---
                         let index = 1;
                         studentsList.forEach((st) => {
-                            let nota = st.finished ? st.score : "N/A";
-                            let aciertos = st.finished
+                            const nota = st.finished ? st.score : "N/A";
+                            const aciertos = st.finished
                                 ? `${st.correctas} / ${st.totalQ}`
                                 : "-";
 
                             let feedbackText = "-";
                             if (st.feedback) {
                                 feedbackText = `
-                            <b>Estrellas:</b> ${st.feedback.estrellas}/6<br>
-                            <b>Preguntas:</b> ${st.feedback.utilidad}<br>
-                            <b>Interfaz:</b> ${st.feedback.intuitiva}<br>
-                            <b>Sugerencia:</b> ${st.feedback.texto || "Ninguna"}
-                        `;
+                                    <b>Estrellas:</b> ${st.feedback.estrellas}/6<br>
+                                    <b>Preguntas:</b> ${st.feedback.utilidad}<br>
+                                    <b>Interfaz:</b> ${st.feedback.intuitiva}<br>
+                                    <b>Sugerencia:</b> ${st.feedback.texto || "Ninguna"}
+                                `;
                             }
 
                             printBody.innerHTML += `
-                        <tr>
-                            <td>${index}</td>
-                            <td>${st.name}</td>
-                            <td>${st.code}</td>
-                            <td>${st.group}</td>
-                            <td style="text-align:center; font-weight:bold; font-size:12px;">${nota}</td>
-                            <td style="text-align:center;">${aciertos}</td>
-                            <td style="font-size:10px; line-height:1.2;">${feedbackText}</td>
-                        </tr>
-                    `;
+                                <tr>
+                                    <td>${index}</td>
+                                    <td>${st.name}</td>
+                                    <td>${st.code}</td>
+                                    <td>${st.group}</td>
+                                    <td style="text-align:center; font-weight:bold; font-size:12px;">${nota}</td>
+                                    <td style="text-align:center;">${aciertos}</td>
+                                    <td style="font-size:10px; line-height:1.2;">${feedbackText}</td>
+                                </tr>
+                            `;
                             index++;
                         });
 
-                        // Insertar el bloque de estadísticas justo antes de la tabla existente
+                        // --- Insertar el bloque de resumen antes de la tabla ---
                         document
                             .querySelector("#print-section")
                             .insertAdjacentHTML("beforeend", statsHtml);
 
+                        // --- Lanzar impresión ---
                         window.print();
                     });
             }
-
             function startExam() {
                 db.ref("clases/" + localStorage.getItem("docenteClase")).update(
                     { status: "active", startTime: Date.now() },
@@ -2834,75 +3738,87 @@
                 );
             }
 
-            function logoutTeacher() {
-                localStorage.removeItem("docenteClase");
-                clearInterval(teacherTimerInterval);
-                window.location.reload();
-            }
-
             // ================= ALUMNO =================
             function studentEnter() {
                 const name = document.getElementById("s-name").value.trim();
                 const code = document.getElementById("s-code").value.trim();
-                const cName = document.getElementById("s-classname").value.trim();
+                const cName = document
+                    .getElementById("s-classname")
+                    .value.trim();
                 const pass = document.getElementById("s-pass").value.trim();
                 const group = document.getElementById("s-group").value;
-            
+
                 // VALIDACIÓN CONTRA XSS BÁSICO (sin cambios)
                 const regexHTML = /<[^>]*>?/gm;
                 if (regexHTML.test(name)) {
-                    return alert("El nombre no puede contener etiquetas HTML o caracteres especiales.");
+                    return alert(
+                        "El nombre no puede contener etiquetas HTML o caracteres especiales.",
+                    );
                 }
                 if (!name || !code || !cName || !pass)
                     return alert("Complete todos los campos.");
                 if (code.length !== 8 || isNaN(code))
                     return alert("El código debe tener 8 dígitos.");
-            
+
                 const classKey = cName.toLowerCase();
-            
+
                 // 🔑 PASO 1: Garantizar sesión anónima ANTES de tocar la BD
                 // Si ya hay un usuario (anónimo o no) reutilizamos su uid.
                 // Si no, signInAnonymously() lo crea silenciosamente.
                 const ensureAuth = auth.currentUser
                     ? Promise.resolve(auth.currentUser)
-                    : auth.signInAnonymously().then(cred => cred.user);
-            
+                    : auth.signInAnonymously().then((cred) => cred.user);
+
                 ensureAuth
-                    .then(user => {
+                    .then((user) => {
                         const uid = user.uid;
-            
+
                         // 🔑 PASO 2: Verificar sala y contraseña (igual que antes)
-                        return db.ref("clases/" + classKey).once("value").then(snap => {
-                            const cData = snap.val();
-                            if (!cData) throw new Error("La sala no existe.");
-                            if (cData.pass !== pass) throw new Error("Contraseña incorrecta.");
-            
-                            // 🔑 PASO 3: Comprobar que este código no esté ya ocupado por OTRO uid
-                            const existente = cData.estudiantes && cData.estudiantes[code];
-                            if (existente && existente.uid && existente.uid !== uid) {
-                                throw new Error(
-                                    "El código " + code + " ya está en uso en esta sala. " +
-                                    "Si es tuyo, usa el mismo dispositivo/navegador con el que ingresaste antes."
-                                );
-                            }
-            
-                            return { cData, uid };
-                        });
+                        return db
+                            .ref("clases/" + classKey)
+                            .once("value")
+                            .then((snap) => {
+                                const cData = snap.val();
+                                if (!cData)
+                                    throw new Error("La sala no existe.");
+                                if (cData.pass !== pass)
+                                    throw new Error("Contraseña incorrecta.");
+
+                                // 🔑 PASO 3: Comprobar que este código no esté ya ocupado por OTRO uid
+                                const existente =
+                                    cData.estudiantes &&
+                                    cData.estudiantes[code];
+                                if (
+                                    existente &&
+                                    existente.uid &&
+                                    existente.uid !== uid
+                                ) {
+                                    throw new Error(
+                                        "El código " +
+                                            code +
+                                            " ya está en uso en esta sala. " +
+                                            "Si es tuyo, usa el mismo dispositivo/navegador con el que ingresaste antes.",
+                                    );
+                                }
+
+                                return { cData, uid };
+                            });
                     })
                     .then(({ cData, uid }) => {
                         classroomConfig = cData;
-            
+
                         // 🔑 PASO 4: currentStudent ahora incluye uid
                         currentStudent = {
                             name,
                             code,
                             group,
-                            uid,                              // NUEVO
+                            uid, // NUEVO
                             finished: false,
                             feedbackEnviado: false,
                         };
-            
-                        return db.ref(`clases/${classKey}/estudiantes/${code}`)
+
+                        return db
+                            .ref(`clases/${classKey}/estudiantes/${code}`)
                             .update(currentStudent)
                             .then(() => {
                                 localStorage.setItem(
@@ -2916,11 +3832,17 @@
                                 checkStudentStatus(classKey);
                             });
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         // Mensajes amigables según el tipo de error
                         const msg = err.message || "";
-                        if (msg.includes("permiso") || msg.includes("permission") || err.code === "PERMISSION_DENIED") {
-                            alert("❌ No se pudo acceder a la sala. Verifique la contraseña o intente más tarde.");
+                        if (
+                            msg.includes("permiso") ||
+                            msg.includes("permission") ||
+                            err.code === "PERMISSION_DENIED"
+                        ) {
+                            alert(
+                                "❌ No se pudo acceder a la sala. Verifique la contraseña o intente más tarde.",
+                            );
                         } else {
                             alert("❌ " + msg);
                         }
@@ -3656,28 +4578,25 @@
             let historialData = []; // Almacena todas las filas (una por respuesta)
 
             function openHistorialView() {
+                if (!auth.currentUser)
+                    return switchView("view-teacher-login", true);
+
                 db.ref("historial_evaluaciones")
                     .once("value")
                     .then((snap) => {
                         const data = snap.val() || {};
                         historialData = [];
 
-                        // Normalizar: unir meta + respuestas en filas planas
                         Object.values(data).forEach((evalObj) => {
                             const meta = evalObj.meta || {};
                             const respuestas = evalObj.respuestas
                                 ? Object.values(evalObj.respuestas)
                                 : [];
-
-                            respuestas.forEach((r) => {
-                                historialData.push({
-                                    ...meta,
-                                    ...r,
-                                });
-                            });
+                            respuestas.forEach((r) =>
+                                historialData.push({ ...meta, ...r }),
+                            );
                         });
 
-                        // Llenar el selector de clases
                         const clasesSet = new Set(
                             historialData.map((h) => h.clase).filter(Boolean),
                         );
@@ -3686,9 +4605,10 @@
                         );
                         selectorClase.innerHTML =
                             '<option value="">Todas las clases</option>';
-                        clasesSet.forEach((c) => {
-                            selectorClase.innerHTML += `<option value="${c}">${c}</option>`;
-                        });
+                        clasesSet.forEach(
+                            (c) =>
+                                (selectorClase.innerHTML += `<option value="${c}">${c}</option>`),
+                        );
 
                         renderHistorialTable();
                         switchView("view-historial", true);
@@ -3976,6 +4896,655 @@
                     `historial_evaluaciones_${new Date().toISOString().slice(0, 10)}.xlsx`,
                 );
             }
+
+            // ============================================================
+            // 🛡️ PANEL DE ADMINISTRADOR
+            // ============================================================
+            let adminHistorialData = []; // Cache de filas planas (meta + respuesta)
+            let adminEvaluacionesMap = {}; // id_eval -> meta consolidada
+            let adminSolicitudes = {};
+            let adminDocentes = {};
+            let adminSalas = {};
+
+            function adminSwitchTab(tab) {
+                // 🔒 Validación inmediata
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+
+                    document
+                        .querySelectorAll(".admin-tab-content")
+                        .forEach((el) => (el.style.display = "none"));
+                    document
+                        .querySelectorAll(".admin-tab")
+                        .forEach((b) => b.classList.remove("active"));
+                    document.getElementById("admin-tab-" + tab).style.display =
+                        "block";
+                    document
+                        .querySelector(`.admin-tab[data-tab="${tab}"]`)
+                        .classList.add("active");
+
+                    document.getElementById("admin-email-badge").textContent =
+                        "👤 " + (auth.currentUser.email || "");
+
+                    if (tab === "solicitudes") adminLoadSolicitudes();
+                    if (tab === "docentes") adminLoadDocentes();
+                    if (tab === "salas") adminLoadSalas();
+                    if (tab === "historial") adminLoadHistorial();
+                    if (tab === "usuarios") adminLoadUsuariosAuth();
+                });
+            }
+
+            // ---------- Verificación de permisos ----------
+            function requireAdmin() {
+                if (!auth.currentUser) {
+                    switchView("view-role-selection", true);
+                    return null;
+                }
+                return db
+                    .ref("admins/" + auth.currentUser.uid)
+                    .once("value")
+                    .then((snap) => {
+                        if (!snap.exists()) {
+                            alert(
+                                "⛔ Acceso denegado. Esta cuenta no es administrador.",
+                            );
+                            switchView("view-role-selection", true);
+                            return null;
+                        }
+                        return auth.currentUser.uid;
+                    });
+            }
+
+            function adminLogout() {
+                if (!confirm("¿Cerrar sesión de administrador?")) return;
+                auth.signOut().then(() => window.location.reload());
+            }
+
+            // ---------- SOLICITUDES ----------
+            function adminLoadSolicitudes() {
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+                    document.getElementById("admin-email-badge").textContent =
+                        "👤 " + auth.currentUser.email;
+
+                    db.ref("solicitudes_docentes").on("value", (snap) => {
+                        adminSolicitudes = snap.val() || {};
+                        const tbody = document.getElementById(
+                            "admin-solicitudes-body",
+                        );
+                        tbody.innerHTML = "";
+
+                        const pendientes = Object.values(adminSolicitudes)
+                            .filter((s) => s.estado === "pendiente")
+                            .sort((a, b) => b.fecha - a.fecha);
+
+                        if (pendientes.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay solicitudes pendientes.</td></tr>`;
+                            return;
+                        }
+
+                        pendientes.forEach((s) => {
+                            const fecha = new Date(s.fecha).toLocaleString();
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${fecha}</td>
+                                    <td>${s.nombre}</td>
+                                    <td>${s.email}</td>
+                                    <td style="font-family:monospace; font-size:0.7rem;">${s.uid}</td>
+                                    <td>${s.emailVerificado ? "✅" : "—"}</td>
+                                    <td>
+                                        <button class="btn-secondary" onclick="adminApproveSolicitud('${s.uid}')" style="background:#059669; color:#fff; border:none; margin-right:0.4rem;">✔ Aprobar</button>
+                                        <button class="btn-secondary" onclick="adminRejectSolicitud('${s.uid}')" style="background:#ef4444; color:#fff; border:none;">✕ Rechazar</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    });
+                });
+            }
+
+            function adminApproveSolicitud(uid) {
+                const s = adminSolicitudes[uid];
+                if (!s) return;
+                if (!confirm(`¿Aprobar a ${s.nombre} (${s.email})?`)) return;
+
+                // Crear entrada en /docentes_autorizados (indexado por email)
+                const emailKey = s.email.replace(/\./g, "_"); // Firebase no permite puntos en keys
+                db.ref("docentes_autorizados/" + emailKey)
+                    .set({
+                        nombre: s.nombre,
+                        email: s.email,
+                        uid: s.uid,
+                        fecha_autorizacion: Date.now(),
+                        activo: true,
+                    })
+                    .then(() =>
+                        db
+                            .ref("solicitudes_docentes/" + uid)
+                            .update({ estado: "aprobado" }),
+                    )
+                    .then(() =>
+                        alert("✅ Docente aprobado. Ya puede iniciar sesión."),
+                    )
+                    .catch((err) => alert("Error: " + err.message));
+            }
+
+            function adminRejectSolicitud(uid) {
+                if (
+                    !confirm(
+                        "¿Rechazar esta solicitud? La cuenta de Auth NO se elimina automáticamente.",
+                    )
+                )
+                    return;
+                db.ref("solicitudes_docentes/" + uid)
+                    .update({ estado: "rechazado" })
+                    .then(() => alert("Solicitud rechazada."));
+            }
+
+            // ---------- DOCENTES AUTORIZADOS ----------
+            function adminLoadDocentes() {
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+                    db.ref("docentes_autorizados").on("value", (snap) => {
+                        adminDocentes = snap.val() || {};
+                        const tbody = document.getElementById(
+                            "admin-docentes-body",
+                        );
+                        tbody.innerHTML = "";
+                        const items = Object.entries(adminDocentes);
+                        if (items.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay docentes autorizados aún.</td></tr>`;
+                            return;
+                        }
+                        items.forEach(([key, d]) => {
+                            const fecha = d.fecha_autorizacion
+                                ? new Date(
+                                      d.fecha_autorizacion,
+                                  ).toLocaleString()
+                                : "—";
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${d.email || key}</td>
+                                    <td>${d.nombre || "—"}</td>
+                                    <td style="font-family:monospace; font-size:0.7rem;">${d.uid || "—"}</td>
+                                    <td>${fecha}</td>
+                                    <td>${d.activo === false ? "❌" : "✅"}</td>
+                                    <td>
+                                        <button class="btn-secondary" onclick="adminToggleDocente('${key}', ${d.activo === false})">${d.activo === false ? "Reactivar" : "Desactivar"}</button>
+                                        <button class="btn-secondary" onclick="adminRemoveDocente('${key}')" style="background:#ef4444; color:#fff; border:none; margin-left:0.4rem;">Eliminar</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    });
+                });
+            }
+
+            function adminAddDocenteManual() {
+                const email = document
+                    .getElementById("admin-add-docente-email")
+                    .value.trim();
+                const nombre = document
+                    .getElementById("admin-add-docente-nombre")
+                    .value.trim();
+                if (!email || !nombre)
+                    return alert("Complete correo y nombre.");
+                const emailKey = email.replace(/\./g, "_");
+                db.ref("docentes_autorizados/" + emailKey)
+                    .set({
+                        nombre,
+                        email,
+                        uid: null,
+                        fecha_autorizacion: Date.now(),
+                        activo: true,
+                    })
+                    .then(() => {
+                        document.getElementById(
+                            "admin-add-docente-email",
+                        ).value = "";
+                        document.getElementById(
+                            "admin-add-docente-nombre",
+                        ).value = "";
+                        alert(
+                            "✅ Docente añadido manualmente. Cuando se registre, el UID se vinculará.",
+                        );
+                    });
+            }
+
+            function adminToggleDocente(key, activar) {
+                db.ref("docentes_autorizados/" + key)
+                    .update({ activo: activar })
+                    .then(() => alert(activar ? "Reactivado" : "Desactivado"));
+            }
+
+            function adminRemoveDocente(key) {
+                if (
+                    !confirm(
+                        "¿Eliminar la autorización? El docente perderá el acceso inmediatamente.",
+                    )
+                )
+                    return;
+                db.ref("docentes_autorizados/" + key)
+                    .remove()
+                    .then(() => alert("Autorización eliminada."));
+            }
+
+            // ---------- SALAS ----------
+            function adminLoadSalas() {
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+                    db.ref("clases").on("value", (snap) => {
+                        adminSalas = snap.val() || {};
+                        const tbody =
+                            document.getElementById("admin-salas-body");
+                        tbody.innerHTML = "";
+                        const items = Object.entries(adminSalas);
+                        if (items.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Sin salas registradas.</td></tr>`;
+                            return;
+                        }
+                        items.forEach(([key, s]) => {
+                            const numEst = s.estudiantes
+                                ? Object.keys(s.estudiantes).length
+                                : 0;
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td style="font-weight:bold;">${s.className || key}</td>
+                                    <td>${s.teacherName || "—"}</td>
+                                    <td>${s.status || "—"}</td>
+                                    <td>${numEst}</td>
+                                    <td>${(s.chapters || []).length}</td>
+                                    <td>
+                                        <button class="btn-secondary" onclick="adminOpenSala('${key}')">Ver</button>
+                                        <button class="btn-secondary" onclick="adminDeleteSala('${key}')" style="background:#ef4444; color:#fff; border:none; margin-left:0.4rem;">Eliminar</button>
+                                    </td>
+                                </tr>`;
+                        });
+                    });
+                });
+            }
+
+            function adminOpenSala(key) {
+                // Reutilizamos el dashboard docente del admin (solo lectura) en un modal rápido
+                const s = adminSalas[key];
+                if (!s) return;
+                alert(
+                    "Sala: " +
+                        s.className +
+                        "\nDocente: " +
+                        s.teacherName +
+                        "\nOwner UID: " +
+                        (s.ownerUid || "—") +
+                        "\nEstado: " +
+                        s.status +
+                        "\nAlumnos: " +
+                        (s.estudiantes
+                            ? Object.keys(s.estudiantes).length
+                            : 0) +
+                        "\nCapítulos: " +
+                        (s.chapters || []).join(", "),
+                );
+            }
+
+            function adminDeleteSala(key) {
+                if (
+                    !confirm(
+                        "⚠️ ¿Eliminar TODA la sala '" +
+                            key +
+                            "'? Esta acción es irreversible.",
+                    )
+                )
+                    return;
+                db.ref("clases/" + key)
+                    .remove()
+                    .then(() => alert("Sala eliminada."));
+            }
+
+            // ---------- HISTORIAL GLOBAL ----------
+            function adminLoadHistorial() {
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+                    db.ref("historial_evaluaciones")
+                        .once("value")
+                        .then((snap) => {
+                            const data = snap.val() || {};
+                            adminHistorialData = [];
+                            adminEvaluacionesMap = {};
+
+                            Object.entries(data).forEach(
+                                ([idEval, evalObj]) => {
+                                    const meta = evalObj.meta || {};
+                                    adminEvaluacionesMap[idEval] = {
+                                        idEval,
+                                        ...meta,
+                                    };
+                                    const respuestas = evalObj.respuestas
+                                        ? Object.values(evalObj.respuestas)
+                                        : [];
+                                    respuestas.forEach((r) =>
+                                        adminHistorialData.push({
+                                            idEval,
+                                            ...meta,
+                                            ...r,
+                                        }),
+                                    );
+                                },
+                            );
+
+                            // Llenar filtro de clases
+                            const clasesSet = new Set(
+                                Object.values(adminEvaluacionesMap)
+                                    .map((m) => m.clase)
+                                    .filter(Boolean),
+                            );
+                            const sel = document.getElementById(
+                                "admin-hist-filtro-clase",
+                            );
+                            sel.innerHTML = '<option value="">Todas</option>';
+                            clasesSet.forEach(
+                                (c) =>
+                                    (sel.innerHTML += `<option value="${c}">${c}</option>`),
+                            );
+
+                            renderAdminHistorial();
+                        });
+                });
+            }
+
+            function renderAdminHistorial() {
+                const fClase = document.getElementById(
+                    "admin-hist-filtro-clase",
+                ).value;
+                const fCode = document
+                    .getElementById("admin-hist-filtro-code")
+                    .value.trim();
+                const fCap = document.getElementById(
+                    "admin-hist-filtro-cap",
+                ).value;
+
+                // Filtrar filas (por evaluación)
+                const filasEval = Object.values(adminEvaluacionesMap).filter(
+                    (m) => {
+                        if (fClase && m.clase !== fClase) return false;
+                        if (fCode && String(m.codigo_alumno || "") !== fCode)
+                            return false;
+                        if (
+                            fCap &&
+                            !String(m.capitulos_evaluados || "").includes(fCap)
+                        )
+                            return false;
+                        return true;
+                    },
+                );
+
+                // Resumen
+                const alumnosSet = new Set(
+                    filasEval.map((m) => m.codigo_alumno),
+                );
+                const notas = filasEval
+                    .map((m) => parseFloat(m.nota_final))
+                    .filter((n) => !isNaN(n));
+                const promedio = notas.length
+                    ? (notas.reduce((a, b) => a + b, 0) / notas.length).toFixed(
+                          2,
+                      )
+                    : "—";
+                const aprobados = notas.filter((n) => n >= 10.5).length;
+                const desaprobados = notas.length - aprobados;
+
+                document.getElementById("admin-hist-resumen").innerHTML = `
+                    <div class="stat-card"><div class="stat-card-title">Evaluaciones</div><div class="stat-card-body">${filasEval.length}</div></div>
+                    <div class="stat-card"><div class="stat-card-title">Alumnos únicos</div><div class="stat-card-body">${alumnosSet.size}</div></div>
+                    <div class="stat-card success"><div class="stat-card-title">Aprobados</div><div class="stat-card-body">${aprobados}</div></div>
+                    <div class="stat-card danger"><div class="stat-card-title">Desaprobados</div><div class="stat-card-body">${desaprobados}</div></div>
+                    <div class="stat-card"><div class="stat-card-title">Promedio</div><div class="stat-card-body">${promedio} / 20</div></div>
+                `;
+
+                // Tabla resumen por evaluación
+                const headEval = document.getElementById(
+                    "admin-hist-eval-head",
+                );
+                const colsEval = [
+                    "Fecha",
+                    "Clase",
+                    "Alumno",
+                    "Código",
+                    "Nota",
+                    "Aciertos",
+                    "Feedback",
+                    "Acciones",
+                ];
+                headEval.innerHTML =
+                    "<tr>" +
+                    colsEval
+                        .map((c) => `<th style="white-space:nowrap;">${c}</th>`)
+                        .join("") +
+                    "</tr>";
+
+                const bodyEval = document.getElementById(
+                    "admin-hist-eval-body",
+                );
+                bodyEval.innerHTML =
+                    filasEval
+                        .map((m) => {
+                            const fb = adminHistorialData.find(
+                                (h) =>
+                                    h.idEval === m.idEval &&
+                                    h.feedback_estrellas !== undefined,
+                            );
+                            const fecha = m.timestamp
+                                ? new Date(m.timestamp).toLocaleString()
+                                : "—";
+                            return `<tr>
+                        <td>${fecha}</td>
+                        <td>${m.clase || "—"}</td>
+                        <td>${m.nombre_alumno || "—"}</td>
+                        <td>${m.codigo_alumno || "—"}</td>
+                        <td style="font-weight:bold;">${m.nota_final || "—"}</td>
+                        <td>${m.correctas || 0}/${m.total_preguntas || 0}</td>
+                        <td>${fb ? fb.estrellas + "/6 ★" : "—"}</td>
+                        <td><button class="btn-secondary" onclick="adminVerDetalleEval('${m.idEval}')" style="font-size:0.75rem;">🔍 Ver</button></td>
+                    </tr>`;
+                        })
+                        .join("") ||
+                    `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">Sin evaluaciones.</td></tr>`;
+
+                // Tabla detalle por pregunta (todos los filtrados)
+                const headResp = document.getElementById(
+                    "admin-hist-resp-head",
+                );
+                const colsResp = [
+                    "Evaluación",
+                    "Alumno",
+                    "Clase",
+                    "Cap.",
+                    "Pregunta",
+                    "Respuesta",
+                    "Correcta",
+                    "¿OK?",
+                    "Justificación",
+                ];
+                headResp.innerHTML =
+                    "<tr>" +
+                    colsResp
+                        .map((c) => `<th style="white-space:nowrap;">${c}</th>`)
+                        .join("") +
+                    "</tr>";
+
+                const idsFiltrados = new Set(filasEval.map((m) => m.idEval));
+                const respFiltradas = adminHistorialData.filter((h) =>
+                    idsFiltrados.has(h.idEval),
+                );
+
+                const bodyResp = document.getElementById(
+                    "admin-hist-resp-body",
+                );
+                bodyResp.innerHTML =
+                    respFiltradas
+                        .slice(0, 300)
+                        .map(
+                            (r) => `
+                    <tr>
+                        <td style="font-family:monospace; font-size:0.65rem;">${r.idEval}</td>
+                        <td>${r.nombre_alumno || "—"}</td>
+                        <td>${r.clase || "—"}</td>
+                        <td>${r.capitulos_evaluados || "—"}</td>
+                        <td style="max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.pregunta || "—"}</td>
+                        <td style="font-weight:bold;">${r.respuesta_alumno || "—"}</td>
+                        <td style="font-weight:bold; color:#059669;">${r.respuesta_correcta || "—"}</td>
+                        <td>${r.es_correcta ? "✅" : "❌"}</td>
+                        <td style="max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.justificacion || "—"}</td>
+                    </tr>
+                `,
+                        )
+                        .join("") ||
+                    `<tr><td colspan="9" style="text-align:center; color:var(--text-muted);">Sin respuestas.</td></tr>`;
+            }
+
+            function adminVerDetalleEval(idEval) {
+                const filas = adminHistorialData.filter(
+                    (h) => h.idEval === idEval,
+                );
+                if (filas.length === 0) return alert("Sin detalle.");
+                const meta = adminEvaluacionesMap[idEval];
+
+                let html = `<h3 style="margin:0 0 0.5rem 0; color:var(--accent-teacher);">${meta.nombre_alumno || "—"} — ${meta.codigo_alumno || "—"}</h3>
+                    <p style="margin:0 0 1rem 0; color:var(--text-muted); font-size:0.85rem;">
+                        Clase: <b>${meta.clase || "—"}</b> · Nota: <b>${meta.nota_final || "—"}/20</b> · Aciertos: <b>${meta.correctas || 0}/${meta.total_preguntas || 0}</b><br>
+                        Capítulos: ${meta.capitulos_evaluados || "—"} · Fecha: ${meta.timestamp ? new Date(meta.timestamp).toLocaleString() : "—"}
+                    </p>`;
+
+                filas.forEach((r, i) => {
+                    const color = r.es_correcta
+                        ? "#dcfce7"
+                        : r.respuesta_alumno === "BLANCO"
+                          ? "#f1f5f9"
+                          : "#fee2e2";
+                    html += `<div style="margin-bottom:0.8rem; padding:0.8rem; background:${color}; border-radius:6px; border-left:4px solid ${r.es_correcta ? "#059669" : "#ef4444"};">
+                        <p style="margin:0 0 0.3rem 0; font-weight:600; font-size:0.9rem;">P${r.indice_pregunta}: ${r.pregunta}</p>
+                        <div style="font-size:0.8rem;">
+                            <b>Alumno:</b> ${r.respuesta_alumno} · <b>Correcta:</b> ${r.respuesta_correcta} · ${r.es_correcta ? "✅" : "❌"}
+                        </div>
+                        ${r.justificacion ? `<div style="margin-top:0.4rem; font-size:0.8rem; color:#1e3a8a;">💡 ${r.justificacion}</div>` : ""}
+                    </div>`;
+                });
+
+                document.getElementById("modal-student-title").innerText =
+                    "Detalle de Evaluación";
+                document.getElementById("modal-student-body").innerHTML = html;
+                document.getElementById("student-detail-modal").style.display =
+                    "flex";
+            }
+
+            // ---------- EXPORTACIÓN COMPLETA (SOLO ADMIN) ----------
+            function exportAdminHistorialCSV() {
+                if (adminHistorialData.length === 0)
+                    return alert("Sin datos para exportar.");
+                const cols = [
+                    "idEval",
+                    "timestamp",
+                    "clase",
+                    "docente",
+                    "capitulos_evaluados",
+                    "codigo_alumno",
+                    "nombre_alumno",
+                    "grupo",
+                    "nota_final",
+                    "total_preguntas",
+                    "correctas",
+                    "id_video",
+                    "titulo_video",
+                    "indice_pregunta",
+                    "pregunta",
+                    "opcion_a",
+                    "opcion_b",
+                    "opcion_c",
+                    "opcion_d",
+                    "respuesta_correcta",
+                    "respuesta_alumno",
+                    "es_correcta",
+                    "justificacion",
+                ];
+                let csv = cols.join(",") + "\n";
+                adminHistorialData.forEach((r) => {
+                    csv +=
+                        cols
+                            .map(
+                                (c) =>
+                                    `"${String(r[c] !== undefined ? r[c] : "").replace(/"/g, '""')}"`,
+                            )
+                            .join(",") + "\n";
+                });
+                const blob = new Blob(["\ufeff" + csv], {
+                    type: "text/csv;charset=utf-8;",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `historial_admin_${Date.now()}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            function exportAdminHistorialExcel() {
+                if (adminHistorialData.length === 0)
+                    return alert("Sin datos para exportar.");
+                const ws = XLSX.utils.json_to_sheet(adminHistorialData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Historial");
+                XLSX.writeFile(wb, `historial_admin_${Date.now()}.xlsx`);
+            }
+
+            function refreshAdminButton() {
+                const adminBtn = document.getElementById("admin-access-button");
+                if (!adminBtn) return;
+
+                if (auth.currentUser) {
+                    db.ref("admins/" + auth.currentUser.uid)
+                        .once("value")
+                        .then((snap) => {
+                            adminBtn.style.display = snap.exists()
+                                ? "block"
+                                : "none";
+                        });
+                } else {
+                    adminBtn.style.display = "none";
+                }
+            }
+
+            // ---------- USUARIOS AUTH (referencial) ----------
+            function adminLoadUsuariosAuth() {
+                requireAdmin().then((uid) => {
+                    if (!uid) return;
+                    db.ref("docentes_autorizados")
+                        .once("value")
+                        .then((snap) => {
+                            const data = snap.val() || {};
+                            const tbody =
+                                document.getElementById("admin-auth-body");
+                            tbody.innerHTML =
+                                Object.entries(data)
+                                    .map(
+                                        ([key, d]) => `
+                            <tr>
+                                <td>${d.email || key}</td>
+                                <td style="font-family:monospace; font-size:0.7rem;">${d.uid || "—"}</td>
+                                <td>${d.nombre || "—"}</td>
+                                <td>${d.activo === false ? "❌" : "✅"}</td>
+                                <td><button class="btn-secondary" onclick="adminRemoveDocente('${key}')" style="background:#ef4444; color:#fff; border:none;">Revocar</button></td>
+                            </tr>
+                        `,
+                                    )
+                                    .join("") ||
+                                `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Sin registros.</td></tr>`;
+                        });
+                });
+            }
+            // Al final del módulo de admin, justo antes del cierre del <script>
+            (function initAdminPanel() {
+                // Exponer una función global para iniciar el panel
+                window.__initAdminPanel = function () {
+                    adminSwitchTab("solicitudes");
+                };
+            })();
         </script>
     </body>
 </html>
