@@ -715,6 +715,216 @@
             }
 
             /* =========================================
+               FIX DE CONTRASTE PARA TEMAS OSCUROS
+               ========================================= */
+            /* Asegurar que los inputs y selects se lean bien */
+            body.theme-dark-purple input,
+            body.theme-dark-purple select,
+            body.theme-dark-purple textarea,
+            body.theme-dark-gray input,
+            body.theme-dark-gray select,
+            body.theme-dark-gray textarea {
+                background-color: var(--panel-alt) !important;
+                color: #f8fafc !important;
+                border-color: var(--border-strong) !important;
+            }
+
+            /* Asegurar que los textos de las tablas sean claros */
+            body.theme-dark-purple table td,
+            body.theme-dark-purple table th,
+            body.theme-dark-gray table td,
+            body.theme-dark-gray table th {
+                color: #f8fafc !important;
+            }
+
+            /* Ajustar el fondo de las opciones del select en temas oscuros */
+            body.theme-dark-purple option,
+            body.theme-dark-gray option {
+                background-color: var(--panel-bg);
+                color: #f8fafc;
+            }
+
+            /* Mejorar el contraste en las tarjetas de capítulos */
+            body.theme-dark-purple .chapter-select-card,
+            body.theme-dark-gray .chapter-select-card {
+                background-color: var(--panel-alt);
+            }
+            body.theme-dark-purple .chapter-card-title,
+            body.theme-dark-gray .chapter-card-title {
+                color: #f8fafc;
+            }
+
+            /* Asegurar que el texto de fondo en general no sea negro puro */
+            body.theme-dark-purple .stat-card-body,
+            body.theme-dark-gray .stat-card-body,
+            body.theme-dark-purple .comment-item,
+            body.theme-dark-gray .comment-item {
+                color: #f8fafc;
+            }
+
+            /* Botones secundarios en temas oscuros */
+            body.theme-dark-purple .btn-secondary,
+            body.theme-dark-gray .btn-secondary {
+                background: var(--panel-alt);
+                color: #f8fafc;
+                border-color: var(--border-strong);
+            }
+
+            /* =========================================
+               FIX DE CONTRASTE PARA EL MODAL DE DETALLE (DOCENTE)
+               ========================================= */
+            
+            /* 1. El contenedor principal del modal ya usa var(--panel-bg), pero 
+                  nos aseguramos de que el texto por defecto sea claro en temas oscuros. */
+            body.theme-dark-purple .modal-content,
+            body.theme-dark-gray .modal-content {
+                color: var(--text-main);
+            }
+
+            /* 2. El bloque de feedback del alumno (fondo gris claro en temas claros) */
+            body.theme-dark-purple #modal-student-body div[style*="background: #f8fafc"],
+            body.theme-dark-gray #modal-student-body div[style*="background: #f8fafc"] {
+                background-color: var(--panel-alt) !important; /* Cambia el fondo claro por el oscuro del tema */
+                color: #f8fafc !important;
+                border-left-color: var(--accent-teacher) !important;
+            }
+
+            /* 3. Las tarjetas de preguntas (fondo #fff en temas claros) */
+            body.theme-dark-purple #modal-student-body div[style*="background:#fff"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#fff"],
+            body.theme-dark-purple #modal-student-body div[style*="background: #fff"],
+            body.theme-dark-gray #modal-student-body div[style*="background: #fff"] {
+                background-color: var(--panel-alt) !important;
+                border-color: var(--border-soft) !important;
+            }
+
+            /* 4. Los enunciados de las preguntas y los textos dentro de las tarjetas */
+            body.theme-dark-purple #modal-student-body p,
+            body.theme-dark-purple #modal-student-body span,
+            body.theme-dark-purple #modal-student-body strong,
+            body.theme-dark-purple #modal-student-body h4,
+            body.theme-dark-gray #modal-student-body p,
+            body.theme-dark-gray #modal-student-body span,
+            body.theme-dark-gray #modal-student-body strong,
+            body.theme-dark-gray #modal-student-body h4 {
+                color: #f8fafc !important;
+            }
+
+            /* 5. Los recuadros de las opciones (A, B, C, D) que usan colores pastel */
+            /* Mantenemos el color de fondo pastel, pero oscurecemos el texto para que se lea */
+            body.theme-dark-purple #modal-student-body div[style*="background:#dcfce7"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#dcfce7"] {
+                color: #166534 !important; /* Verde oscuro legible sobre fondo verde claro */
+            }
+            body.theme-dark-purple #modal-student-body div[style*="background:#fee2e2"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#fee2e2"] {
+                color: #991b1b !important; /* Rojo oscuro legible sobre fondo rojo claro */
+            }
+            
+            /* 6. Los textos de las justificaciones */
+            body.theme-dark-purple #modal-student-body div[style*="color: #1e3a8a"],
+            body.theme-dark-gray #modal-student-body div[style*="color: #1e3a8a"] {
+                color: #93c5fd !important; /* Azul claro para temas oscuros */
+            }
+
+            /* =========================================
+               FIX GLOBAL DE CONTRASTE Y SATURACIÓN (MODO OSCURO)
+               ========================================= */
+            
+            /* 1. Forzar texto blanco en TODAS las tablas de modo oscuro */
+            body.theme-dark-purple table, body.theme-dark-gray table,
+            body.theme-dark-purple table td, body.theme-dark-gray table td,
+            body.theme-dark-purple table th, body.theme-dark-gray table th {
+                color: #f8fafc !important;
+            }
+            
+            /* 2. Ajustar el fondo de las filas de la tabla para que no sea blanco puro */
+            body.theme-dark-purple table td, body.theme-dark-gray table td {
+                background-color: var(--panel-bg) !important;
+                border-bottom-color: var(--border-soft) !important;
+            }
+
+            /* 3. Corregir el fondo y texto de los inputs/selects en TODO el sistema */
+            body.theme-dark-purple input, body.theme-dark-gray input,
+            body.theme-dark-purple select, body.theme-dark-gray select,
+            body.theme-dark-purple textarea, body.theme-dark-gray textarea {
+                background-color: var(--panel-alt) !important;
+                color: #f8fafc !important;
+                border-color: var(--border-strong) !important;
+            }
+
+            /* 4. Corregir las opciones de los selectores (que a veces se ven blancas) */
+            body.theme-dark-purple option, body.theme-dark-gray option {
+                background-color: var(--panel-bg) !important;
+                color: #f8fafc !important;
+            }
+
+            /* 5. Corregir los fondos blancos hardcodeados en el feedback del alumno (dentro del modal) */
+            body.theme-dark-purple #modal-student-body div[style*="background: #f8fafc"],
+            body.theme-dark-gray #modal-student-body div[style*="background: #f8fafc"],
+            body.theme-dark-purple #modal-student-body div[style*="background:#fff"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#fff"] {
+                background-color: var(--panel-alt) !important;
+                color: #f8fafc !important;
+            }
+
+            /* 6. Corregir los textos de las preguntas y justificaciones en el modal */
+            body.theme-dark-purple #modal-student-body p,
+            body.theme-dark-purple #modal-student-body span,
+            body.theme-dark-purple #modal-student-body strong,
+            body.theme-dark-purple #modal-student-body div,
+            body.theme-dark-gray #modal-student-body p,
+            body.theme-dark-gray #modal-student-body span,
+            body.theme-dark-gray #modal-student-body strong,
+            body.theme-dark-gray #modal-student-body div {
+                color: #f8fafc !important;
+            }
+
+            /* 7. Mantener los colores de las opciones correctas/incorrectas (verde/rojo) con buen contraste */
+            body.theme-dark-purple #modal-student-body div[style*="background:#dcfce7"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#dcfce7"] {
+                color: #166534 !important;
+            }
+            body.theme-dark-purple #modal-student-body div[style*="background:#fee2e2"],
+            body.theme-dark-gray #modal-student-body div[style*="background:#fee2e2"] {
+                color: #991b1b !important;
+            }
+
+            /* 8. Forzar colores vibrantes en los botones de exportación */
+            body.theme-dark-purple .btn-secondary[style*="background: #059669"],
+            body.theme-dark-gray .btn-secondary[style*="background: #059669"] {
+                background-color: #059669 !important;
+                color: #fff !important;
+                border-color: #059669 !important;
+            }
+            body.theme-dark-purple .btn-secondary[style*="background: #16a34a"],
+            body.theme-dark-gray .btn-secondary[style*="background: #16a34a"] {
+                background-color: #16a34a !important;
+                color: #fff !important;
+                border-color: #16a34a !important;
+            }
+            body.theme-dark-purple .btn-secondary[style*="background: #0f766e"],
+            body.theme-dark-gray .btn-secondary[style*="background: #0f766e"] {
+                background-color: #0f766e !important;
+                color: #fff !important;
+                border-color: #0f766e !important;
+            }
+
+            /* Corregir contraste de la justificación en modo oscuro */
+            body.theme-dark-purple #modal-student-body div[style*="background: #eff6ff"],
+            body.theme-dark-gray #modal-student-body div[style*="background: #eff6ff"] {
+                background-color: #1e3a8a !important; /* Fondo azul oscuro */
+                color: #bfdbfe !important;            /* Texto azul muy claro */
+                border-left-color: #3b82f6 !important;
+            }
+
+            /* Asegurar que el texto en negrita dentro de la justificación también sea legible */
+            body.theme-dark-purple #modal-student-body div[style*="background: #eff6ff"] strong,
+            body.theme-dark-gray #modal-student-body div[style*="background: #eff6ff"] strong {
+                color: #ffffff !important;
+            }
+            
+            /* =========================================
            ESTILOS EXCLUSIVOS PARA IMPRESIÓN (PDF)
            ========================================= */
             @media print {
@@ -803,7 +1013,7 @@
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
         <!-- NUEVO -->
-        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <script src="xlsx.full.min.js"></script>
     </head>
     <body>
         <!-- SECCIÓN OCULTA QUE SE MUESTRA AL IMPRIMIR -->
@@ -1161,24 +1371,20 @@
             <!-- NUEVO REGISTRO DOCENTE CON PREVISUALIZACIÓN Y CONFIGURACIÓN -->
             <div id="view-teacher-register" class="view">
                 <div class="form-card">
-                    <button
-                        class="btn-secondary"
-                        onclick="switchView('view-role-selection', true)"
-                        style="margin-bottom: 1rem"
-                    >
-                        ← Volver
-                    </button>
+                    <!-- Contenedor flex para alinear ambos botones -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <button class="btn-secondary" onclick="switchView('view-role-selection', true)">
+                            ← Volver
+                        </button>
+                        <button class="btn-secondary" onclick="logoutTeacher()" style="background: #ef4444; color: #fff; border: none;">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                    
                     <h3>Configurar Nueva Sala de Examen</h3>
-
+            
                     <div class="form-grid">
-                        <div class="form-field full">
-                            <label>Nombre del Docente</label
-                            ><input
-                                type="text"
-                                id="t-teachername"
-                                placeholder="Ej: Dr. Juan Pérez"
-                            />
-                        </div>
+                        
                         <div class="form-field">
                             <label>Nombre de la Sala (Clave)</label
                             ><input
@@ -1204,7 +1410,7 @@
                                 min="1"
                             />
                         </div>
-
+            
                         <div class="form-field full">
                             <label style="margin-bottom: 0.5rem"
                                 >1. Seleccione los Capítulos a Evaluar</label
@@ -1215,7 +1421,7 @@
                             ></div>
                         </div>
                     </div>
-
+            
                     <!-- BOTONES DE ACCIÓN (MODIFICADO) -->
                     <div
                         style="
@@ -1590,6 +1796,18 @@
                                 "
                             >
                                 📊 Excel
+                            </button>
+                            <button
+                                class="btn btn-secondary"
+                                onclick="imprimirNotasDesdeHistorial()"
+                                style="
+                                    background: #0f766e;
+                                    color: #fff;
+                                    border: none;
+                                    margin-left: 0.5rem;
+                                "
+                            >
+                                🖨️ Imprimir Notas
                             </button>
                         </div>
                     </div>
@@ -2622,13 +2840,10 @@
             }
 
             // ================= REGISTRO DOCENTE CON APROBACIÓN =================
+            // ================= REGISTRO DOCENTE CON APROBACIÓN =================
             function registerTeacherAccount() {
-                const name = document
-                    .getElementById("signup-name")
-                    .value.trim();
-                const email = document
-                    .getElementById("signup-email")
-                    .value.trim();
+                const name = document.getElementById("signup-name").value.trim();
+                const email = document.getElementById("signup-email").value.trim();
                 const pass = document.getElementById("signup-pass").value;
                 const pass2 = document.getElementById("signup-pass2").value;
                 const msg = document.getElementById("signup-msg");
@@ -2653,15 +2868,17 @@
 
                 auth.createUserWithEmailAndPassword(email, pass)
                     .then((cred) => {
-                        // Guardar solicitud en la BD (pendiente de aprobación)
-                        return db
-                            .ref("solicitudes_docentes/" + cred.user.uid)
-                            .set({
-                                nombre: name,
-                                email: email,
-                                uid: cred.user.uid,
-                                fecha: Date.now(),
-                                estado: "pendiente",
+                        // 🔑 Guardamos el nombre en el perfil de Firebase Auth
+                        return cred.user.updateProfile({ displayName: name })
+                            .then(() => {
+                                // Guardar solicitud en la BD (pendiente de aprobación)
+                                return db.ref("solicitudes_docentes/" + cred.user.uid).set({
+                                    nombre: name,
+                                    email: email,
+                                    uid: cred.user.uid,
+                                    fecha: Date.now(),
+                                    estado: "pendiente",
+                                });
                             })
                             .then(() => cred.user.sendEmailVerification());
                     })
@@ -2688,9 +2905,7 @@
 
             // ================= AUTENTICACIÓN DOCENTE =================
             function loginTeacher() {
-                const email = document
-                    .getElementById("t-login-email")
-                    .value.trim();
+                const email = document.getElementById("t-login-email").value.trim();
                 const pass = document.getElementById("t-login-pass").value;
                 const msg = document.getElementById("t-login-msg");
                 msg.textContent = "";
@@ -2698,77 +2913,46 @@
                     msg.textContent = "Complete correo y contraseña.";
                     return;
                 }
-
+            
                 const emailKey = email.replace(/\./g, "_");
-
+            
                 auth.signInWithEmailAndPassword(email, pass)
                     .then((cred) => {
                         if (!cred.user.emailVerified) {
                             auth.signOut();
-                            throw new Error(
-                                "Debe verificar su correo electrónico. Revise su bandeja de entrada.",
-                            );
+                            throw new Error("Debe verificar su correo electrónico. Revise su bandeja de entrada.");
                         }
-
+            
                         // 1. Verificamos si está en docentes_autorizados
-                        return db
-                            .ref("docentes_autorizados/" + emailKey)
-                            .once("value")
+                        return db.ref("docentes_autorizados/" + emailKey).once("value")
                             .then((snap) => {
                                 if (snap.exists()) {
                                     const data = snap.val();
                                     if (data.activo === false) {
                                         auth.signOut();
-                                        throw new Error(
-                                            "Su cuenta ha sido desactivada. Contacte al administrador.",
-                                        );
+                                        throw new Error("Su cuenta ha sido desactivada. Contacte al administrador.");
                                     }
                                     // Vincular UID automáticamente si no lo tiene
                                     if (!data.uid || data.uid === "") {
-                                        db.ref(
-                                            "docentes_autorizados/" + emailKey,
-                                        )
-                                            .update({
-                                                uid: auth.currentUser.uid,
-                                            })
-                                            .catch((err) =>
-                                                console.warn(
-                                                    "No se pudo vincular UID:",
-                                                    err.message,
-                                                ),
-                                            );
+                                        db.ref("docentes_autorizados/" + emailKey).update({
+                                            uid: auth.currentUser.uid,
+                                        }).catch((err) => console.warn("No se pudo vincular UID:", err.message));
                                     }
-                                    document.getElementById(
-                                        "teacher-email-badge",
-                                    ).textContent =
-                                        "👤 " + (data.nombre || email);
-                                    return switchView(
-                                        "view-teacher-register",
-                                        true,
-                                    );
+                                    document.getElementById("teacher-email-badge").textContent = "👤 " + (data.nombre || email);
+                                    return switchView("view-teacher-register", true);
                                 }
-
+            
                                 // 2. Si NO está en docentes_autorizados, verificamos si es ADMIN
-                                return db
-                                    .ref("admins/" + auth.currentUser.uid)
-                                    .once("value")
+                                return db.ref("admins/" + auth.currentUser.uid).once("value")
                                     .then((adminSnap) => {
                                         if (adminSnap.exists()) {
                                             // Es admin, le damos pase directo como docente
-                                            document.getElementById(
-                                                "teacher-email-badge",
-                                            ).textContent =
-                                                "👤 Admin: " + email;
-                                            switchView(
-                                                "view-teacher-register",
-                                                true,
-                                            );
+                                            document.getElementById("teacher-email-badge").textContent = "👤 Admin: " + email;
+                                            switchView("view-teacher-register", true);
                                         } else {
                                             // No es docente ni admin
                                             auth.signOut();
-                                            throw new Error(
-                                                "Su cuenta aún no ha sido aprobada por el administrador. Contacte al coordinador.",
-                                            );
+                                            throw new Error("Su cuenta aún no ha sido aprobada por el administrador. Contacte al coordinador.");
                                         }
                                     });
                             });
@@ -2911,23 +3095,31 @@
                 // Restaurar sesión de docente solo si Firebase Auth confirma al usuario
                 auth.onAuthStateChanged((user) => {
                     if (user) {
-                        const badge = document.getElementById("teacher-email-badge");
-                        if (badge) badge.textContent = "👤 " + (user.email || "");
-                
+                        const badge = document.getElementById(
+                            "teacher-email-badge",
+                        );
+                        if (badge)
+                            badge.textContent = "👤 " + (user.email || "");
+
                         const savedClass = localStorage.getItem("docenteClase");
                         if (savedClass) {
-                            db.ref("clases/" + savedClass).once("value").then((snap) => {
-                                if (snap.exists()) {
-                                    enterTeacherDashboard(savedClass, snap.val());
-                                } else {
-                                    localStorage.removeItem("docenteClase");
-                                }
-                            });
+                            db.ref("clases/" + savedClass)
+                                .once("value")
+                                .then((snap) => {
+                                    if (snap.exists()) {
+                                        enterTeacherDashboard(
+                                            savedClass,
+                                            snap.val(),
+                                        );
+                                    } else {
+                                        localStorage.removeItem("docenteClase");
+                                    }
+                                });
                         }
                     } else {
                         localStorage.removeItem("docenteClase");
                     }
-                    
+
                     // 🔑 Damos un pequeño respiro de 100ms para que Firebase cargue y luego actualizamos el botón
                     setTimeout(() => {
                         actualizarBotonAdmin();
@@ -2952,25 +3144,27 @@
             });
 
             function switchView(viewId, push = true) {
-                document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+                document
+                    .querySelectorAll(".view")
+                    .forEach((v) => v.classList.remove("active"));
                 document.getElementById(viewId).classList.add("active");
                 if (push) history.pushState({ view: viewId }, "", `#${viewId}`);
-            
+
                 // 🔑 Cada vez que entramos a CUALQUIER vista, revisamos el estado del botón
                 actualizarBotonAdmin();
             }
-            
+
             // ================= GUARDIÁN DEL BOTÓN ADMIN =================
             function actualizarBotonAdmin() {
                 const adminBtn = document.getElementById("admin-access-button");
                 if (!adminBtn) return;
-            
+
                 // Si no hay usuario, lo ocultamos inmediatamente
                 if (!auth.currentUser) {
                     adminBtn.style.display = "none";
                     return;
                 }
-            
+
                 // Verificamos contra la base de datos
                 db.ref("admins/" + auth.currentUser.uid)
                     .once("value")
@@ -2991,7 +3185,6 @@
                 document.body.className = "theme-" + t;
                 localStorage.setItem("theme", t);
             }
-
 
             function previewChapter(chapId) {
                 try {
@@ -3081,15 +3274,13 @@
 
             // Paso 1: Abrir la vista y pintar los formularios
             function goToTeacherConfig() {
-                const name = document
-                    .getElementById("t-teachername")
-                    .value.trim();
+               
                 const cName = document
                     .getElementById("t-classname")
                     .value.trim();
                 const pass = document.getElementById("t-pass").value.trim();
 
-                if (!name || !cName || !pass) {
+                if (!cName || !pass) {
                     return alert(
                         "Por favor, complete el Nombre del Docente, Nombre de la Sala y Contraseña antes de configurar preguntas.",
                     );
@@ -3229,82 +3420,57 @@
                     alert("Debe iniciar sesión como docente.");
                     return switchView("view-teacher-login", true);
                 }
-
-                const name = document
-                    .getElementById("t-teachername")
-                    .value.trim();
-                const cName = document
-                    .getElementById("t-classname")
-                    .value.trim();
+            
+                // 🔑 Ya NO leemos t-teachername
+                const cName = document.getElementById("t-classname").value.trim();
                 const pass = document.getElementById("t-pass").value.trim();
                 const time = parseInt(document.getElementById("t-time").value);
-
-                const selectedCards = document.querySelectorAll(
-                    ".chapter-select-card.selected",
-                );
+            
+                const selectedCards = document.querySelectorAll(".chapter-select-card.selected");
                 const selectedChaps = Array.from(selectedCards).map((card) => {
-                    const titleText = card.querySelector(
-                        ".chapter-card-title",
-                    ).innerText;
-                    return parseInt(
-                        titleText.replace("Capítulo ", "").split(":")[0],
-                    );
+                    const titleText = card.querySelector(".chapter-card-title").innerText;
+                    return parseInt(titleText.replace("Capítulo ", "").split(":")[0]);
                 });
-
-                if (!name || !cName || !pass || selectedChaps.length === 0) {
-                    return alert(
-                        "Complete todos los campos y seleccione al menos un capítulo.",
-                    );
+            
+                if (!cName || !pass || selectedChaps.length === 0) {
+                    return alert("Complete todos los campos y seleccione al menos un capítulo.");
                 }
-
+            
                 const classKey = cName.toLowerCase();
-
-                db.ref("clases/" + classKey)
-                    .once("value")
-                    .then((snap) => {
-                        if (snap.exists()) {
-                            // Si la sala es de otro docente, no permitir sobrescribir
-                            const currentOwner = snap.val().ownerUid;
-                            if (
-                                currentOwner &&
-                                currentOwner !== auth.currentUser.uid
-                            ) {
-                                return alert(
-                                    "❌ Ya existe una sala con ese nombre creada por otro docente. Elija otro nombre.",
-                                );
-                            }
-                            if (
-                                !confirm(
-                                    "⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" +
-                                        cName +
-                                        "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?",
-                                )
-                            )
-                                return;
+            
+                db.ref("clases/" + classKey).once("value").then((snap) => {
+                    if (snap.exists()) {
+                        const currentOwner = snap.val().ownerUid;
+                        if (currentOwner && currentOwner !== auth.currentUser.uid) {
+                            return alert("❌ Ya existe una sala con ese nombre creada por otro docente. Elija otro nombre.");
                         }
-
-                        const classData = {
-                            teacherName: name,
-                            className: cName,
-                            pass,
-                            timeLimit: time,
-                            chapters: selectedChaps,
-                            status: "waiting",
-                            startTime: 0,
-                            customQuestions: teacherCustomQuestions,
-                            ownerUid: auth.currentUser.uid, // 🔑 NUEVO
-                            ownerEmail: auth.currentUser.email, // 🔑 NUEVO
-                            createdAt: Date.now(), // 🔑 útil para auditoría
-                        };
-
-                        db.ref("clases/" + classKey)
-                            .set(classData)
-                            .then(() => {
-                                localStorage.setItem("docenteClase", classKey);
-                                teacherCustomQuestions = {};
-                                enterTeacherDashboard(classKey, classData);
-                            });
+                        if (!confirm("⚠️ ADVERTENCIA:\n\nYa existe una sala con el nombre '" + cName + "'.\nSi continúas, se borrarán TODOS los datos.\n\n¿Deseas sobrescribirla?")) return;
+                    }
+            
+                    // 🔑 Obtenemos el nombre automáticamente
+                    const email = auth.currentUser.email;
+                    const teacherName = auth.currentUser.displayName || email.split("@")[0];
+            
+                    const classData = {
+                        teacherName: teacherName, // 🔑 Nombre automático
+                        className: cName,
+                        pass,
+                        timeLimit: time,
+                        chapters: selectedChaps,
+                        status: "waiting",
+                        startTime: 0,
+                        customQuestions: teacherCustomQuestions,
+                        ownerUid: auth.currentUser.uid,
+                        ownerEmail: auth.currentUser.email,
+                        createdAt: Date.now(),
+                    };
+            
+                    db.ref("clases/" + classKey).set(classData).then(() => {
+                        localStorage.setItem("docenteClase", classKey);
+                        teacherCustomQuestions = {};
+                        enterTeacherDashboard(classKey, classData);
                     });
+                });
             }
 
             function enterTeacherDashboard(classKey, data) {
@@ -3608,6 +3774,92 @@
 
             // IMPRIMIR NOTAS CON FEEDBACK
             // ================= IMPRIMIR NOTAS CON FEEDBACK =================
+
+            function imprimirNotasDesdeHistorial() {
+                const filtroClase = document.getElementById("historial-filtro-clase").value;
+                if (!filtroClase) return alert("Por favor, seleccione una clase específica en el filtro para imprimir sus notas.");
+            
+                // 🔑 Buscamos la clase por su nombre exacto (className) en lugar de adivinar la clave
+                db.ref("clases").once("value").then((snap) => {
+                    let claseEncontrada = null;
+                    snap.forEach((child) => {
+                        const data = child.val();
+                        if (data.className === filtroClase) {
+                            claseEncontrada = { key: child.key, ...data };
+                        }
+                    });
+            
+                    if (!claseEncontrada) {
+                        return alert("No se encontraron datos para la clase seleccionada.");
+                    }
+            
+                    const data = claseEncontrada;
+                    if (!data.estudiantes) return alert("No hay datos de esta clase para imprimir.");
+            
+                    // Limpiar bloque previo
+                    const oldStats = document.getElementById("print-stats-block");
+                    if (oldStats) oldStats.remove();
+                    
+                    document.getElementById("print-date").innerText = new Date().toLocaleString();
+                    const printBody = document.getElementById("print-table-body");
+                    printBody.innerHTML = "";
+                    
+                    document.getElementById("print-class-info").innerText = 
+                        `Sala: ${data.className.toUpperCase()} | Docente: ${data.teacherName} | Fecha: ${new Date().toLocaleString()}`;
+            
+                    const studentsList = Object.values(data.estudiantes).sort((a, b) => (b.score || 0) - (a.score || 0));
+                    
+                    // Estadísticas
+                    let totalAlumnos = studentsList.length;
+                    let alumnosTerminados = studentsList.filter(s => s.finished);
+                    let sumaNotas = 0;
+                    alumnosTerminados.forEach(s => sumaNotas += parseFloat(s.score) || 0);
+                    let promedio = alumnosTerminados.length > 0 ? (sumaNotas / alumnosTerminados.length).toFixed(2) : "0.00";
+                    let mejorNota = alumnosTerminados.length > 0 ? alumnosTerminados[0].score : "0.0";
+                    let peorNota = alumnosTerminados.length > 0 ? alumnosTerminados[alumnosTerminados.length - 1].score : "0.0";
+            
+                    let statsHtml = `
+                        <div id="print-stats-block" style="border: 1px solid #000; padding: 1rem; margin-bottom: 1rem; font-size: 11px;">
+                            <h3 style="margin: 0 0 0.5rem 0; font-size: 14px; text-align: center;">Resumen Estadístico del Aula</h3>
+                            <p style="margin: 0.2rem 0;"><b>Total de Alumnos Registrados:</b> ${totalAlumnos}</p>
+                            <p style="margin: 0.2rem 0;"><b>Alumnos que completaron el examen:</b> ${alumnosTerminados.length}</p>
+                            <p style="margin: 0.2rem 0;"><b>Promedio de Notas:</b> ${promedio} / 20</p>
+                            <p style="margin: 0.2rem 0;"><b>Nota Más Alta:</b> ${mejorNota} | <b>Nota Más Baja:</b> ${peorNota}</p>
+                        </div>
+                    `;
+            
+                    let index = 1;
+                    studentsList.forEach(st => {
+                        let nota = st.finished ? st.score : "N/A";
+                        let aciertos = st.finished ? `${st.correctas} / ${st.totalQ}` : "-";
+                        let feedbackText = "-";
+                        if (st.feedback) {
+                            feedbackText = `
+                                <b>Estrellas:</b> ${st.feedback.estrellas}/6<br>
+                                <b>Preguntas:</b> ${st.feedback.utilidad}<br>
+                                <b>Interfaz:</b> ${st.feedback.intuitiva}<br>
+                                <b>Sugerencia:</b> ${st.feedback.texto || "Ninguna"}
+                            `;
+                        }
+                        printBody.innerHTML += `
+                            <tr>
+                                <td>${index}</td>
+                                <td>${st.name}</td>
+                                <td>${st.code}</td>
+                                <td>${st.group}</td>
+                                <td style="text-align:center; font-weight:bold; font-size:12px;">${nota}</td>
+                                <td style="text-align:center;">${aciertos}</td>
+                                <td style="font-size:10px; line-height:1.2;">${feedbackText}</td>
+                            </tr>
+                        `;
+                        index++;
+                    });
+            
+                    document.querySelector("#print-section").insertAdjacentHTML("beforeend", statsHtml);
+                    window.print();
+                });
+            }
+
             function printGrades() {
                 const classKey = localStorage.getItem("docenteClase");
                 if (!classKey) return;
@@ -4578,41 +4830,49 @@
             let historialData = []; // Almacena todas las filas (una por respuesta)
 
             function openHistorialView() {
-                if (!auth.currentUser)
-                    return switchView("view-teacher-login", true);
-
-                db.ref("historial_evaluaciones")
-                    .once("value")
-                    .then((snap) => {
+                const user = auth.currentUser;
+                if (!user) return switchView("view-teacher-login", true);
+            
+                // 1. Obtenemos las clases que pertenecen a este docente
+                db.ref("clases").orderByChild("ownerUid").equalTo(user.uid).once("value").then((clasesSnap) => {
+                    const clasesPermitidas = [];
+                    const nombresClases = [];
+                    clasesSnap.forEach(child => {
+                        const c = child.val();
+                        clasesPermitidas.push(child.key);
+                        nombresClases.push(c.className);
+                    });
+            
+                    if (clasesPermitidas.length === 0) {
+                        alert("No tienes clases creadas aún.");
+                        return switchView("view-teacher-dashboard", true);
+                    }
+            
+                    // 2. Cargamos el historial
+                    db.ref("historial_evaluaciones").once("value").then((snap) => {
                         const data = snap.val() || {};
                         historialData = [];
-
+            
                         Object.values(data).forEach((evalObj) => {
                             const meta = evalObj.meta || {};
-                            const respuestas = evalObj.respuestas
-                                ? Object.values(evalObj.respuestas)
-                                : [];
-                            respuestas.forEach((r) =>
-                                historialData.push({ ...meta, ...r }),
-                            );
+                            // 🔑 FILTRO: Solo agregamos si la clase está en nuestras clases permitidas
+                            if (clasesPermitidas.includes(meta.clase.toLowerCase()) || nombresClases.includes(meta.clase)) {
+                                const respuestas = evalObj.respuestas ? Object.values(evalObj.respuestas) : [];
+                                respuestas.forEach(r => historialData.push({ ...meta, ...r }));
+                            }
                         });
-
-                        const clasesSet = new Set(
-                            historialData.map((h) => h.clase).filter(Boolean),
-                        );
-                        const selectorClase = document.getElementById(
-                            "historial-filtro-clase",
-                        );
-                        selectorClase.innerHTML =
-                            '<option value="">Todas las clases</option>';
-                        clasesSet.forEach(
-                            (c) =>
-                                (selectorClase.innerHTML += `<option value="${c}">${c}</option>`),
-                        );
-
+            
+                        // 3. Llenar el selector de clases SOLO con las clases de este docente
+                        const selectorClase = document.getElementById("historial-filtro-clase");
+                        selectorClase.innerHTML = '<option value="">Todas mis clases</option>';
+                        nombresClases.forEach(c => {
+                            selectorClase.innerHTML += `<option value="${c}">${c}</option>`;
+                        });
+            
                         renderHistorialTable();
                         switchView("view-historial", true);
                     });
+                });
             }
 
             function renderHistorialTable() {
@@ -4727,174 +4987,66 @@
             }
 
             function exportarHistorialCSV() {
-                if (historialData.length === 0)
-                    return alert("No hay datos para exportar.");
-
-                const filtroClase = document.getElementById(
-                    "historial-filtro-clase",
-                ).value;
-                const filtroCapitulo = document.getElementById(
-                    "historial-filtro-capitulo",
-                ).value;
-
+                if (historialData.length === 0) return alert("No hay datos para exportar.");
+            
+                const filtroClase = document.getElementById("historial-filtro-clase").value;
+                const filtroCapitulo = document.getElementById("historial-filtro-capitulo").value;
+            
                 let filtrados = historialData.filter((h) => {
                     if (filtroClase && h.clase !== filtroClase) return false;
-                    if (
-                        filtroCapitulo &&
-                        !String(h.capitulos_evaluados || "").includes(
-                            filtroCapitulo,
-                        )
-                    )
-                        return false;
+                    if (filtroCapitulo && !String(h.capitulos_evaluados || "").includes(filtroCapitulo)) return false;
                     return true;
                 });
-
-                const columnas = [
-                    "id_evaluacion",
-                    "timestamp",
-                    "clase",
-                    "docente",
-                    "capitulos_evaluados",
-                    "codigo_alumno",
-                    "nombre_alumno",
-                    "grupo",
-                    "nota_final",
-                    "total_preguntas",
-                    "correctas",
-                    "id_video",
-                    "titulo_video",
-                    "indice_pregunta",
-                    "pregunta",
-                    "opcion_a",
-                    "opcion_b",
-                    "opcion_c",
-                    "opcion_d",
-                    "respuesta_correcta",
-                    "respuesta_alumno",
-                    "es_correcta",
-                    "justificacion",
-                ];
-
-                const escapeCSV = (val) => {
-                    const str = String(
-                        val === undefined || val === null ? "" : val,
-                    );
-                    if (
-                        str.includes(",") ||
-                        str.includes('"') ||
-                        str.includes("\n")
-                    ) {
-                        return '"' + str.replace(/"/g, '""') + '"';
-                    }
-                    return str;
-                };
-
-                const BOM = "\uFEFF";
-                const contenido =
-                    BOM +
-                    columnas.join(",") +
-                    "\n" +
-                    filtrados
-                        .map((fila) =>
-                            columnas.map((c) => escapeCSV(fila[c])).join(","),
-                        )
-                        .join("\n");
-
-                const blob = new Blob([contenido], {
-                    type: "text/csv;charset=utf-8;",
+            
+                if (filtrados.length === 0) return alert("No hay datos con los filtros seleccionados.");
+            
+                const columnas = Object.keys(filtrados[0]);
+                let csvContent = "\ufeff";
+                csvContent += columnas.join(",") + "\n";
+            
+                filtrados.forEach(row => {
+                    csvContent += columnas.map(c => `"${(row[c] || "").toString().replace(/"/g, '""')}"`).join(",") + "\n";
                 });
-                const url = URL.createObjectURL(blob);
+            
+                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
                 const link = document.createElement("a");
-                link.href = url;
-                link.download = `historial_evaluaciones_${new Date().toISOString().slice(0, 10)}.csv`;
+                const url = URL.createObjectURL(blob);
+                
+                // 🔑 Nombre dinámico
+                const fecha = new Date().toISOString().slice(0, 10);
+                const nombreClase = filtroClase ? filtroClase.replace(/\s+/g, '_') : 'Todas';
+                const nombreDocente = classroomConfig ? classroomConfig.teacherName.replace(/\s+/g, '_') : 'Docente';
+                
+                link.setAttribute("href", url);
+                link.setAttribute("download", `Historial_${nombreClase}_${nombreDocente}_${fecha}.csv`);
+                document.body.appendChild(link);
                 link.click();
-                URL.revokeObjectURL(url);
+                document.body.removeChild(link);
             }
-
+            
             function exportarHistorialExcel() {
-                if (historialData.length === 0)
-                    return alert("No hay datos para exportar.");
-                if (typeof XLSX === "undefined")
-                    return alert(
-                        "La librería SheetJS no está cargada. Verifica tu conexión.",
-                    );
-
-                const filtroClase = document.getElementById(
-                    "historial-filtro-clase",
-                ).value;
-                const filtroCapitulo = document.getElementById(
-                    "historial-filtro-capitulo",
-                ).value;
-
+                if (historialData.length === 0) return alert("No hay datos para exportar.");
+            
+                const filtroClase = document.getElementById("historial-filtro-clase").value;
+                const filtroCapitulo = document.getElementById("historial-filtro-capitulo").value;
+            
                 let filtrados = historialData.filter((h) => {
                     if (filtroClase && h.clase !== filtroClase) return false;
-                    if (
-                        filtroCapitulo &&
-                        !String(h.capitulos_evaluados || "").includes(
-                            filtroCapitulo,
-                        )
-                    )
-                        return false;
+                    if (filtroCapitulo && !String(h.capitulos_evaluados || "").includes(filtroCapitulo)) return false;
                     return true;
                 });
-
-                const columnas = [
-                    "id_evaluacion",
-                    "timestamp",
-                    "clase",
-                    "docente",
-                    "capitulos_evaluados",
-                    "codigo_alumno",
-                    "nombre_alumno",
-                    "grupo",
-                    "nota_final",
-                    "total_preguntas",
-                    "correctas",
-                    "id_video",
-                    "titulo_video",
-                    "indice_pregunta",
-                    "pregunta",
-                    "opcion_a",
-                    "opcion_b",
-                    "opcion_c",
-                    "opcion_d",
-                    "respuesta_correcta",
-                    "respuesta_alumno",
-                    "es_correcta",
-                    "justificacion",
-                ];
-
-                // Crear worksheet con datos tabulares
-                const datos = [columnas];
-                filtrados.forEach((fila) => {
-                    datos.push(
-                        columnas.map((c) =>
-                            fila[c] !== undefined ? fila[c] : "",
-                        ),
-                    );
-                });
-
+            
+                if (filtrados.length === 0) return alert("No hay datos con los filtros seleccionados.");
+            
+                const ws = XLSX.utils.json_to_sheet(filtrados);
                 const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.aoa_to_sheet(datos);
-
-                // Auto-ajustar ancho de columnas (aproximado)
-                const wscols = columnas.map((c, i) => {
-                    const maxLen = Math.min(
-                        40,
-                        Math.max(
-                            c.length,
-                            ...datos.map((r) => String(r[i]).length),
-                        ),
-                    );
-                    return { wch: maxLen };
-                });
-                ws["!cols"] = wscols;
-
                 XLSX.utils.book_append_sheet(wb, ws, "Historial");
-                XLSX.writeFile(
-                    wb,
-                    `historial_evaluaciones_${new Date().toISOString().slice(0, 10)}.xlsx`,
-                );
+            
+                const fecha = new Date().toISOString().slice(0, 10);
+                const nombreClase = filtroClase ? filtroClase.replace(/\s+/g, '_') : 'Todas';
+                const nombreDocente = classroomConfig ? classroomConfig.teacherName.replace(/\s+/g, '_') : 'Docente';
+            
+                XLSX.writeFile(wb, `Historial_${nombreClase}_${nombreDocente}_${fecha}.xlsx`);
             }
 
             // ============================================================
@@ -5154,7 +5306,8 @@
                                     <td>${(s.chapters || []).length}</td>
                                     <td>
                                         <button class="btn-secondary" onclick="adminOpenSala('${key}')">Ver</button>
-                                        <button class="btn-secondary" onclick="adminDeleteSala('${key}')" style="background:#ef4444; color:#fff; border:none; margin-left:0.4rem;">Eliminar</button>
+                                        <button class="btn-secondary" onclick="adminDeleteSala('${key}')" style="background:#ef4444; color:#fff; border:none; margin-left:0.4rem;">Eliminar Sala</button>
+                                        <button class="btn-secondary" onclick="adminDeleteHistorialClase('${s.className}')" style="background:#b91c1c; color:#fff; border:none; margin-left:0.4rem;">Borrar Notas</button>
                                     </td>
                                 </tr>`;
                         });
@@ -5196,6 +5349,35 @@
                 db.ref("clases/" + key)
                     .remove()
                     .then(() => alert("Sala eliminada."));
+            }
+
+            function adminDeleteHistorialClase(nombreClase) {
+                if (!confirm(`⚠️ ¿Estás seguro de eliminar TODO el historial de evaluaciones de la clase "${nombreClase}"?\n\nEsta acción no se puede deshacer.`)) return;
+            
+                db.ref("historial_evaluaciones").once("value").then((snap) => {
+                    const data = snap.val() || {};
+                    const promesas = [];
+            
+                    Object.entries(data).forEach(([idEval, evalObj]) => {
+                        if (evalObj.meta && evalObj.meta.clase === nombreClase) {
+                            promesas.push(db.ref("historial_evaluaciones/" + idEval).remove());
+                        }
+                    });
+            
+                    if (promesas.length === 0) {
+                        return alert("No se encontraron registros de evaluación para esta clase.");
+                    }
+            
+                    Promise.all(promesas)
+                        .then(() => {
+                            alert(`✅ Se eliminaron ${promesas.length} evaluaciones de la clase "${nombreClase}".`);
+                            // Refrescar el historial si está abierto
+                            if (document.getElementById("view-admin-dashboard").classList.contains("active")) {
+                                adminSwitchTab("salas"); // Recarga la pestaña
+                            }
+                        })
+                        .catch(err => alert("❌ Error al borrar: " + err.message));
+                });
             }
 
             // ---------- HISTORIAL GLOBAL ----------
